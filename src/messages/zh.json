@@ -1,0 +1,91 @@
+{
+  "LocaleLayout": {
+    "title": "ImmiMap — 移民法律服务与 USCIS 进度透明"
+  },
+  "Metadata": {
+    "homeTitle": "ImmiMap | 美国移民法律与社会服务地图",
+    "homeDescription": "在全美查找非营利机构与律所。按州、服务类型与费用筛选。为透明与可及性而设计。",
+    "processingTitle": "USCIS 审理时间 | ImmiMap",
+    "processingDescription": "按表格与审理地点估算的 USCIS 处理时长——数据结构便于接入实时数据。"
+  },
+  "Nav": {
+    "brand": "ImmiMap",
+    "mainNav": "主导航",
+    "map": "地图",
+    "processing": "审理时间",
+    "language": "语言"
+  },
+  "Map": {
+    "loadingMap": "地图加载中…",
+    "mapAriaLabel": "美国境内移民服务提供者的交互式地图",
+    "emptyStateTitle": "没有符合筛选条件的服务机构",
+    "emptyStateHint": "请调整筛选条件，或重置后重新查看地图上的机构。",
+    "resultsEyebrow": "服务机构列表",
+    "resultsTitle": "移民服务机构",
+    "resultsCount": "找到 {count} 家服务机构",
+    "liveResults": "实时筛选",
+    "viewDetails": "查看详情"
+  },
+  "Filters": {
+    "title": "查找服务机构",
+    "reset": "重置筛选",
+    "stateLabel": "州",
+    "serviceLabel": "服务类型",
+    "priceLabel": "费用类别",
+    "states": {
+      "CA": "加利福尼亚",
+      "TX": "德克萨斯",
+      "FL": "佛罗里达",
+      "NY": "纽约",
+      "NJ": "新泽西"
+    },
+    "services": {
+      "asylum": "庇护",
+      "family": "家庭移民",
+      "daca": "DACA",
+      "employment": "就业类"
+    },
+    "pricing": {
+      "pro_bono": "公益代理",
+      "low_cost": "低收费",
+      "paid": "付费"
+    }
+  },
+  "ServiceDetail": {
+    "noDescription": "面向社区的移民法律或社会服务。",
+    "clickToCallHint": "在支持的设备上点击即可拨号",
+    "visitWebsite": "官方网站",
+    "languagesLabel": "可提供语言",
+    "servicesLabel": "服务项目",
+    "verifiedPrice": "已核验费用档位（演示数据）"
+  },
+  "Pricing": {
+    "pro_bono": "公益代理",
+    "low_cost": "低收费",
+    "paid": "付费"
+  },
+  "Processing": {
+    "pageTitle": "USCIS 审理时间",
+    "tableCardTitle": "审理时间估算",
+    "pageLead": "按表格与审理地点给出的估算周期。以下行项目前为演示数据，可替换为爬虫或官方接口流水线。",
+    "lastUpdated": "最后更新",
+    "columns": {
+      "form": "表格类型",
+      "office": "办事处 / 服务中心",
+      "months": "预计时长（月）"
+    },
+    "sourceLine": "来源：USCIS 官方数据",
+    "disclaimer": "以下为工程演示用的示例数据，向申请人提供建议前请务必以 USCIS 官方系统为准。"
+  },
+  "NotFound": {
+    "code": "404",
+    "title": "页面未找到",
+    "description": "您访问的页面不存在或已移动。",
+    "home": "返回地图"
+  },
+  "Home": {
+    "heroEyebrow": "社会影响力 · 开放数据 · 无障碍优先",
+    "heroTitle": "更清晰地找到移民服务资源",
+    "heroSubtitle": "ImmiMap 在交互式地图上呈现非营利机构与律所——你可自行筛选，并可扩展审理时间等实时数据。"
+  }
+}

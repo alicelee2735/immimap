@@ -1,0 +1,56 @@
+{
+  "last_updated_iso": "2026-03-15T18:00:00.000Z",
+  "source_disclaimer": "Source: Official USCIS Data (mock snapshot for development — replace via ETL or scraper).",
+  "rows": [
+    {
+      "form_type": "I-485",
+      "office": "California Service Center",
+      "estimated_months": 14
+    },
+    {
+      "form_type": "I-485",
+      "office": "National Benefits Center",
+      "estimated_months": 11
+    },
+    {
+      "form_type": "I-130",
+      "office": "Texas Service Center",
+      "estimated_months": 13
+    },
+    {
+      "form_type": "I-130",
+      "office": "Nebraska Service Center",
+      "estimated_months": 12
+    },
+    {
+      "form_type": "I-765",
+      "office": "California Service Center",
+      "estimated_months": 4
+    },
+    {
+      "form_type": "I-131",
+      "office": "Texas Service Center",
+      "estimated_months": 6
+    },
+    {
+      "form_type": "N-400",
+      "office": "New York City NY Field Office",
+      "estimated_months": 9
+    },
+    {
+      "form_type": "N-400",
+      "office": "Miami FL Field Office",
+      "estimated_months": 10
+    },
+    {
+      "form_type": "I-589",
+      "office": "Asylum Office — Houston",
+      "estimated_months": 28
+    },
+    {
+      "form_type": "I-821D",
+      "office": "Nebraska Service Center",
+      "estimated_months": 5
+    }
+  ]
+}

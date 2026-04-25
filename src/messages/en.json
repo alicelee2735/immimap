@@ -1,0 +1,91 @@
+{
+  "LocaleLayout": {
+    "title": "ImmiMap — Immigration services & USCIS transparency"
+  },
+  "Metadata": {
+    "homeTitle": "ImmiMap | Map of immigration legal & social services",
+    "homeDescription": "Find nonprofits and law firms across the US. Filter by state, service type, and price. Built for transparency and access.",
+    "processingTitle": "USCIS processing times | ImmiMap",
+    "processingDescription": "Estimated USCIS processing times by form and office — structured for future live data."
+  },
+  "Nav": {
+    "brand": "ImmiMap",
+    "mainNav": "Primary",
+    "map": "Map",
+    "processing": "Processing times",
+    "language": "Language"
+  },
+  "Map": {
+    "loadingMap": "Loading map…",
+    "mapAriaLabel": "Interactive map of immigration service providers in the United States",
+    "emptyStateTitle": "No providers match these filters",
+    "emptyStateHint": "Adjust filters or reset to see organizations on the map.",
+    "resultsEyebrow": "Provider marketplace",
+    "resultsTitle": "Immigration providers",
+    "resultsCount": "{count, plural, =0 {No providers} one {# provider} other {# providers}} found",
+    "liveResults": "Live filters",
+    "viewDetails": "View details"
+  },
+  "Filters": {
+    "title": "Explore providers",
+    "reset": "Reset filters",
+    "stateLabel": "State",
+    "serviceLabel": "Service type",
+    "priceLabel": "Price category",
+    "states": {
+      "CA": "California",
+      "TX": "Texas",
+      "FL": "Florida",
+      "NY": "New York",
+      "NJ": "New Jersey"
+    },
+    "services": {
+      "asylum": "Asylum",
+      "family": "Family",
+      "daca": "DACA",
+      "employment": "Employment"
+    },
+    "pricing": {
+      "pro_bono": "Pro bono",
+      "low_cost": "Low-cost",
+      "paid": "Paid"
+    }
+  },
+  "ServiceDetail": {
+    "noDescription": "Immigration legal or social services for the community.",
+    "clickToCallHint": "Tap to call on supported devices",
+    "visitWebsite": "Website",
+    "languagesLabel": "Languages offered",
+    "servicesLabel": "Services offered",
+    "verifiedPrice": "Verified price tier (mock data)"
+  },
+  "Pricing": {
+    "pro_bono": "Pro bono",
+    "low_cost": "Low-cost",
+    "paid": "Paid"
+  },
+  "Processing": {
+    "pageTitle": "USCIS processing times",
+    "tableCardTitle": "Processing time estimates",
+    "pageLead": "Estimated timelines by form and adjudication location. Replace mock rows with your scraper or USCIS API pipeline.",
+    "lastUpdated": "Last updated",
+    "columns": {
+      "form": "Form type",
+      "office": "Field office / service center",
+      "months": "Est. time (months)"
+    },
+    "sourceLine": "Source: Official USCIS Data",
+    "disclaimer": "Figures are illustrative mock data for engineering demos. Always confirm on USCIS systems before advising clients."
+  },
+  "NotFound": {
+    "code": "404",
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist or was moved.",
+    "home": "Back to map"
+  },
+  "Home": {
+    "heroEyebrow": "Social impact · Open data · Accessibility-first",
+    "heroTitle": "Navigate immigration services with clarity",
+    "heroSubtitle": "ImmiMap surfaces nonprofits and law firms on an interactive map — with filters you control and processing-time context you can extend to live feeds."
+  }
+}

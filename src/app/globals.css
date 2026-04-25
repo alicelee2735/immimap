@@ -49,14 +49,15 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  /* Trust Blue + Clean White — ImmiMap brand */
+  --background: oklch(0.995 0.005 250);
+  --foreground: oklch(0.22 0.03 250);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.22 0.03 250);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
+  --popover-foreground: oklch(0.22 0.03 250);
+  --primary: oklch(0.44 0.14 252);
+  --primary-foreground: oklch(0.99 0.01 252);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
@@ -64,9 +65,9 @@
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: oklch(0.91 0.02 250);
+  --input: oklch(0.91 0.02 250);
+  --ring: oklch(0.55 0.12 252);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -127,4 +128,9 @@
   html {
     @apply font-sans;
   }
+}
+
+/* Leaflet map inherits app font; cluster icons keep OSM attribution readable */
+.leaflet-container {
+  font-family: inherit;
 }
