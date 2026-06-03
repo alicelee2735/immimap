@@ -1,14 +1,19 @@
 "use client";
 
-import { RotateCcw } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { PageContainer } from "@/components/layout/page-container";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 import { useMapFiltersStore } from "@/stores/map-filters";
 import type { PricingTier, ServiceCategory, USState } from "@/types/immimap";
-import { cn } from "@/lib/utils";
 
 const STATES: USState[] = ["CA", "TX", "FL", "NY", "NJ"];
 const CATEGORIES: ServiceCategory[] = [
@@ -19,29 +24,82 @@ const CATEGORIES: ServiceCategory[] = [
 ];
 const PRICING: PricingTier[] = ["pro_bono", "low_cost", "paid"];
 
-function ToggleChip({
-  active,
-  label,
-  onClick,
-}: {
-  active: boolean;
-  label: string;
-  onClick: () => void;
-}) {
+type FilterSegmentProps<T extends string> = {
+  title: string;
+  value: string;
+  options: { value: T; label: string }[];
+  selected: T[];
+  onToggle: (value: T) => void;
+  isLast?: boolean;
+};
+
+function FilterSegment<T extends string>({
+  title,
+  value,
+  options,
+  selected,
+  onToggle,
+  isLast,
+}: FilterSegmentProps<T>) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:text-sm",
-        active
-          ? "border-primary bg-primary text-primary-foreground shadow-sm"
-          : "border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground",
-      )}
-    >
-      {label}
-    </button>
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        className={cn(
+          "group flex min-h-16 flex-1 items-center justify-between gap-4 border-slate-200 bg-transparent px-4 py-3 text-left transition-all duration-200 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          !isLast && "border-b md:border-r md:border-b-0",
+        )}
+      >
+        <span>
+          <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+            {title}
+          </span>
+          <span className="mt-1 block text-sm font-semibold text-foreground">
+            {value}
+          </span>
+        </span>
+        <ChevronDown className="h-4 w-4 text-primary transition group-data-[popup-open]:rotate-180" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-64 rounded-2xl p-2" align="start">
+        {options.map((option) => {
+          const active = selected.includes(option.value);
+          return (
+            <DropdownMenuCheckboxItem
+              key={option.value}
+              checked={active}
+              onClick={() => onToggle(option.value)}
+              className={cn(
+                "px-3 py-2 text-sm font-medium",
+                active
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {option.label}
+            </DropdownMenuCheckboxItem>
+          );
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
+}
+
+function selectionLabel({
+  allLabel,
+  labels,
+  selectedCount,
+  totalCount,
+  selectedLabel,
+}: {
+  allLabel: string;
+  labels: string[];
+  selectedCount: number;
+  totalCount: number;
+  selectedLabel: string;
+}) {
+  if (selectedCount === totalCount) return allLabel;
+  if (selectedCount === 0) return allLabel;
+  if (selectedCount === 1) return labels[0];
+  return selectedLabel;
 }
 
 export function MapFiltersBar() {
@@ -54,89 +112,84 @@ export function MapFiltersBar() {
   const togglePricingTier = useMapFiltersStore((s) => s.togglePricingTier);
   const resetFilters = useMapFiltersStore((s) => s.resetFilters);
 
+  const stateOptions = STATES.map((state) => ({
+    value: state,
+    label: t(`states.${state}`),
+  }));
+  const serviceOptions = CATEGORIES.map((category) => ({
+    value: category,
+    label: t(`services.${category}`),
+  }));
+  const pricingOptions = PRICING.map((tier) => ({
+    value: tier,
+    label: t(`pricing.${tier}`),
+  }));
+
   return (
-    <div className="border-b bg-card/95 px-4 py-3 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-card/80">
-      <div className="mx-auto flex max-w-[1600px] flex-col gap-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm font-semibold text-foreground">{t("title")}</p>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="h-8 gap-1 text-muted-foreground"
-            onClick={() => resetFilters()}
-          >
-            <RotateCcw className="h-3.5 w-3.5" aria-hidden />
-            {t("reset")}
-          </Button>
-        </div>
-
-        <div className="flex flex-col gap-3">
-          <div>
-            <Label className="text-xs font-medium text-muted-foreground">
-              {t("stateLabel")}
-            </Label>
-            <div
-              className="mt-1.5 flex flex-wrap gap-2"
-              role="group"
-              aria-label={t("stateLabel")}
+    <div className="border-b bg-white/90 py-3 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/80">
+      <PageContainer>
+        <p className="mb-2 text-sm font-semibold text-foreground">{t("title")}</p>
+        <div className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm md:flex">
+          <FilterSegment
+            title={t("stateLabel")}
+            value={selectionLabel({
+              allLabel: t("allStates"),
+              labels: stateOptions
+                .filter((option) => states.includes(option.value))
+                .map((option) => option.label),
+              selectedCount: states.length,
+              totalCount: stateOptions.length,
+              selectedLabel: t("selectedCount", { count: states.length }),
+            })}
+            options={stateOptions}
+            selected={states}
+            onToggle={toggleState}
+          />
+          <FilterSegment
+            title={t("serviceLabel")}
+            value={selectionLabel({
+              allLabel: t("allServices"),
+              labels: serviceOptions
+                .filter((option) => categories.includes(option.value))
+                .map((option) => option.label),
+              selectedCount: categories.length,
+              totalCount: serviceOptions.length,
+              selectedLabel: t("selectedCount", { count: categories.length }),
+            })}
+            options={serviceOptions}
+            selected={categories}
+            onToggle={toggleCategory}
+          />
+          <FilterSegment
+            title={t("priceLabel")}
+            value={selectionLabel({
+              allLabel: t("allPrices"),
+              labels: pricingOptions
+                .filter((option) => pricingTiers.includes(option.value))
+                .map((option) => option.label),
+              selectedCount: pricingTiers.length,
+              totalCount: pricingOptions.length,
+              selectedLabel: t("selectedCount", { count: pricingTiers.length }),
+            })}
+            options={pricingOptions}
+            selected={pricingTiers}
+            onToggle={togglePricingTier}
+          />
+          <div className="flex items-center justify-center px-3 py-3 md:border-l md:border-slate-200">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              className="rounded-full text-muted-foreground hover:bg-primary/10 hover:text-primary"
+              onClick={() => resetFilters()}
+              aria-label={t("reset")}
+              title={t("reset")}
             >
-              {STATES.map((st) => (
-                <ToggleChip
-                  key={st}
-                  label={t(`states.${st}`)}
-                  active={states.includes(st)}
-                  onClick={() => toggleState(st)}
-                />
-              ))}
-            </div>
-          </div>
-
-          <Separator className="bg-border/80" />
-
-          <div>
-            <Label className="text-xs font-medium text-muted-foreground">
-              {t("serviceLabel")}
-            </Label>
-            <div
-              className="mt-1.5 flex flex-wrap gap-2"
-              role="group"
-              aria-label={t("serviceLabel")}
-            >
-              {CATEGORIES.map((c) => (
-                <ToggleChip
-                  key={c}
-                  label={t(`services.${c}`)}
-                  active={categories.includes(c)}
-                  onClick={() => toggleCategory(c)}
-                />
-              ))}
-            </div>
-          </div>
-
-          <Separator className="bg-border/80" />
-
-          <div>
-            <Label className="text-xs font-medium text-muted-foreground">
-              {t("priceLabel")}
-            </Label>
-            <div
-              className="mt-1.5 flex flex-wrap gap-2"
-              role="group"
-              aria-label={t("priceLabel")}
-            >
-              {PRICING.map((p) => (
-                <ToggleChip
-                  key={p}
-                  label={t(`pricing.${p}`)}
-                  active={pricingTiers.includes(p)}
-                  onClick={() => togglePricingTier(p)}
-                />
-              ))}
-            </div>
+              <X className="h-4 w-4" aria-hidden />
+            </Button>
           </div>
         </div>
-      </div>
+      </PageContainer>
     </div>
   );
 }

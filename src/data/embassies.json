@@ -1,0 +1,200 @@
+[
+  {
+    "id": "mx-mex",
+    "name": "U.S. Embassy Mexico City",
+    "country": "Mexico",
+    "city": "Mexico City",
+    "latitude": 19.4284,
+    "longitude": -99.1476,
+    "avg_interview_wait_days": 742
+  },
+  {
+    "id": "in-mum",
+    "name": "U.S. Consulate Mumbai",
+    "country": "India",
+    "city": "Mumbai",
+    "latitude": 18.9647,
+    "longitude": 72.8258,
+    "avg_interview_wait_days": 512
+  },
+  {
+    "id": "in-del",
+    "name": "U.S. Embassy New Delhi",
+    "country": "India",
+    "city": "New Delhi",
+    "latitude": 28.5983,
+    "longitude": 77.1892,
+    "avg_interview_wait_days": 418
+  },
+  {
+    "id": "br-sao",
+    "name": "U.S. Consulate São Paulo",
+    "country": "Brazil",
+    "city": "São Paulo",
+    "latitude": -23.5558,
+    "longitude": -46.6396,
+    "avg_interview_wait_days": 394
+  },
+  {
+    "id": "co-bog",
+    "name": "U.S. Embassy Bogotá",
+    "country": "Colombia",
+    "city": "Bogotá",
+    "latitude": 4.6485,
+    "longitude": -74.0621,
+    "avg_interview_wait_days": 367
+  },
+  {
+    "id": "ph-man",
+    "name": "U.S. Embassy Manila",
+    "country": "Philippines",
+    "city": "Manila",
+    "latitude": 14.5547,
+    "longitude": 121.0244,
+    "avg_interview_wait_days": 312
+  },
+  {
+    "id": "ec-qui",
+    "name": "U.S. Embassy Quito",
+    "country": "Ecuador",
+    "city": "Quito",
+    "latitude": -0.1807,
+    "longitude": -78.4678,
+    "avg_interview_wait_days": 278
+  },
+  {
+    "id": "vn-hcm",
+    "name": "U.S. Consulate Ho Chi Minh City",
+    "country": "Vietnam",
+    "city": "Ho Chi Minh City",
+    "latitude": 10.7769,
+    "longitude": 106.7009,
+    "avg_interview_wait_days": 241
+  },
+  {
+    "id": "gt-gua",
+    "name": "U.S. Embassy Guatemala City",
+    "country": "Guatemala",
+    "city": "Guatemala City",
+    "latitude": 14.6349,
+    "longitude": -90.5069,
+    "avg_interview_wait_days": 218
+  },
+  {
+    "id": "ke-nai",
+    "name": "U.S. Embassy Nairobi",
+    "country": "Kenya",
+    "city": "Nairobi",
+    "latitude": -1.2641,
+    "longitude": 36.7972,
+    "avg_interview_wait_days": 185
+  },
+  {
+    "id": "ng-lag",
+    "name": "U.S. Consulate Lagos",
+    "country": "Nigeria",
+    "city": "Lagos",
+    "latitude": 6.4550,
+    "longitude": 3.3841,
+    "avg_interview_wait_days": 163
+  },
+  {
+    "id": "jm-kin",
+    "name": "U.S. Embassy Kingston",
+    "country": "Jamaica",
+    "city": "Kingston",
+    "latitude": 17.9784,
+    "longitude": -76.7993,
+    "avg_interview_wait_days": 134
+  },
+  {
+    "id": "gh-acc",
+    "name": "U.S. Embassy Accra",
+    "country": "Ghana",
+    "city": "Accra",
+    "latitude": 5.6037,
+    "longitude": -0.1870,
+    "avg_interview_wait_days": 97
+  },
+  {
+    "id": "il-tel",
+    "name": "U.S. Embassy Tel Aviv",
+    "country": "Israel",
+    "city": "Tel Aviv",
+    "latitude": 32.0853,
+    "longitude": 34.7818,
+    "avg_interview_wait_days": 72
+  },
+  {
+    "id": "gb-lon",
+    "name": "U.S. Embassy London",
+    "country": "United Kingdom",
+    "city": "London",
+    "latitude": 51.4995,
+    "longitude": -0.1248,
+    "avg_interview_wait_days": 58
+  },
+  {
+    "id": "fr-par",
+    "name": "U.S. Embassy Paris",
+    "country": "France",
+    "city": "Paris",
+    "latitude": 48.8737,
+    "longitude": 2.3089,
+    "avg_interview_wait_days": 44
+  },
+  {
+    "id": "de-ber",
+    "name": "U.S. Embassy Berlin",
+    "country": "Germany",
+    "city": "Berlin",
+    "latitude": 52.5165,
+    "longitude": 13.3944,
+    "avg_interview_wait_days": 21
+  },
+  {
+    "id": "ca-ott",
+    "name": "U.S. Embassy Ottawa",
+    "country": "Canada",
+    "city": "Ottawa",
+    "latitude": 45.4235,
+    "longitude": -75.7007,
+    "avg_interview_wait_days": 14
+  },
+  {
+    "id": "jp-tok",
+    "name": "U.S. Embassy Tokyo",
+    "country": "Japan",
+    "city": "Tokyo",
+    "latitude": 35.6684,
+    "longitude": 139.7438,
+    "avg_interview_wait_days": 12
+  },
+  {
+    "id": "au-can",
+    "name": "U.S. Embassy Canberra",
+    "country": "Australia",
+    "city": "Canberra",
+    "latitude": -35.3075,
+    "longitude": 149.1244,
+    "avg_interview_wait_days": 10
+  },
+  {
+    "id": "kr-seo",
+    "name": "U.S. Embassy Seoul",
+    "country": "South Korea",
+    "city": "Seoul",
+    "latitude": 37.5326,
+    "longitude": 126.9750,
+    "avg_interview_wait_days": 7
+  },
+  {
+    "id": "sg-sin",
+    "name": "U.S. Embassy Singapore",
+    "country": "Singapore",
+    "city": "Singapore",
+    "latitude": 1.3049,
+    "longitude": 103.8198,
+    "avg_interview_wait_days": 5
+  }
+]

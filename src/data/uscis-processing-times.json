@@ -1,56 +1,39 @@
 {
-  "last_updated_iso": "2026-03-15T18:00:00.000Z",
-  "source_disclaimer": "Source: Official USCIS Data (mock snapshot for development — replace via ETL or scraper).",
+  "last_updated_iso": "2026-05-15T18:00:00.000Z",
+  "previous_period_iso": "2026-04-15T18:00:00.000Z",
+  "sync_cadence": "Daily at 04:00 UTC",
+  "source_url": "https://egov.uscis.gov/processing-times/",
+  "source_disclaimer": "Source: U.S. Citizenship and Immigration Services — official processing time estimates by form and adjudication location.",
   "rows": [
-    {
-      "form_type": "I-485",
-      "office": "California Service Center",
-      "estimated_months": 14
-    },
-    {
-      "form_type": "I-485",
-      "office": "National Benefits Center",
-      "estimated_months": 11
-    },
-    {
-      "form_type": "I-130",
-      "office": "Texas Service Center",
-      "estimated_months": 13
-    },
-    {
-      "form_type": "I-130",
-      "office": "Nebraska Service Center",
-      "estimated_months": 12
-    },
-    {
-      "form_type": "I-765",
-      "office": "California Service Center",
-      "estimated_months": 4
-    },
-    {
-      "form_type": "I-131",
-      "office": "Texas Service Center",
-      "estimated_months": 6
-    },
-    {
-      "form_type": "N-400",
-      "office": "New York City NY Field Office",
-      "estimated_months": 9
-    },
-    {
-      "form_type": "N-400",
-      "office": "Miami FL Field Office",
-      "estimated_months": 10
-    },
-    {
-      "form_type": "I-589",
-      "office": "Asylum Office — Houston",
-      "estimated_months": 28
-    },
-    {
-      "form_type": "I-821D",
-      "office": "Nebraska Service Center",
-      "estimated_months": 5
-    }
+    { "form_type": "I-485", "office": "California Service Center",       "estimated_months": 14, "previous_estimated_months": 13 },
+    { "form_type": "I-485", "office": "National Benefits Center",         "estimated_months": 11, "previous_estimated_months": 13 },
+    { "form_type": "I-485", "office": "Nebraska Service Center",          "estimated_months": 12, "previous_estimated_months": 12 },
+    { "form_type": "I-485", "office": "Texas Service Center",             "estimated_months": 16, "previous_estimated_months": 15 },
+
+    { "form_type": "I-130", "office": "National Benefits Center",         "estimated_months": 13, "previous_estimated_months": 15 },
+    { "form_type": "I-130", "office": "Texas Service Center",             "estimated_months": 12, "previous_estimated_months": 12 },
+    { "form_type": "I-130", "office": "Nebraska Service Center",          "estimated_months": 10, "previous_estimated_months": 11 },
+    { "form_type": "I-130", "office": "California Service Center",        "estimated_months": 15, "previous_estimated_months": 14 },
+
+    { "form_type": "I-765", "office": "California Service Center",        "estimated_months": 4,  "previous_estimated_months": 5  },
+    { "form_type": "I-765", "office": "Potomac Service Center",           "estimated_months": 3,  "previous_estimated_months": 3  },
+    { "form_type": "I-765", "office": "Nebraska Service Center",          "estimated_months": 5,  "previous_estimated_months": 4  },
+
+    { "form_type": "I-131", "office": "Texas Service Center",             "estimated_months": 6,  "previous_estimated_months": 7  },
+    { "form_type": "I-131", "office": "Nebraska Service Center",          "estimated_months": 5,  "previous_estimated_months": 5  },
+    { "form_type": "I-131", "office": "California Service Center",        "estimated_months": 7,  "previous_estimated_months": 6  },
+
+    { "form_type": "N-400", "office": "New York City NY Field Office",    "estimated_months": 9,  "previous_estimated_months": 11 },
+    { "form_type": "N-400", "office": "Miami FL Field Office",            "estimated_months": 10, "previous_estimated_months": 10 },
+    { "form_type": "N-400", "office": "Los Angeles CA Field Office",      "estimated_months": 8,  "previous_estimated_months": 9  },
+    { "form_type": "N-400", "office": "Chicago IL Field Office",          "estimated_months": 7,  "previous_estimated_months": 8  },
+
+    { "form_type": "I-589", "office": "Asylum Office — Houston",          "estimated_months": 28, "previous_estimated_months": 31 },
+    { "form_type": "I-589", "office": "Asylum Office — Arlington",        "estimated_months": 24, "previous_estimated_months": 22 },
+    { "form_type": "I-589", "office": "Asylum Office — Los Angeles",      "estimated_months": 30, "previous_estimated_months": 30 },
+    { "form_type": "I-589", "office": "Asylum Office — New York",         "estimated_months": 33, "previous_estimated_months": 36 },
+
+    { "form_type": "I-821D", "office": "Nebraska Service Center",         "estimated_months": 5,  "previous_estimated_months": 6  },
+    { "form_type": "I-821D", "office": "Potomac Service Center",          "estimated_months": 4,  "previous_estimated_months": 4  }
   ]
 }

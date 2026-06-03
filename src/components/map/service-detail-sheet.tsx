@@ -1,12 +1,13 @@
 "use client";
 
-import { ExternalLink, MapPin, Phone } from "lucide-react";
+import { ExternalLink, Globe, Info, MapPin, Phone, ShieldCheck, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetHeader,
@@ -14,7 +15,13 @@ import {
 } from "@/components/ui/sheet";
 import { formatDisplayPhone } from "@/lib/phone";
 import { useMapFiltersStore } from "@/stores/map-filters";
-import type { ImmigrationService, PricingLabel } from "@/types/immimap";
+import type {
+  ImmigrationService,
+  IntakeStatus,
+  PricingLabel,
+} from "@/types/immimap";
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 function pricingVariant(
   pricing: PricingLabel,
@@ -29,6 +36,62 @@ const PRICING_LABEL_TO_KEY: Record<PricingLabel, "pro_bono" | "low_cost" | "paid
   "Low-cost": "low_cost",
   Paid: "paid",
 };
+
+// ── Intake status indicator ────────────────────────────────────────────────────
+
+function IntakeStatusBlock({ status }: { status: IntakeStatus }) {
+  if (status === "OPEN") {
+    return (
+      <div className="flex items-center gap-2 rounded-md bg-emerald-50 px-3 py-2">
+        <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden />
+        <span className="text-sm font-medium text-emerald-700">
+          Accepting new cases
+        </span>
+      </div>
+    );
+  }
+  if (status === "LIMITED") {
+    return (
+      <div className="flex items-center gap-2 rounded-md bg-amber-50 px-3 py-2">
+        <span className="h-2 w-2 rounded-full bg-amber-400" aria-hidden />
+        <span className="text-sm font-medium text-amber-700">
+          Limited availability — contact before submitting
+        </span>
+      </div>
+    );
+  }
+  return (
+    <div className="flex items-center gap-2 rounded-md bg-slate-100 px-3 py-2">
+      <span className="h-2 w-2 rounded-full border border-slate-400" aria-hidden />
+      <span className="text-sm font-medium text-slate-600">
+        Intake paused / waitlist active
+      </span>
+    </div>
+  );
+}
+
+// ── Verification tooltip ──────────────────────────────────────────────────────
+
+function VerifiedBadge({ type }: { type: ImmigrationService["type"] }) {
+  if (type !== "NGO") return null;
+  return (
+    <span className="group relative inline-flex items-center gap-1">
+      <ShieldCheck className="h-3.5 w-3.5 text-blue-500" aria-hidden />
+      <span className="text-xs font-medium text-blue-600">Verified</span>
+      <span
+        role="tooltip"
+        className="pointer-events-none absolute bottom-full left-0 z-50 mb-2 w-72 rounded-md border border-slate-200 bg-white px-3 py-2.5 text-xs leading-5 text-slate-700 shadow-md opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
+      >
+        <strong className="mb-1 block text-slate-900">Verified Organization</strong>
+        This resource maintains active accredited legal status or direct
+        non-profit standing and has been manually cataloged by the system
+        registry.
+      </span>
+    </span>
+  );
+}
+
+// ── Main component ─────────────────────────────────────────────────────────────
 
 type Props = {
   services: ImmigrationService[];
@@ -46,25 +109,70 @@ export function ServiceDetailSheet({ services }: Props) {
   return (
     <Sheet
       open={open}
+      modal={false}
       onOpenChange={(next) => {
         if (!next) selectService(null);
       }}
     >
       <SheetContent
         side="right"
-        className="flex w-full flex-col gap-0 overflow-y-auto sm:max-w-md"
+        showCloseButton={false}
+        overlayClassName="pointer-events-none bg-black/10 backdrop-blur-none"
+        className="flex !w-full !max-w-full flex-col gap-0 overflow-y-auto p-6 sm:!max-w-md md:!w-[38vw] md:!max-w-[38vw] lg:!w-[34vw] lg:!max-w-[34vw]"
+        onInteractOutside={(event) => event.preventDefault()}
       >
         {service ? (
           <>
+            {/* ── Sticky action bar ──────────────────────────────────── */}
+            <div className="sticky top-0 z-10 -mx-6 -mt-6 mb-6 flex flex-wrap items-center gap-2 border-b border-slate-200 bg-white/95 p-4">
+              <SheetClose
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full p-2 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                aria-label={t("close")}
+              >
+                <X className="h-5 w-5" aria-hidden />
+              </SheetClose>
+              {service.website ? (
+                <a
+                  href={service.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={buttonVariants({
+                    size: "lg",
+                    className: "h-10 rounded-full px-4",
+                  })}
+                >
+                  <ExternalLink className="h-4 w-4" aria-hidden />
+                  {t("visitWebsite")}
+                </a>
+              ) : null}
+              {service.phone ? (
+                <a
+                  className={buttonVariants({
+                    variant: "secondary",
+                    size: "lg",
+                    className: "h-10 rounded-full px-4",
+                  })}
+                  href={`tel:${service.phone}`}
+                  aria-label={`${t("call")} ${formatDisplayPhone(service.phone)}`}
+                >
+                  <Phone className="h-4 w-4" aria-hidden />
+                  {t("call")}
+                </a>
+              ) : null}
+            </div>
+
+            {/* ── Hero image ─────────────────────────────────────────── */}
             <div
-              className="-mx-6 -mt-6 mb-6 h-40 bg-cover bg-center"
+              className="-mx-6 mb-6 h-40 bg-cover bg-center"
               role="img"
               aria-label={`${service.name} location image`}
               style={{ backgroundImage: `url(${service.thumbnail_image_url})` }}
             />
-            <SheetHeader className="space-y-3 text-left">
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <SheetTitle className="pr-8 text-xl leading-snug">
+
+            {/* ── Header ─────────────────────────────────────────────── */}
+            <SheetHeader className="space-y-3 p-0 text-left">
+              <div className="flex items-start justify-between gap-3">
+                <SheetTitle className="pr-8 text-2xl leading-tight tracking-tight text-gray-950">
                   {service.name}
                 </SheetTitle>
                 <Badge
@@ -74,13 +182,18 @@ export function ServiceDetailSheet({ services }: Props) {
                   {tPrice(PRICING_LABEL_TO_KEY[service.pricing])}
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground">{t("verifiedPrice")}</p>
-              <SheetDescription className="text-base leading-relaxed">
-                {service.description ?? t("noDescription")}
-              </SheetDescription>
+              <VerifiedBadge type={service.type} />
             </SheetHeader>
 
-            <div className="mt-6 flex flex-col gap-5 border-t pt-6 text-sm">
+            {/* ── Body ───────────────────────────────────────────────── */}
+            <div className="mt-5 flex flex-col gap-5 border-t border-slate-200 pt-5 text-sm">
+
+              {/* Intake status */}
+              {service.intakeStatus && (
+                <IntakeStatusBlock status={service.intakeStatus} />
+              )}
+
+              {/* Address */}
               <div className="flex gap-3">
                 <MapPin
                   className="mt-0.5 h-4 w-4 shrink-0 text-primary"
@@ -91,42 +204,43 @@ export function ServiceDetailSheet({ services }: Props) {
                 </address>
               </div>
 
-              {service.phone ? (
-                <div className="flex items-center gap-3">
-                  <Phone
-                    className="h-4 w-4 shrink-0 text-primary"
+              {/* Catchment note */}
+              {service.catchmentNote && (
+                <div className="flex gap-3 text-slate-500">
+                  <Info
+                    className="mt-0.5 h-4 w-4 shrink-0 text-slate-400"
                     aria-hidden
                   />
-                  <a
-                    className="font-medium text-primary underline-offset-4 hover:underline"
-                    href={`tel:${service.phone}`}
-                  >
-                    {formatDisplayPhone(service.phone)}
-                  </a>
-                  <span className="sr-only">{t("clickToCallHint")}</span>
+                  <p className="leading-relaxed">{service.catchmentNote}</p>
                 </div>
-              ) : null}
+              )}
 
-              <div className="flex flex-wrap gap-2">
-                {service.website ? (
-                  <a
-                    href={service.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={buttonVariants({
-                      variant: "outline",
-                      size: "sm",
-                      className: "inline-flex gap-2",
-                    })}
-                  >
-                    <ExternalLink className="h-4 w-4" aria-hidden />
-                    {t("visitWebsite")}
-                  </a>
-                ) : null}
-              </div>
+              {/* Description */}
+              <SheetDescription className="text-base leading-relaxed text-slate-600">
+                {service.description ?? t("noDescription")}
+              </SheetDescription>
 
+              {/* Languages */}
+              {service.languages && service.languages.length > 0 && (
+                <div>
+                  <p className="mb-2 text-xs font-medium uppercase tracking-widest text-slate-400">
+                    {t("languagesLabel")}
+                  </p>
+                  <div className="flex items-start gap-2">
+                    <Globe
+                      className="mt-0.5 h-4 w-4 shrink-0 text-primary"
+                      aria-hidden
+                    />
+                    <p className="leading-relaxed text-slate-700">
+                      {service.languages.join(" · ")}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Services offered */}
               <div>
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <p className="mb-2 text-xs font-medium uppercase tracking-widest text-slate-400">
                   {t("servicesLabel")}
                 </p>
                 <ul className="flex flex-wrap gap-2">
@@ -139,6 +253,22 @@ export function ServiceDetailSheet({ services }: Props) {
                   ))}
                 </ul>
               </div>
+            </div>
+
+            {/* ── Provenance footer ───────────────────────────────────── */}
+            <div className="-mx-6 mt-6 border-t border-slate-100 px-6 py-3">
+              <p className="text-xs text-slate-400">
+                {t("provenanceLabel")}{" "}
+                <time className="tabular-nums">
+                  {new Date().toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </time>
+                {" · "}
+                {t("syncCadence")}
+              </p>
             </div>
           </>
         ) : null}

@@ -1,17 +1,12 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
-import { ExternalLink, Languages, MapPin, Phone } from "lucide-react";
+import { useEffect, useMemo, useRef } from "react";
+import { ExternalLink, Globe, Languages, MapPin, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants, Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { PageContainer } from "@/components/layout/page-container";
 import { ImmimapMap } from "@/components/map/immimap-map";
 import { MapFiltersBar } from "@/components/map/map-filters-bar";
 import { ServiceDetailSheet } from "@/components/map/service-detail-sheet";
@@ -20,6 +15,7 @@ import { formatDisplayPhone } from "@/lib/phone";
 import { filterServices, useMapFiltersStore } from "@/stores/map-filters";
 import type {
   ImmigrationService,
+  IntakeStatus,
   PricingLabel,
   ServiceOffering,
 } from "@/types/immimap";
@@ -55,29 +51,74 @@ const PRICING_LABEL_TO_KEY: Record<PricingLabel, "pro_bono" | "low_cost" | "paid
   Paid: "paid",
 };
 
+function IntakeIndicator({ status }: { status: IntakeStatus }) {
+  if (status === "OPEN") {
+    return (
+      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden />
+        Accepting new cases
+      </span>
+    );
+  }
+  if (status === "LIMITED") {
+    return (
+      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600">
+        <span className="h-1.5 w-1.5 rounded-full bg-amber-400" aria-hidden />
+        Limited availability
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500">
+      <span className="h-1.5 w-1.5 rounded-full border border-slate-400 bg-transparent" aria-hidden />
+      Waitlist active
+    </span>
+  );
+}
+
 type ServiceResultCardProps = {
   service: ImmigrationService;
   selected: boolean;
   onSelect: () => void;
+  setHoveredId: (id: string | null) => void;
 };
 
 function ServiceResultCard({
   service,
   selected,
   onSelect,
+  setHoveredId,
 }: ServiceResultCardProps) {
   const tMap = useTranslations("Map");
   const tPrice = useTranslations("Pricing");
   const tDetail = useTranslations("ServiceDetail");
+  const cardRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (selected) {
+      cardRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+  }, [selected]);
 
   return (
-    <Card
-      size="sm"
+    <div
+      ref={cardRef}
+      role="button"
+      tabIndex={0}
+      onClick={onSelect}
+      onMouseEnter={() => setHoveredId(service.id)}
+      onMouseLeave={() => setHoveredId(null)}
+      onFocus={() => setHoveredId(service.id)}
+      onBlur={() => setHoveredId(null)}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onSelect();
+        }
+      }}
       className={cn(
-        "border bg-card/95 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md",
-        selected
-          ? "border-primary/50 ring-2 ring-primary/20"
-          : "border-border/70",
+        "cursor-pointer transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+        selected ? "bg-blue-50/40" : "hover:bg-slate-50/70",
       )}
     >
       <div
@@ -86,7 +127,7 @@ function ServiceResultCard({
         aria-label={`${service.name} location image`}
         style={{ backgroundImage: `url(${service.thumbnail_image_url})` }}
       />
-      <CardHeader className="gap-3">
+      <div className="space-y-3 px-4 py-4 sm:px-5">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 space-y-2">
             <div className="flex flex-wrap gap-2">
@@ -106,27 +147,37 @@ function ServiceResultCard({
                 {tPrice(PRICING_LABEL_TO_KEY[service.pricing])}
               </Badge>
             </div>
-            <CardTitle className="text-base sm:text-lg">{service.name}</CardTitle>
+            <h3 className="text-base font-semibold tracking-tight sm:text-lg">
+              {service.name}
+            </h3>
           </div>
-          <span className="rounded-full border bg-muted px-2 py-1 text-xs font-semibold text-muted-foreground">
+          <span className="rounded-full border border-slate-200 bg-muted px-2 py-1 text-xs font-semibold text-muted-foreground">
             {service.state}
           </span>
         </div>
-      </CardHeader>
 
-      <CardContent className="space-y-4">
+        {service.intakeStatus && (
+          <IntakeIndicator status={service.intakeStatus} />
+        )}
+
         <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
           {service.description ?? tDetail("noDescription")}
         </p>
 
         <div className="space-y-2 text-sm">
-          <div className="flex gap-2 text-muted-foreground">
-            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />
+          <div className="flex gap-x-2 text-muted-foreground">
+            <MapPin
+              className="h-4 w-4 shrink-0 translate-y-[1px] text-primary"
+              aria-hidden
+            />
             <span className="leading-relaxed">{service.address}</span>
           </div>
           {service.phone ? (
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Phone className="h-4 w-4 shrink-0 text-primary" aria-hidden />
+            <div className="flex items-center gap-x-2 text-muted-foreground">
+              <Phone
+                className="h-4 w-4 shrink-0 translate-y-[1px] text-primary"
+                aria-hidden
+              />
               <a
                 className="font-medium text-foreground underline-offset-4 hover:text-primary hover:underline"
                 href={`tel:${service.phone}`}
@@ -135,14 +186,36 @@ function ServiceResultCard({
               </a>
             </div>
           ) : null}
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Languages className="h-4 w-4 shrink-0 text-primary" aria-hidden />
-            <span>{service.services_offered.join(", ")}</span>
-          </div>
+          {service.languages && service.languages.length > 0 ? (
+            <div className="flex items-start gap-x-2 text-muted-foreground">
+              <Globe
+                className="h-4 w-4 shrink-0 translate-y-[1px] text-primary"
+                aria-hidden
+              />
+              <span className="leading-relaxed">
+                {service.languages.join(", ")}
+              </span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-x-2 text-muted-foreground">
+              <Languages
+                className="h-4 w-4 shrink-0 text-primary"
+                aria-hidden
+              />
+              <span>{service.services_offered.join(", ")}</span>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-wrap gap-2 pt-1">
-          <Button type="button" size="sm" onClick={onSelect}>
+          <Button
+            type="button"
+            size="sm"
+            onClick={(event) => {
+              event.stopPropagation();
+              onSelect();
+            }}
+          >
             {tMap("viewDetails")}
           </Button>
           {service.website ? (
@@ -150,6 +223,7 @@ function ServiceResultCard({
               href={service.website}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(event) => event.stopPropagation()}
               className={buttonVariants({
                 variant: "outline",
                 size: "sm",
@@ -161,8 +235,8 @@ function ServiceResultCard({
             </a>
           ) : null}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 
@@ -173,6 +247,7 @@ export function MapDashboard({ services }: Props) {
   const pricingTiers = useMapFiltersStore((s) => s.pricingTiers);
   const selectedServiceId = useMapFiltersStore((s) => s.selectedServiceId);
   const selectService = useMapFiltersStore((s) => s.selectService);
+  const setHoveredId = useMapFiltersStore((s) => s.setHoveredProviderId);
 
   const visible = useMemo(
     () => filterServices(services, { states, categories, pricingTiers }),
@@ -191,15 +266,15 @@ export function MapDashboard({ services }: Props) {
   const empty = visible.length === 0;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col bg-muted/30">
+    <div className="flex min-h-0 flex-1 flex-col bg-slate-50">
       <MapFiltersBar />
-      <div className="mx-auto grid min-h-0 w-full max-w-[1800px] flex-1 gap-0 lg:grid-cols-[minmax(0,1fr)_440px]">
-        <section className="relative min-h-[520px] border-b bg-background lg:h-[calc(100dvh-13.5rem)] lg:border-b-0 lg:border-r">
+      <PageContainer className="grid min-h-0 max-w-none flex-1 gap-0 py-6 md:grid-cols-[minmax(0,1fr)_440px] md:px-6 lg:px-8">
+        <section className="relative min-h-[520px] border-b border-slate-200 bg-background md:h-[760px] md:border-b-0 md:border-r">
           <ImmimapMap services={visible} />
           {empty ? (
             <div className="pointer-events-none absolute inset-0 flex items-start justify-center px-4 pt-16">
               <div
-                className="pointer-events-auto max-w-md rounded-lg border border-border bg-background/95 px-4 py-3 text-center shadow-md backdrop-blur"
+                className="pointer-events-auto max-w-md rounded-lg border border-slate-200 bg-background/95 px-4 py-3 text-center backdrop-blur"
                 role="status"
               >
                 <p className="text-sm font-medium text-foreground">
@@ -213,49 +288,69 @@ export function MapDashboard({ services }: Props) {
           ) : null}
         </section>
 
-        <aside className="flex min-h-0 flex-col bg-background lg:h-[calc(100dvh-13.5rem)]">
-          <div className="border-b px-4 py-4 sm:px-5">
-            <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+        <aside className="flex min-h-0 flex-col bg-white md:h-[760px]">
+          <div className="border-b border-slate-200 px-4 py-4 sm:px-5">
+            <p className="text-sm font-medium uppercase tracking-widest text-gray-500">
               {t("resultsEyebrow")}
             </p>
             <div className="mt-1 flex items-end justify-between gap-3">
               <div>
-                <h2 className="text-xl font-semibold tracking-tight">
+                <h2 className="text-xl font-semibold tracking-tight text-gray-900">
                   {t("resultsTitle")}
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {t("resultsCount", { count: visible.length })}
                 </p>
               </div>
-              <Badge variant="outline" className="hidden shrink-0 sm:inline-flex">
+              <Badge
+                variant="outline"
+                className="hidden shrink-0 border-slate-200 sm:inline-flex"
+              >
                 {t("liveResults")}
               </Badge>
             </div>
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-5">
+          <div className="immimap-results-scroll min-h-0 flex-1 overflow-y-auto">
             {empty ? (
-              <div className="rounded-xl border border-dashed bg-muted/40 p-6 text-center">
+              <div className="px-4 py-6 text-center sm:px-5">
                 <p className="text-sm font-medium">{t("emptyStateTitle")}</p>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {t("emptyStateHint")}
                 </p>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="divide-y divide-gray-200">
                 {visible.map((service) => (
                   <ServiceResultCard
                     key={service.id}
                     service={service}
                     selected={service.id === selectedServiceId}
                     onSelect={() => selectService(service.id)}
+                    setHoveredId={setHoveredId}
                   />
                 ))}
               </div>
             )}
           </div>
+
+          {/* Provenance footer */}
+          <div className="shrink-0 border-t border-slate-100 px-4 py-2.5 sm:px-5">
+            <p className="text-xs text-slate-400">
+              {t("provenanceTimestamp")}{" "}
+              <time className="tabular-nums text-slate-500">
+                {new Date().toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </time>
+              {" · "}
+              {t("provenanceCadence")}
+            </p>
+          </div>
         </aside>
-      </div>
+      </PageContainer>
       <ServiceDetailSheet services={services} />
     </div>
   );

@@ -35,6 +35,7 @@ export type MapFiltersState = {
   categories: ServiceCategory[];
   pricingTiers: PricingTier[];
   selectedServiceId: string | null;
+  hoveredProviderId: string | null;
   setStates: (states: USState[]) => void;
   setCategories: (categories: ServiceCategory[]) => void;
   setPricingTiers: (pricingTiers: PricingTier[]) => void;
@@ -43,6 +44,7 @@ export type MapFiltersState = {
   togglePricingTier: (tier: PricingTier) => void;
   resetFilters: () => void;
   selectService: (id: string | null) => void;
+  setHoveredProviderId: (id: string | null) => void;
 };
 
 export const useMapFiltersStore = create<MapFiltersState>((set) => ({
@@ -50,6 +52,7 @@ export const useMapFiltersStore = create<MapFiltersState>((set) => ({
   categories: [...ALL_CATEGORIES],
   pricingTiers: [...ALL_PRICING],
   selectedServiceId: null,
+  hoveredProviderId: null,
 
   setStates: (states) => set({ states }),
   setCategories: (categories) => set({ categories }),
@@ -87,6 +90,10 @@ export const useMapFiltersStore = create<MapFiltersState>((set) => ({
     }),
 
   selectService: (id) => set({ selectedServiceId: id }),
+  setHoveredProviderId: (id) =>
+    set((state) =>
+      state.hoveredProviderId === id ? state : { hoveredProviderId: id },
+    ),
 }));
 
 export function filterServices(

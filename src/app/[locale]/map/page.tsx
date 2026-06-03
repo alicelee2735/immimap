@@ -1,7 +1,8 @@
 import { setRequestLocale } from "next-intl/server";
 import { getTranslations } from "next-intl/server";
 
-import { HomeHero } from "@/components/home/home-hero";
+import { MapDashboard } from "@/components/map/map-dashboard";
+import { getServices } from "@/lib/services-data";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -11,18 +12,20 @@ export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Metadata" });
   return {
-    title: t("homeTitle"),
-    description: t("homeDescription"),
+    title: t("mapTitle"),
+    description: t("mapDescription"),
   };
 }
 
-export default async function HomePage({ params }: Props) {
+export default async function MapPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
+  const services = getServices();
+
   return (
-    <main className="flex flex-1 flex-col bg-background">
-      <HomeHero />
+    <main className="flex min-h-0 flex-1 flex-col bg-background">
+      <MapDashboard services={services} />
     </main>
   );
 }

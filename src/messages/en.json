@@ -5,15 +5,29 @@
   "Metadata": {
     "homeTitle": "ImmiMap | Map of immigration legal & social services",
     "homeDescription": "Find nonprofits and law firms across the US. Filter by state, service type, and price. Built for transparency and access.",
+    "mapTitle": "Provider map | ImmiMap",
+    "mapDescription": "Explore immigration legal and social service providers on an interactive map.",
     "processingTitle": "USCIS processing times | ImmiMap",
-    "processingDescription": "Estimated USCIS processing times by form and office — structured for future live data."
+    "processingDescription": "Estimated USCIS processing times by form and office — structured for future live data.",
+    "visaBulletinTitle": "Visa Bulletin tracker | ImmiMap",
+    "visaBulletinDescription": "Track final action dates for family and employment-based visa categories. Enter your priority date to see your position in the queue.",
+    "joinTitle": "Join the team | ImmiMap",
+    "joinDescription": "We are recruiting volunteer web developers and social media leads to help scale the ImmiMap platform."
   },
   "Nav": {
     "brand": "ImmiMap",
     "mainNav": "Primary",
+    "home": "Home",
     "map": "Map",
     "processing": "Processing times",
-    "language": "Language"
+    "visaBulletin": "Visa Bulletin",
+    "about": "About Us",
+    "join": "Join Us",
+    "joinTeam": "Volunteer / Join the Team",
+    "joinShort": "Volunteer",
+    "donate": "Donate",
+    "language": "Language",
+    "openMenu": "Open navigation menu"
   },
   "Map": {
     "loadingMap": "Loading map…",
@@ -24,7 +38,9 @@
     "resultsTitle": "Immigration providers",
     "resultsCount": "{count, plural, =0 {No providers} one {# provider} other {# providers}} found",
     "liveResults": "Live filters",
-    "viewDetails": "View details"
+    "viewDetails": "View details",
+    "provenanceTimestamp": "Registry synchronized:",
+    "provenanceCadence": "Auto-sync: Daily at 04:00 UTC"
   },
   "Filters": {
     "title": "Explore providers",
@@ -32,6 +48,10 @@
     "stateLabel": "State",
     "serviceLabel": "Service type",
     "priceLabel": "Price category",
+    "allStates": "CA, TX, FL, NY, NJ",
+    "allServices": "All service types",
+    "allPrices": "All price categories",
+    "selectedCount": "{count} selected",
     "states": {
       "CA": "California",
       "TX": "Texas",
@@ -54,10 +74,13 @@
   "ServiceDetail": {
     "noDescription": "Immigration legal or social services for the community.",
     "clickToCallHint": "Tap to call on supported devices",
+    "close": "Close",
+    "call": "Call",
     "visitWebsite": "Website",
-    "languagesLabel": "Languages offered",
+    "languagesLabel": "Languages",
     "servicesLabel": "Services offered",
-    "verifiedPrice": "Verified price tier (mock data)"
+    "provenanceLabel": "Registry synchronized:",
+    "syncCadence": "Auto-sync: Daily at 04:00 UTC"
   },
   "Pricing": {
     "pro_bono": "Pro bono",
@@ -66,16 +89,20 @@
   },
   "Processing": {
     "pageTitle": "USCIS processing times",
-    "tableCardTitle": "Processing time estimates",
-    "pageLead": "Estimated timelines by form and adjudication location. Replace mock rows with your scraper or USCIS API pipeline.",
+    "tableCardTitle": "Processing velocity index",
+    "pageLead": "Estimated timelines by form and adjudication location, with directional velocity tracking. Compare movement across service centers and identify which forms are accelerating or stalling.",
+    "velocityIndexLead": "Month-over-month delta tracking. Green = improving, amber = regressing, dot = no change.",
     "lastUpdated": "Last updated",
     "columns": {
       "form": "Form type",
       "office": "Field office / service center",
       "months": "Est. time (months)"
     },
-    "sourceLine": "Source: Official USCIS Data",
-    "disclaimer": "Figures are illustrative mock data for engineering demos. Always confirm on USCIS systems before advising clients."
+    "statusBadgeCurrent": "Current",
+    "statusBadgeBacklog": "Backlog/Waiting",
+    "priorPeriod": "Prior period: {months} mo",
+    "sourceLine": "Source: U.S. Citizenship and Immigration Services",
+    "disclaimer": "Processing time estimates are derived from official USCIS data and updated on a daily automated sync. Always verify current estimates at uscis.gov before advising clients."
   },
   "NotFound": {
     "code": "404",
@@ -85,7 +112,165 @@
   },
   "Home": {
     "heroEyebrow": "Social impact · Open data · Accessibility-first",
-    "heroTitle": "Navigate immigration services with clarity",
-    "heroSubtitle": "ImmiMap surfaces nonprofits and law firms on an interactive map — with filters you control and processing-time context you can extend to live feeds."
+    "heroTitle": "Navigate Immigration Services with Clarity.",
+    "heroSubtitle": "A visual directory of NGOs and legal aid across the US. Designed for accessibility, powered by open data.",
+    "heroBody": "ImmiMap helps families, advocates, and community organizations find credible immigration support faster. Start with location, service type, and price filters, then compare providers without losing context.",
+    "search": {
+      "allStates": "CA, TX, FL, NY, NJ",
+      "allServices": "All service types",
+      "allPrices": "All price categories",
+      "helper": "Choose filters here, then open the map to explore matching providers.",
+      "clear": "Clear",
+      "selectedCount": "{count} selected"
+    },
+    "getStarted": "Get Started",
+    "howItWorks": {
+      "eyebrow": "How it works",
+      "title": "Three steps from search to support",
+      "description": "The experience is designed to reduce friction for people who need help quickly while still giving advocates enough context to make a confident referral.",
+      "steps": {
+        "location": {
+          "title": "Filter by Location",
+          "description": "Choose a state or region to narrow the provider list to organizations that can realistically serve the person seeking help."
+        },
+        "compare": {
+          "title": "Compare Services",
+          "description": "Review service categories, pricing tiers, contact information, and language availability in one place."
+        },
+        "connect": {
+          "title": "Connect with Help",
+          "description": "Open provider details, call directly on supported devices, or visit the organization website to begin the next step."
+        }
+      }
+    },
+    "features": {
+      "openData": {
+        "title": "Open Data",
+        "description": "Real-time updates from official sources."
+      },
+      "multilingual": {
+        "title": "Multilingual",
+        "description": "Fully accessible in English and Chinese."
+      },
+      "socialImpact": {
+        "title": "Social Impact",
+        "description": "Directly connecting vulnerable communities to verified aid."
+      }
+    },
+    "join": {
+      "eyebrow": "Join the network",
+      "title": "Help keep verified aid visible.",
+      "description": "Support open immigration data, provider verification, and accessible tools for families navigating a complex system."
+    }
+  },
+  "About": {
+    "eyebrow": "About ImmiMap",
+    "title": "Reliable immigration support should be easier to find.",
+    "lead": "ImmiMap is a public-interest directory for immigration legal aid, nonprofit support, and transparent USCIS processing information.",
+    "mission": {
+      "title": "Our Mission",
+      "description": "We help immigrants, families, and advocates locate trustworthy services with less guesswork. The goal is simple: make the first step toward qualified help clearer, faster, and more accessible."
+    },
+    "story": {
+      "title": "Our Story",
+      "description": "The project began as a response to scattered provider lists, outdated contact details, and confusing public data. ImmiMap brings these signals into one focused interface built for real community use."
+    },
+    "transparency": {
+      "title": "Data Transparency",
+      "description": "Provider and processing-time data is modeled so each record can be traced, refreshed, and reviewed. Current demo data is clearly labeled, and the system is ready for verified source pipelines."
+    }
+  },
+  "Join": {
+    "openPositionsEyebrow": "Open positions",
+    "pageTitle": "Join the ImmiMap Team",
+    "pageLead": "We are currently recruiting for two core volunteer positions to help scale our platform. Review the roles below and submit your application.",
+    "roles": {
+      "webDevelopment": {
+        "title": "Web Development",
+        "description": "Help build and maintain our React / Next.js frontend, optimize the map architecture, and ensure the platform remains fast and accessible."
+      },
+      "socialMedia": {
+        "title": "Social Media",
+        "description": "Lead our community outreach. Create technical and editorial content to spread awareness, and engage directly with the immigrant and legal aid communities."
+      }
+    },
+    "applicationProcess": "Application process",
+    "applyCta": "Apply via Google Forms",
+    "contactAfterSubmit": "After submitting your form, please send a direct message to <discord></discord> on Discord or email <email></email> to expedite your review."
+  },
+  "Donate": {
+    "eyebrow": "Donate",
+    "title": "Fund verified immigration support.",
+    "lead": "Your donation helps keep provider data current, accessible, and useful for families and advocates looking for trustworthy help.",
+    "proceeds": "100% of proceeds are redistributed to verified immigration NGOs mapped on this platform.",
+    "checkout": "Donate with Stripe Checkout",
+    "secure": "Secure payment powered by Stripe."
+  },
+  "VisaBulletin": {
+    "eyebrow": "Source: U.S. State Dept. Visa Bulletin",
+    "pageTitle": "Visa Bulletin Tracker",
+    "pageLead": "Track final action dates for family-based and employment-based visa preference categories. Enter your priority date below to see where you stand in the queue.",
+    "dataSubtitle": "Current Data: {month} {year} Visa Bulletin",
+    "currentBulletin": "Showing bulletin for {month} {year}",
+    "timelineSection": "Priority date checker",
+    "gridTitle": "Visa bulletin by category",
+    "gridSubtitle": "{month} {year} bulletin — filtered by country of chargeability",
+    "chartTypeLabel": "Chart type",
+    "chartTypes": {
+      "finalAction": "Final Action Dates",
+      "filing": "Dates for Filing"
+    },
+    "viewingChart": "Viewing: {chart}",
+    "allChargeabilityExceptListed": "All Chargeability Areas Except Those Listed",
+    "allOthersTab": "All Others",
+    "countryFilterLabel": "Country of chargeability",
+    "countries": {
+      "CHINA": "China",
+      "INDIA": "India",
+      "MEXICO": "Mexico",
+      "PHILIPPINES": "Philippines"
+    },
+    "tableTitle": "Final action dates",
+    "categoryLabel": "Visa category",
+    "countryLabel": "Country of chargeability",
+    "priorityDateLabel": "Your priority date",
+    "allChargeability": "All Chargeability Areas",
+    "cutoffLabel": "Final action date",
+    "current": "Current (C)",
+    "currentShort": "Current",
+    "unavailable": "Unavailable (U)",
+    "noData": "No data available",
+    "timelineLabel": "Queue position (2000–2030)",
+    "cutoffMarker": "Current cutoff",
+    "yourDateMarker": "Your date",
+    "enterDatePrompt": "Enter your priority date above to see your position on the timeline.",
+    "statusCurrent": "Your priority date is current ✓",
+    "statusCurrentDetail": "Your priority date for {category} ({country}) has already been reached. You may be eligible to move forward with your visa application.",
+    "statusWaiting": "~{months} months behind the cutoff",
+    "statusWaitingDetail": "The current cutoff is {cutoff}. Your priority date of {userDate} has not yet been reached.",
+    "currentDescription": "All {category} dates are current for {country}. There is no backlog — any priority date is eligible.",
+    "unavailableDescription": "No visas are available for {category} ({country}) this bulletin period.",
+    "statusBadgeCurrent": "Current",
+    "statusBadgeUnavailable": "Unavailable",
+    "statusBadgeBacklog": "Backlog",
+    "columns": {
+      "category": "Category",
+      "country": "Country",
+      "finalActionDate": "Final action date",
+      "status": "Status"
+    },
+    "categories": {
+      "F1":  "Unmarried sons/daughters of U.S. citizens",
+      "F2A": "Spouses & minor children of LPRs",
+      "F2B": "Unmarried sons/daughters (21+) of LPRs",
+      "F3":  "Married sons/daughters of U.S. citizens",
+      "F4":  "Siblings of U.S. citizens",
+      "EB1": "Priority workers",
+      "EB2": "Advanced degree professionals",
+      "EB3": "Skilled workers & professionals",
+      "EB4": "Special immigrants",
+      "EB5": "Immigrant investors"
+    },
+    "disclaimer": "Final action dates are derived from official U.S. State Department Visa Bulletin data. Always confirm current cutoff dates at travel.state.gov before advising clients."
   }
 }

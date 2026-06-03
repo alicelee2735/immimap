@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
+    "@parcel/watcher": "^2.5.6",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-scroll-area": "^1.2.10",
@@ -20,15 +21,15 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "leaflet": "^1.9.4",
-    "leaflet.markercluster": "^1.5.3",
     "lucide-react": "^1.7.0",
     "next": "16.2.2",
     "next-intl": "^4.9.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-leaflet": "^5.0.0",
-    "react-leaflet-markercluster": "^5.0.0-rc.0",
+    "react-leaflet-cluster": "^4.1.3",
     "shadcn": "^4.1.2",
+    "stripe": "^22.1.1",
     "tailwind-merge": "^3.5.0",
     "tw-animate-css": "^1.4.0",
     "zustand": "^5.0.12"
@@ -36,6 +37,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/leaflet": "^1.9.21",
+    "@types/leaflet.markercluster": "^1.5.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

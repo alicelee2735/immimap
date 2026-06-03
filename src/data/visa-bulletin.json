@@ -1,0 +1,457 @@
+{
+  "last_updated_iso": "2026-06-01T00:00:00Z",
+  "bulletin_month": 6,
+  "bulletin_year": 2026,
+  "entries": [
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F1",
+      "country": "All Chargeability",
+      "final_action_date": "2019-02-15",
+      "filing_date": "2019-08-15",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F1",
+      "country": "CHINA",
+      "final_action_date": "2015-12-08",
+      "filing_date": "2016-06-08",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F1",
+      "country": "INDIA",
+      "final_action_date": "2013-01-15",
+      "filing_date": "2013-07-15",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F1",
+      "country": "MEXICO",
+      "final_action_date": "2001-03-01",
+      "filing_date": "2001-09-01",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F1",
+      "country": "PHILIPPINES",
+      "final_action_date": "2011-05-15",
+      "filing_date": "2011-11-15",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F2A",
+      "country": "All Chargeability",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F2A",
+      "country": "CHINA",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F2A",
+      "country": "INDIA",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F2A",
+      "country": "MEXICO",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F2A",
+      "country": "PHILIPPINES",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F2B",
+      "country": "All Chargeability",
+      "final_action_date": "2017-10-08",
+      "filing_date": "2018-04-08",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F2B",
+      "country": "CHINA",
+      "final_action_date": "2017-10-08",
+      "filing_date": "2018-04-08",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F2B",
+      "country": "INDIA",
+      "final_action_date": "2017-10-08",
+      "filing_date": "2018-04-08",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F2B",
+      "country": "MEXICO",
+      "final_action_date": "2005-08-22",
+      "filing_date": "2006-02-22",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F2B",
+      "country": "PHILIPPINES",
+      "final_action_date": "2011-12-15",
+      "filing_date": "2012-06-15",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F3",
+      "country": "All Chargeability",
+      "final_action_date": "2011-01-15",
+      "filing_date": "2011-07-15",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F3",
+      "country": "CHINA",
+      "final_action_date": "2011-01-15",
+      "filing_date": "2011-07-15",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F3",
+      "country": "INDIA",
+      "final_action_date": "2011-01-15",
+      "filing_date": "2011-07-15",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F3",
+      "country": "MEXICO",
+      "final_action_date": "2001-07-22",
+      "filing_date": "2002-01-22",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F3",
+      "country": "PHILIPPINES",
+      "final_action_date": "2001-07-08",
+      "filing_date": "2002-01-08",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F4",
+      "country": "All Chargeability",
+      "final_action_date": "2006-11-01",
+      "filing_date": "2007-05-01",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F4",
+      "country": "CHINA",
+      "final_action_date": "2006-11-01",
+      "filing_date": "2007-05-01",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F4",
+      "country": "INDIA",
+      "final_action_date": "2003-08-01",
+      "filing_date": "2004-02-01",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F4",
+      "country": "MEXICO",
+      "final_action_date": "2001-06-22",
+      "filing_date": "2001-12-22",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "F4",
+      "country": "PHILIPPINES",
+      "final_action_date": "1997-02-08",
+      "filing_date": "1997-08-08",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB1",
+      "country": "All Chargeability",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB1",
+      "country": "CHINA",
+      "final_action_date": "2022-12-01",
+      "filing_date": "2023-06-01",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB1",
+      "country": "INDIA",
+      "final_action_date": "2022-02-01",
+      "filing_date": "2022-08-01",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB1",
+      "country": "MEXICO",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB1",
+      "country": "PHILIPPINES",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB2",
+      "country": "All Chargeability",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB2",
+      "country": "CHINA",
+      "final_action_date": "2020-06-01",
+      "filing_date": "2020-12-01",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB2",
+      "country": "INDIA",
+      "final_action_date": "2012-07-08",
+      "filing_date": "2013-01-08",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB2",
+      "country": "MEXICO",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB2",
+      "country": "PHILIPPINES",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB3",
+      "country": "All Chargeability",
+      "final_action_date": "2023-01-01",
+      "filing_date": "2023-07-01",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB3",
+      "country": "CHINA",
+      "final_action_date": "2020-04-22",
+      "filing_date": "2020-10-22",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB3",
+      "country": "INDIA",
+      "final_action_date": "2012-09-01",
+      "filing_date": "2013-03-01",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB3",
+      "country": "MEXICO",
+      "final_action_date": "2023-01-01",
+      "filing_date": "2023-07-01",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB3",
+      "country": "PHILIPPINES",
+      "final_action_date": "2023-01-01",
+      "filing_date": "2023-07-01",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB4",
+      "country": "All Chargeability",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB4",
+      "country": "CHINA",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB4",
+      "country": "INDIA",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB4",
+      "country": "MEXICO",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB4",
+      "country": "PHILIPPINES",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB5",
+      "country": "All Chargeability",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB5",
+      "country": "CHINA",
+      "final_action_date": "2017-01-01",
+      "filing_date": "2017-07-01",
+      "status": "Backlog"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB5",
+      "country": "INDIA",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB5",
+      "country": "MEXICO",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    },
+    {
+      "month": 6,
+      "year": 2026,
+      "category": "EB5",
+      "country": "PHILIPPINES",
+      "final_action_date": "C",
+      "filing_date": "C",
+      "status": "Current"
+    }
+  ]
+}

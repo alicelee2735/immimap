@@ -49,13 +49,12 @@
 }
 
 :root {
-  /* Trust Blue + Clean White — ImmiMap brand */
-  --background: oklch(0.995 0.005 250);
-  --foreground: oklch(0.22 0.03 250);
+  --background: #fafafa;
+  --foreground: #111827;
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.22 0.03 250);
+  --card-foreground: #111827;
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.22 0.03 250);
+  --popover-foreground: #111827;
   --primary: oklch(0.44 0.14 252);
   --primary-foreground: oklch(0.99 0.01 252);
   --secondary: oklch(0.97 0 0);
@@ -133,4 +132,87 @@
 /* Leaflet map inherits app font; cluster icons keep OSM attribution readable */
 .leaflet-container {
   font-family: inherit;
+}
+
+.immimap-leaflet {
+  overflow: hidden;
+  touch-action: none;
+}
+
+.immimap-marker-icon {
+  background: transparent;
+  border: 0;
+}
+
+.immimap-pin-graphic {
+  color: #475569;
+  filter: drop-shadow(0 3px 6px rgba(15, 23, 42, 0.3));
+  height: 42px;
+  transform: scale(1);
+  transform-origin: 50% 100%;
+  transition:
+    color 0.2s ease-in-out,
+    filter 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
+  width: 32px;
+  will-change: transform, filter;
+}
+
+.immimap-marker-highlighted .immimap-pin-graphic {
+  color: #2563eb;
+  filter: drop-shadow(0 0 15px rgba(37, 99, 235, 0.4));
+  transform: scale(1.5);
+}
+
+.immimap-cluster-icon {
+  align-items: center;
+  aspect-ratio: 1 / 1;
+  background: #ffffff;
+  border: 3px solid #2563eb;
+  border-radius: 50%;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.16);
+  color: #2563eb;
+  display: flex;
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  height: 44px;
+  justify-content: center;
+  width: 44px;
+}
+
+.immimap-cluster-icon span {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  line-height: 1;
+  padding-top: 1.5px;
+  text-align: center;
+  width: 100%;
+}
+
+.immimap-results-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.immimap-results-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.immimap-results-scroll::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 10px;
+}
+
+.marker-cluster-small,
+.marker-cluster-medium,
+.marker-cluster-large {
+  background: transparent;
+}
+
+.marker-cluster-small div,
+.marker-cluster-medium div,
+.marker-cluster-large div {
+  background: transparent;
 }

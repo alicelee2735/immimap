@@ -5,15 +5,29 @@
   "Metadata": {
     "homeTitle": "ImmiMap | 美国移民法律与社会服务地图",
     "homeDescription": "在全美查找非营利机构与律所。按州、服务类型与费用筛选。为透明与可及性而设计。",
+    "mapTitle": "服务机构地图 | ImmiMap",
+    "mapDescription": "通过交互式地图查找移民法律与社会服务机构。",
     "processingTitle": "USCIS 审理时间 | ImmiMap",
-    "processingDescription": "按表格与审理地点估算的 USCIS 处理时长——数据结构便于接入实时数据。"
+    "processingDescription": "按表格与审理地点估算的 USCIS 处理时长——数据结构便于接入实时数据。",
+    "visaBulletinTitle": "签证公告追踪 | ImmiMap",
+    "visaBulletinDescription": "追踪家庭类与职业类移民签证优先日期。输入您的优先日期，了解您在排队中的位置。",
+    "joinTitle": "加入团队 | ImmiMap",
+    "joinDescription": "我们正在招募志愿开发者和社交媒体负责人，共同推动 ImmiMap 平台的成长。"
   },
   "Nav": {
     "brand": "ImmiMap",
     "mainNav": "主导航",
+    "home": "首页",
     "map": "地图",
     "processing": "审理时间",
-    "language": "语言"
+    "visaBulletin": "签证公告",
+    "about": "关于我们",
+    "join": "加入我们",
+    "joinTeam": "志愿者 / 加入团队",
+    "joinShort": "志愿者",
+    "donate": "捐赠",
+    "language": "语言",
+    "openMenu": "打开导航菜单"
   },
   "Map": {
     "loadingMap": "地图加载中…",
@@ -24,7 +38,9 @@
     "resultsTitle": "移民服务机构",
     "resultsCount": "找到 {count} 家服务机构",
     "liveResults": "实时筛选",
-    "viewDetails": "查看详情"
+    "viewDetails": "查看详情",
+    "provenanceTimestamp": "数据库同步于：",
+    "provenanceCadence": "自动同步：每日 04:00 UTC"
   },
   "Filters": {
     "title": "查找服务机构",
@@ -32,6 +48,10 @@
     "stateLabel": "州",
     "serviceLabel": "服务类型",
     "priceLabel": "费用类别",
+    "allStates": "CA、TX、FL、NY、NJ",
+    "allServices": "所有服务类型",
+    "allPrices": "所有费用类别",
+    "selectedCount": "已选 {count} 项",
     "states": {
       "CA": "加利福尼亚",
       "TX": "德克萨斯",
@@ -54,10 +74,13 @@
   "ServiceDetail": {
     "noDescription": "面向社区的移民法律或社会服务。",
     "clickToCallHint": "在支持的设备上点击即可拨号",
+    "close": "关闭",
+    "call": "拨打电话",
     "visitWebsite": "官方网站",
-    "languagesLabel": "可提供语言",
+    "languagesLabel": "服务语言",
     "servicesLabel": "服务项目",
-    "verifiedPrice": "已核验费用档位（演示数据）"
+    "provenanceLabel": "数据库同步于：",
+    "syncCadence": "自动同步：每日 04:00 UTC"
   },
   "Pricing": {
     "pro_bono": "公益代理",
@@ -66,16 +89,20 @@
   },
   "Processing": {
     "pageTitle": "USCIS 审理时间",
-    "tableCardTitle": "审理时间估算",
-    "pageLead": "按表格与审理地点给出的估算周期。以下行项目前为演示数据，可替换为爬虫或官方接口流水线。",
+    "tableCardTitle": "审理速度指数",
+    "pageLead": "按表格与审理地点给出的估算周期，并附逐月速度追踪。可比较各服务中心的进展情况，识别哪些表格在提速或停滞。",
+    "velocityIndexLead": "逐月变化追踪：绿色 = 提速，琥珀色 = 放缓，点号 = 无变化。",
     "lastUpdated": "最后更新",
     "columns": {
       "form": "表格类型",
       "office": "办事处 / 服务中心",
       "months": "预计时长（月）"
     },
-    "sourceLine": "来源：USCIS 官方数据",
-    "disclaimer": "以下为工程演示用的示例数据，向申请人提供建议前请务必以 USCIS 官方系统为准。"
+    "statusBadgeCurrent": "正常",
+    "statusBadgeBacklog": "积压/等待",
+    "priorPeriod": "上期：{months} 个月",
+    "sourceLine": "来源：美国公民及移民服务局",
+    "disclaimer": "审理时间估算来源于 USCIS 官方数据，每日自动同步。向申请人提供建议前请务必在 uscis.gov 核实最新时间。"
   },
   "NotFound": {
     "code": "404",
@@ -85,7 +112,166 @@
   },
   "Home": {
     "heroEyebrow": "社会影响力 · 开放数据 · 无障碍优先",
-    "heroTitle": "更清晰地找到移民服务资源",
-    "heroSubtitle": "ImmiMap 在交互式地图上呈现非营利机构与律所——你可自行筛选，并可扩展审理时间等实时数据。"
+    "heroTitle": "更清晰地找到移民服务资源。",
+    "heroSubtitle": "覆盖全美 NGO 与法律援助的可视化目录。为无障碍而设计，由开放数据驱动。",
+    "heroBody": "ImmiMap 帮助家庭、倡导者和社区组织更快找到可信赖的移民支持资源。你可以先按地点、服务类型和费用筛选，再在不丢失地图上下文的情况下比较服务机构。",
+    "search": {
+      "allStates": "CA, TX, FL, NY, NJ",
+      "allServices": "所有服务类型",
+      "allPrices": "所有费用类别",
+      "helper": "在这里选择筛选条件，然后打开地图查看匹配机构。",
+      "clear": "清除",
+      "selectedCount": "已选 {count} 项"
+    },
+    "getStarted": "开始使用",
+    "howItWorks": {
+      "eyebrow": "使用方式",
+      "title": "从搜索到获得支持的三步",
+      "description": "这一体验旨在减少寻求帮助时的阻力，同时为倡导者提供足够信息，以便做出更可靠的转介。",
+      "steps": {
+        "location": {
+          "title": "按地点筛选",
+          "description": "选择州或地区，将列表缩小到真正有可能服务申请人的机构。"
+        },
+        "compare": {
+          "title": "比较服务",
+          "description": "在同一界面查看服务类别、费用档位、联系方式和语言支持。"
+        },
+        "connect": {
+          "title": "联系援助",
+          "description": "打开机构详情，在支持的设备上直接拨号，或访问机构网站开始下一步。"
+        }
+      }
+    },
+    "features": {
+      "openData": {
+        "title": "开放数据",
+        "description": "来自官方来源的实时更新。"
+      },
+      "multilingual": {
+        "title": "多语言",
+        "description": "完整支持英文和中文访问。"
+      },
+      "socialImpact": {
+        "title": "社会影响",
+        "description": "将弱势社区直接连接到经核验的援助资源。"
+      }
+    },
+    "join": {
+      "eyebrow": "加入网络",
+      "title": "帮助更多人看见可信援助。",
+      "description": "支持开放移民数据、机构核验，以及面向移民家庭的无障碍工具。"
+    }
+  },
+  "About": {
+    "eyebrow": "关于 ImmiMap",
+    "title": "可靠的移民支持资源应该更容易被找到。",
+    "lead": "ImmiMap 是一个公共利益导向的目录，聚合移民法律援助、非营利支持和透明的 USCIS 审理信息。",
+    "mission": {
+      "title": "我们的使命",
+      "description": "我们帮助移民、家庭和倡导者减少猜测，更快找到可信赖的服务。目标很简单：让获得专业帮助的第一步更清晰、更快速、更可及。"
+    },
+    "story": {
+      "title": "我们的故事",
+      "description": "这个项目源于分散的机构名单、过期的联系方式和难以理解的公共数据。ImmiMap 将这些信号整合到一个专注于社区实际使用的界面中。"
+    },
+    "transparency": {
+      "title": "数据透明",
+      "description": "机构与审理时间数据采用可追溯、可更新、可审核的结构。当前演示数据会清楚标注，系统也已为接入经核验的数据流水线做好准备。"
+    }
+  },
+  "Join": {
+    "openPositionsEyebrow": "开放职位",
+    "pageTitle": "加入 ImmiMap 团队",
+    "pageLead": "我们目前正在招募两个核心志愿者岗位，以助力平台扩展。请查看下方职位说明并提交申请。",
+    "roles": {
+      "webDevelopment": {
+        "title": "网页开发",
+        "description": "协助构建和维护 React / Next.js 前端，优化地图架构，确保平台保持快速且无障碍。"
+      },
+      "socialMedia": {
+        "title": "社交媒体",
+        "description": "负责社区外联。创作技术与编辑内容以扩大认知度，并与移民及法律援助社区直接互动。"
+      }
+    },
+    "applicationProcess": "申请流程",
+    "applyCta": "通过 Google 表单申请",
+    "contactAfterSubmit": "提交表单后，请通过 Discord 私信 <discord></discord>，或发送邮件至 <email></email>，以便加快审核进度。"
+  },
+  "Donate": {
+    "eyebrow": "捐赠",
+    "title": "支持经核验的移民援助。",
+    "lead": "你的捐赠将帮助我们持续维护服务机构数据，让家庭和倡导者更容易找到可信赖的帮助。",
+    "proceeds": "100% of proceeds are redistributed to verified immigration NGOs mapped on this platform.",
+    "checkout": "通过 Stripe Checkout 捐赠",
+    "secure": "安全支付由 Stripe 提供。"
+  },
+  "VisaBulletin": {
+    "eyebrow": "来源：美国国务院签证公告",
+    "pageTitle": "签证公告追踪器",
+    "pageLead": "追踪家庭类及职业类移民签证优先日期。在下方输入您的优先日期，查看您在排队中的位置。",
+    "dataSubtitle": "当前数据：{year} 年 {month} 签证公告",
+    "currentBulletin": "当前显示 {year} 年 {month} 签证公告",
+    "timelineSection": "优先日期检查",
+    "gridTitle": "按类别查看签证公告",
+    "gridSubtitle": "{year} 年 {month} 公告 — 按出生国筛选",
+    "chartTypeLabel": "图表类型",
+    "chartTypes": {
+      "finalAction": "最终行动日期",
+      "filing": "递交日期"
+    },
+    "viewingChart": "当前查看：{chart}",
+    "allChargeabilityExceptListed": "除下列国家外的所有出生国",
+    "allOthersTab": "其他国家/地区",
+    "countryFilterLabel": "出生国（签证归属）",
+    "countries": {
+      "CHINA": "中国大陆",
+      "INDIA": "印度",
+      "MEXICO": "墨西哥",
+      "PHILIPPINES": "菲律宾"
+    },
+    "tableTitle": "最终行动日期",
+    "tableSubtitle": "所有类别 — {year} 年 {month} 签证公告",
+    "categoryLabel": "签证类别",
+    "countryLabel": "出生国",
+    "priorityDateLabel": "您的优先日期",
+    "allChargeability": "所有出生国（通用）",
+    "cutoffLabel": "最终行动日期",
+    "current": "当前可用 (C)",
+    "currentShort": "当前可用",
+    "unavailable": "不可用 (U)",
+    "noData": "暂无数据",
+    "timelineLabel": "排队位置（2000–2030）",
+    "cutoffMarker": "当前截止日",
+    "yourDateMarker": "您的日期",
+    "enterDatePrompt": "请在上方输入您的优先日期，以查看您在时间轴上的位置。",
+    "statusCurrent": "您的优先日期已达到当前排期 ✓",
+    "statusCurrentDetail": "您的 {category}（{country}）优先日期已达到当前排期，可以继续申请签证。",
+    "statusWaiting": "距截止日期还有约 {months} 个月",
+    "statusWaitingDetail": "当前截止日期为 {cutoff}。您的优先日期 {userDate} 尚未到达排期。",
+    "currentDescription": "{country} 的所有 {category} 日期均为当前可用，无需排队。",
+    "unavailableDescription": "本期签证公告中，{category}（{country}）暂无可用签证名额。",
+    "statusBadgeCurrent": "可用",
+    "statusBadgeUnavailable": "不可用",
+    "statusBadgeBacklog": "排队中",
+    "columns": {
+      "category": "类别",
+      "country": "出生国",
+      "finalActionDate": "最终行动日期",
+      "status": "状态"
+    },
+    "categories": {
+      "F1":  "美国公民的未婚子女",
+      "F2A": "绿卡持有人的配偶及未成年子女",
+      "F2B": "绿卡持有人的未婚成年子女（21岁以上）",
+      "F3":  "美国公民的已婚子女",
+      "F4":  "美国公民的兄弟姐妹",
+      "EB1": "优先劳工",
+      "EB2": "高学历专业人士",
+      "EB3": "技术工人及专业人士",
+      "EB4": "特殊移民",
+      "EB5": "投资移民"
+    },
+    "disclaimer": "最终行动日期数据来源于美国国务院官方签证公告。向当事人提供建议前，请务必在 travel.state.gov 核实最新截止日期。"
   }
 }
