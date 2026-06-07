@@ -12,7 +12,55 @@
     "visaBulletinTitle": "签证公告追踪 | ImmiMap",
     "visaBulletinDescription": "追踪家庭类与职业类移民签证优先日期。输入您的优先日期，了解您在排队中的位置。",
     "joinTitle": "加入团队 | ImmiMap",
-    "joinDescription": "我们正在招募志愿开发者和社交媒体负责人，共同推动 ImmiMap 平台的成长。"
+    "joinDescription": "我们正在招募志愿开发者和社交媒体负责人，共同推动 ImmiMap 平台的成长。",
+    "verifyTitle": "核验标准 | ImmiMap",
+    "verifyDescription": "了解 ImmiMap 如何审核并标注非营利移民服务机构为「已核验」，以及这些机构如何出现在公开地图上。"
+  },
+  "Verify": {
+    "eyebrow": "信任与质量",
+    "title": "我们如何核验机构",
+    "lead": "「已核验」徽章标识符合 ImmiMap 审核标准的非营利移民服务机构。我们公开这些标准，以便移民家庭与倡导者了解该标识的含义及其局限。",
+    "badgeLabel": "已核验",
+    "badgeTooltip": "该非营利机构提供活跃的移民法律或社会服务，并通过了 ImmiMap 的核验审核。",
+    "learnMore": "了解核验标准",
+    "criteria": {
+      "title": "核验标准",
+      "intro": "机构只有在满足以下全部标准时才会获得「已核验」徽章。律所与私人执业机构单独列出，不符合此徽章的适用范围。",
+      "items": {
+        "nonprofit": {
+          "title": "认可的非营利或法律援助资质",
+          "description": "机构以注册非营利组织、认证法律援助提供者或同等公开认可的移民支持实体运营——而非未受监管的移民顾问或收费诈骗机构。"
+        },
+        "activeServices": {
+          "title": "活跃的移民服务",
+          "description": "机构目前向移民社区提供移民法律代理、案件协助或直接社会服务。已停办的项目、占位信息或非移民类机构不予核验。"
+        },
+        "contactInfo": {
+          "title": "可核实的联系方式",
+          "description": "公开的联系信息——包括地址、电话和网站——为最新状态，且与机构官方渠道或政府登记记录一致。"
+        },
+        "publicRecord": {
+          "title": "与公开记录一致",
+          "description": "机构信息会与权威来源交叉核对，例如 IRS 非营利登记、州律师协会或法律援助目录，以及适用的司法部认可名单。"
+        },
+        "manualReview": {
+          "title": "ImmiMap 人工审核",
+          "description": "每家「已核验」机构在标注前均经 ImmiMap 团队单独审核。仅凭自动化数据不足以完成核验。"
+        }
+      }
+    },
+    "process": {
+      "title": "审核流程",
+      "description": "核验在初次收录时进行，并在定期数据更新时重新检查。若机构不再符合标准，「已核验」徽章将被移除，直至信息更正或重新确认。"
+    },
+    "limitations": {
+      "title": "「已核验」不代表什么",
+      "description": "「已核验」徽章不保证案件结果、律师-客户关系或是否接受新客户。它表示 ImmiMap 在审核时确认了该机构的非营利资质与活跃的移民服务。请直接联系机构确认受理状态、资格与费用。"
+    },
+    "questions": {
+      "title": "对某条信息有疑问？",
+      "description": "若您认为「已核验」标注有误，或某机构已不再符合标准，请发送邮件至 lichoiyin@gmail.com。我们会审核所有善意反馈，并在证据充分时更新信息。"
+    }
   },
   "Nav": {
     "brand": "ImmiMap",
@@ -41,6 +89,15 @@
     "viewDetails": "查看详情",
     "provenanceTimestamp": "数据库同步于：",
     "provenanceCadence": "自动同步：每日 04:00 UTC"
+  },
+  "Search": {
+    "title": "搜索服务机构",
+    "nameLabel": "机构名称",
+    "namePlaceholder": "按名称搜索…",
+    "cityLabel": "城市",
+    "cityPlaceholder": "例如：Los Angeles",
+    "allStates": "所有州",
+    "allCategories": "所有服务类型"
   },
   "Filters": {
     "title": "查找服务机构",
@@ -87,7 +144,18 @@
     "low_cost": "低收费",
     "paid": "付费"
   },
+  "Provenance": {
+    "sourceLine": "数据来源：{source}。",
+    "lastUpdated": "最后更新：{date}。",
+    "viewSource": "查看官方来源",
+    "staleBadge": "警告：数据可能已过期",
+    "maintenanceTitle": "政府数据同步进行中",
+    "maintenanceBody": "暂时无法加载最新官方数据。同步完成前，请使用下方政府官方网站。",
+    "maintenanceOfficialLink": "打开政府官方网站"
+  },
   "Processing": {
+    "loading": "正在加载审理时间…",
+    "officialProcessingLink": "USCIS 审理时间门户",
     "pageTitle": "USCIS 审理时间",
     "tableCardTitle": "审理速度指数",
     "pageLead": "按表格与审理地点给出的估算周期，并附逐月速度追踪。可比较各服务中心的进展情况，识别哪些表格在提速或停滞。",
@@ -207,6 +275,8 @@
     "secure": "安全支付由 Stripe 提供。"
   },
   "VisaBulletin": {
+    "loading": "正在加载签证公告…",
+    "officialBulletinLink": "官方签证公告页面",
     "eyebrow": "来源：美国国务院签证公告",
     "pageTitle": "签证公告追踪器",
     "pageLead": "追踪家庭类及职业类移民签证优先日期。在下方输入您的优先日期，查看您在排队中的位置。",

@@ -29,6 +29,8 @@ export type IntakeStatus = "OPEN" | "LIMITED" | "WAITLISTED";
 
 export type ImmigrationService = {
   id: string;
+  /** Supabase organizations.id when loaded from the database. */
+  dbId?: string;
   name: string;
   type: ProviderType;
   state: USState;

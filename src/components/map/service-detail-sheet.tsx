@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink, Globe, Info, MapPin, Phone, ShieldCheck, X } from "lucide-react";
+import { ExternalLink, Globe, Info, MapPin, Phone, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +13,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { VerifiedBadge } from "@/components/verification/verified-badge";
 import { formatDisplayPhone } from "@/lib/phone";
 import { useMapFiltersStore } from "@/stores/map-filters";
 import type {
@@ -67,27 +68,6 @@ function IntakeStatusBlock({ status }: { status: IntakeStatus }) {
         Intake paused / waitlist active
       </span>
     </div>
-  );
-}
-
-// ── Verification tooltip ──────────────────────────────────────────────────────
-
-function VerifiedBadge({ type }: { type: ImmigrationService["type"] }) {
-  if (type !== "NGO") return null;
-  return (
-    <span className="group relative inline-flex items-center gap-1">
-      <ShieldCheck className="h-3.5 w-3.5 text-blue-500" aria-hidden />
-      <span className="text-xs font-medium text-blue-600">Verified</span>
-      <span
-        role="tooltip"
-        className="pointer-events-none absolute bottom-full left-0 z-50 mb-2 w-72 rounded-md border border-slate-200 bg-white px-3 py-2.5 text-xs leading-5 text-slate-700 shadow-md opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
-      >
-        <strong className="mb-1 block text-slate-900">Verified Organization</strong>
-        This resource maintains active accredited legal status or direct
-        non-profit standing and has been manually cataloged by the system
-        registry.
-      </span>
-    </span>
   );
 }
 

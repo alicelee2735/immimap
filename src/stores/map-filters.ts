@@ -111,3 +111,12 @@ export function filterServices(
       ),
   );
 }
+
+export function filterServicesByPricing(
+  services: ImmigrationService[],
+  pricingTiers: PricingTier[],
+): ImmigrationService[] {
+  return services.filter((service) =>
+    pricingTiers.some((tier) => service.pricing === PRICING_TO_LABEL[tier]),
+  );
+}

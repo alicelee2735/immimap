@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:seed": "node scripts/seed-organizations.mjs",
+    "db:generate-expansion": "node scripts/generate-expansion-orgs.mjs",
+    "setup": "node scripts/setup.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
@@ -18,6 +21,7 @@
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.4",
     "@radix-ui/react-tabs": "^1.1.13",
+    "@supabase/supabase-js": "^2.107.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "leaflet": "^1.9.4",
@@ -32,6 +36,8 @@
     "stripe": "^22.1.1",
     "tailwind-merge": "^3.5.0",
     "tw-animate-css": "^1.4.0",
+    "ws": "^8.21.0",
+    "zod": "^4.4.3",
     "zustand": "^5.0.12"
   },
   "devDependencies": {
@@ -43,6 +49,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.2",
+    "pg": "^8.21.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

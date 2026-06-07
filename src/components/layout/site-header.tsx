@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Menu } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
+import { TrackedNavLink } from "@/components/analytics/tracked-nav-link";
 import { PageContainer } from "@/components/layout/page-container";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Link, usePathname } from "@/i18n/navigation";
@@ -45,26 +46,30 @@ export function SiteHeader() {
           aria-label={t("mainNav")}
         >
           {navItems.map((item) => (
-            <Link
+            <TrackedNavLink
               key={item.href}
               href={item.href}
+              navLabel={item.label}
+              navSurface="desktop"
               className={cn(
                 "text-sm font-medium leading-none tracking-[-0.01em] text-slate-500 transition-colors duration-150 hover:text-slate-950",
                 pathname === item.href && "text-[#2563eb]",
               )}
             >
               {item.label}
-            </Link>
+            </TrackedNavLink>
           ))}
-          <Link
+          <TrackedNavLink
             href="/donate"
+            navLabel={t("donate")}
+            navSurface="desktop"
             className={cn(
               "text-sm font-medium leading-none tracking-[-0.01em] text-slate-500 transition-colors duration-150 hover:text-slate-950",
               donateActive && "text-[#2563eb]",
             )}
           >
             {t("donate")}
-          </Link>
+          </TrackedNavLink>
         </nav>
 
         <div className="flex shrink-0 items-center justify-end gap-x-8">
@@ -121,9 +126,11 @@ export function SiteHeader() {
 
           <nav className="flex flex-col items-start gap-5" aria-label={t("mainNav")}>
             {navItems.map((item) => (
-              <Link
+              <TrackedNavLink
                 key={item.href}
                 href={item.href}
+                navLabel={item.label}
+                navSurface="mobile"
                 onClick={() => setMobileMenuOpen(false)}
                 className={cn(
                   "text-lg font-medium tracking-[-0.01em] text-slate-500 transition-colors duration-150 hover:text-slate-950",
@@ -131,13 +138,15 @@ export function SiteHeader() {
                 )}
               >
                 {item.label}
-              </Link>
+              </TrackedNavLink>
             ))}
           </nav>
 
           <div className="mt-10 flex flex-col items-start gap-5 pt-6">
-            <Link
+            <TrackedNavLink
               href="/donate"
+              navLabel={t("donate")}
+              navSurface="mobile"
               onClick={() => setMobileMenuOpen(false)}
               className={cn(
                 "text-base font-medium text-slate-500 transition-colors duration-150 hover:text-slate-950",
@@ -145,7 +154,7 @@ export function SiteHeader() {
               )}
             >
               {t("donate")}
-            </Link>
+            </TrackedNavLink>
             <div
               className="flex items-center gap-4"
               role="group"

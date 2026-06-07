@@ -2,7 +2,6 @@ import { setRequestLocale } from "next-intl/server";
 import { getTranslations } from "next-intl/server";
 
 import { MapDashboard } from "@/components/map/map-dashboard";
-import { getServices } from "@/lib/services-data";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -21,11 +20,9 @@ export default async function MapPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const services = getServices();
-
   return (
     <main className="flex min-h-0 flex-1 flex-col bg-background">
-      <MapDashboard services={services} />
+      <MapDashboard />
     </main>
   );
 }

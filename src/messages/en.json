@@ -12,7 +12,55 @@
     "visaBulletinTitle": "Visa Bulletin tracker | ImmiMap",
     "visaBulletinDescription": "Track final action dates for family and employment-based visa categories. Enter your priority date to see your position in the queue.",
     "joinTitle": "Join the team | ImmiMap",
-    "joinDescription": "We are recruiting volunteer web developers and social media leads to help scale the ImmiMap platform."
+    "joinDescription": "We are recruiting volunteer web developers and social media leads to help scale the ImmiMap platform.",
+    "verifyTitle": "How we verify | ImmiMap",
+    "verifyDescription": "Learn how ImmiMap evaluates and labels nonprofit immigration organizations as verified before they appear on the public map."
+  },
+  "Verify": {
+    "eyebrow": "Trust & quality",
+    "title": "How we verify organizations",
+    "lead": "The Verified badge marks nonprofit immigration organizations that meet ImmiMap's review standards. We publish these criteria so families and advocates can understand what the label means — and what it does not.",
+    "badgeLabel": "Verified",
+    "badgeTooltip": "This nonprofit provides active immigration legal or social services and has passed ImmiMap's verification review.",
+    "learnMore": "How we verify",
+    "criteria": {
+      "title": "Verification criteria",
+      "intro": "An organization receives the Verified badge only when it meets all of the following standards. Law firms and private practices are listed separately and are not eligible for this badge.",
+      "items": {
+        "nonprofit": {
+          "title": "Recognized nonprofit or legal aid status",
+          "description": "The organization operates as a registered nonprofit, accredited legal aid provider, or equivalent publicly recognized immigration support entity — not as an unregulated immigration consultant or fee-for-service scam operation."
+        },
+        "activeServices": {
+          "title": "Active immigration services",
+          "description": "The organization currently offers immigration legal representation, case assistance, or direct social services to immigrant communities. Defunct programs, placeholder listings, or organizations outside immigration work are not verified."
+        },
+        "contactInfo": {
+          "title": "Confirmable contact details",
+          "description": "Public contact information — including address, phone number, and website — is current and matches what appears on the organization's official channels or government registries."
+        },
+        "publicRecord": {
+          "title": "Alignment with public records",
+          "description": "Listing details are cross-checked against authoritative sources such as IRS nonprofit records, state bar or legal aid directories, and Department of Justice recognition lists where applicable."
+        },
+        "manualReview": {
+          "title": "Manual ImmiMap review",
+          "description": "Every Verified organization is individually reviewed by the ImmiMap team before the badge is applied. Automated data alone is not sufficient for verification."
+        }
+      }
+    },
+    "process": {
+      "title": "Our review process",
+      "description": "Verification is performed during initial cataloging and re-checked during regular data refreshes. If an organization no longer meets these standards, the Verified badge is removed until the listing is corrected or reconfirmed."
+    },
+    "limitations": {
+      "title": "What Verified does not mean",
+      "description": "A Verified badge is not a guarantee of case outcome, attorney-client relationship, or availability for new clients. It indicates that ImmiMap has confirmed the organization's nonprofit standing and active immigration services at the time of review. Always contact the organization directly to confirm intake status, eligibility, and fees."
+    },
+    "questions": {
+      "title": "Questions about a listing?",
+      "description": "If you believe a Verified badge was applied in error or an organization no longer meets these standards, contact us at lichoiyin@gmail.com. We review all good-faith reports and update listings when evidence supports a change."
+    }
   },
   "Nav": {
     "brand": "ImmiMap",
@@ -41,6 +89,15 @@
     "viewDetails": "View details",
     "provenanceTimestamp": "Registry synchronized:",
     "provenanceCadence": "Auto-sync: Daily at 04:00 UTC"
+  },
+  "Search": {
+    "title": "Search providers",
+    "nameLabel": "Organization name",
+    "namePlaceholder": "Search by name…",
+    "cityLabel": "City",
+    "cityPlaceholder": "e.g. Los Angeles",
+    "allStates": "All states",
+    "allCategories": "All service types"
   },
   "Filters": {
     "title": "Explore providers",
@@ -87,7 +144,18 @@
     "low_cost": "Low-cost",
     "paid": "Paid"
   },
+  "Provenance": {
+    "sourceLine": "Data sourced from {source}.",
+    "lastUpdated": "Last updated: {date}.",
+    "viewSource": "View official source",
+    "staleBadge": "Warning: Data may be outdated",
+    "maintenanceTitle": "Government data sync in progress",
+    "maintenanceBody": "We could not load the latest official dataset right now. Please use the government source below while synchronization completes.",
+    "maintenanceOfficialLink": "Open official government site"
+  },
   "Processing": {
+    "loading": "Loading processing times…",
+    "officialProcessingLink": "USCIS processing times portal",
     "pageTitle": "USCIS processing times",
     "tableCardTitle": "Processing velocity index",
     "pageLead": "Estimated timelines by form and adjudication location, with directional velocity tracking. Compare movement across service centers and identify which forms are accelerating or stalling.",
@@ -207,6 +275,8 @@
     "secure": "Secure payment powered by Stripe."
   },
   "VisaBulletin": {
+    "loading": "Loading visa bulletin…",
+    "officialBulletinLink": "Official Visa Bulletin page",
     "eyebrow": "Source: U.S. State Dept. Visa Bulletin",
     "pageTitle": "Visa Bulletin Tracker",
     "pageLead": "Track final action dates for family-based and employment-based visa preference categories. Enter your priority date below to see where you stand in the queue.",

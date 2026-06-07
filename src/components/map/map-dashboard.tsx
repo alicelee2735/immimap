@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
-import { ExternalLink, Globe, Languages, MapPin, Phone } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ExternalLink, Globe, Languages, Loader2, MapPin, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
@@ -10,19 +10,21 @@ import { PageContainer } from "@/components/layout/page-container";
 import { ImmimapMap } from "@/components/map/immimap-map";
 import { MapFiltersBar } from "@/components/map/map-filters-bar";
 import { ServiceDetailSheet } from "@/components/map/service-detail-sheet";
+import {
+  DEFAULT_SEARCH_VALUES,
+  OrganizationSearch,
+  type OrganizationSearchValues,
+} from "@/components/search/organization-search";
+import { useOrganizations } from "@/hooks/use-organizations";
 import { cn } from "@/lib/utils";
 import { formatDisplayPhone } from "@/lib/phone";
-import { filterServices, useMapFiltersStore } from "@/stores/map-filters";
+import { filterServicesByPricing, useMapFiltersStore } from "@/stores/map-filters";
 import type {
   ImmigrationService,
   IntakeStatus,
   PricingLabel,
   ServiceOffering,
 } from "@/types/immimap";
-
-type Props = {
-  services: ImmigrationService[];
-};
 
 function pricingVariant(
   pricing: PricingLabel,
@@ -240,18 +242,20 @@ function ServiceResultCard({
   );
 }
 
-export function MapDashboard({ services }: Props) {
+export function MapDashboard() {
   const t = useTranslations("Map");
-  const states = useMapFiltersStore((s) => s.states);
-  const categories = useMapFiltersStore((s) => s.categories);
+  const [search, setSearch] = useState<OrganizationSearchValues>(
+    DEFAULT_SEARCH_VALUES,
+  );
+  const { services, loading, error, usingFallback } = useOrganizations(search);
   const pricingTiers = useMapFiltersStore((s) => s.pricingTiers);
   const selectedServiceId = useMapFiltersStore((s) => s.selectedServiceId);
   const selectService = useMapFiltersStore((s) => s.selectService);
   const setHoveredId = useMapFiltersStore((s) => s.setHoveredProviderId);
 
   const visible = useMemo(
-    () => filterServices(services, { states, categories, pricingTiers }),
-    [services, states, categories, pricingTiers],
+    () => filterServicesByPricing(services, pricingTiers),
+    [services, pricingTiers],
   );
 
   useEffect(() => {
@@ -267,10 +271,29 @@ export function MapDashboard({ services }: Props) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-slate-50">
-      <MapFiltersBar />
+      <OrganizationSearch values={search} onChange={setSearch} />
+      <MapFiltersBar pricingOnly />
       <PageContainer className="grid min-h-0 max-w-none flex-1 gap-0 py-6 md:grid-cols-[minmax(0,1fr)_440px] md:px-6 lg:px-8">
         <section className="relative min-h-[520px] border-b border-slate-200 bg-background md:h-[760px] md:border-b-0 md:border-r">
-          <ImmimapMap services={visible} />
+          {loading ? (
+            <div
+              className="flex h-full min-h-[420px] w-full flex-col items-center justify-center gap-3 bg-muted/30 text-muted-foreground"
+              role="status"
+              aria-live="polite"
+            >
+              <Loader2 className="h-8 w-8 animate-spin text-primary" aria-hidden />
+              <p className="text-sm font-medium">{t("loadingMap")}</p>
+            </div>
+          ) : (
+            <ImmimapMap services={visible} />
+          )}
+          {error && usingFallback ? (
+            <div className="pointer-events-none absolute inset-x-0 top-4 flex justify-center px-4">
+              <p className="pointer-events-auto rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                {error} Showing cached provider data.
+              </p>
+            </div>
+          ) : null}
           {empty ? (
             <div className="pointer-events-none absolute inset-0 flex items-start justify-center px-4 pt-16">
               <div
@@ -312,7 +335,20 @@ export function MapDashboard({ services }: Props) {
           </div>
 
           <div className="immimap-results-scroll min-h-0 flex-1 overflow-y-auto">
-            {empty ? (
+            {loading ? (
+              <div className="flex h-32 items-center justify-center text-sm text-muted-foreground">
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {t("loadingMap")}
+              </div>
+            ) : error ? (
+              <div className="mx-4 mt-4 rounded-md border border-red-100 bg-red-50 p-4 text-sm text-red-700">
+                <p className="font-medium">Sync issue</p>
+                <p className="mt-1">
+                  We couldn&apos;t refresh the latest providers. Showing cached
+                  data.
+                </p>
+              </div>
+            ) : empty ? (
               <div className="px-4 py-6 text-center sm:px-5">
                 <p className="text-sm font-medium">{t("emptyStateTitle")}</p>
                 <p className="mt-1 text-sm text-muted-foreground">

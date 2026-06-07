@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Inter, Noto_Sans_SC } from "next/font/google";
 import { clsx } from "clsx";
 
+import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 import { SiteHeader } from "@/components/layout/site-header";
 import { routing } from "@/i18n/routing";
 
@@ -70,6 +71,7 @@ export default async function LocaleLayout({
         suppressHydrationWarning
       >
         <NextIntlClientProvider>
+          <GoogleAnalytics />
           <SiteHeader />
           {children}
         </NextIntlClientProvider>

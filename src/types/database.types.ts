@@ -1,0 +1,73 @@
+export type Organization = {
+  id: string;
+  name: string;
+  description?: string;
+  website_url?: string;
+  phone?: string;
+  address?: string;
+  city: string;
+  state: string;
+  lat: number;
+  lng: number;
+};
+
+export type Service = {
+  id: string;
+  name: string;
+};
+
+export type OrganizationWithServices = Organization & {
+  services: Service[];
+  legacy_id?: string;
+  org_type?: "NGO" | "Law Firm";
+  pricing?: string;
+  thumbnail_image_url?: string;
+  intake_status?: "OPEN" | "LIMITED" | "WAITLISTED";
+  languages?: string[];
+  catchment_note?: string;
+};
+
+export type OrganizationFilters = {
+  name?: string;
+  city?: string;
+  state?: string | string[];
+  category?: string;
+};
+
+export type CreateOrganizationInput = {
+  name: string;
+  description?: string;
+  website_url?: string;
+  phone?: string;
+  address?: string;
+  city: string;
+  state: string;
+  lat: number;
+  lng: number;
+  service_names?: string[];
+};
+
+export type UpdateOrganizationInput = Partial<CreateOrganizationInput>;
+
+export type OfficialDataType = "visa_bulletin" | "processing_times";
+
+export type OfficialDataRecord = {
+  id: string;
+  source_url: string;
+  bulletin_month: string;
+  data_type: OfficialDataType;
+  content: unknown;
+  updated_at: string;
+};
+
+export type SyncStatusSnapshot = {
+  isSyncing: boolean;
+  lastRunAt: string | null;
+  lastStatus: "success" | "failed" | null;
+  lastError: string | null;
+  consecutiveFailures: number;
+  circuitBreakerOpen: boolean;
+  visaBulletinUpdatedAt: string | null;
+  processingTimesUpdatedAt: string | null;
+};
+

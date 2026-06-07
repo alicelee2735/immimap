@@ -102,7 +102,11 @@ function selectionLabel({
   return selectedLabel;
 }
 
-export function MapFiltersBar() {
+type MapFiltersBarProps = {
+  pricingOnly?: boolean;
+};
+
+export function MapFiltersBar({ pricingOnly = false }: MapFiltersBarProps) {
   const t = useTranslations("Filters");
   const states = useMapFiltersStore((s) => s.states);
   const categories = useMapFiltersStore((s) => s.categories);
@@ -124,6 +128,36 @@ export function MapFiltersBar() {
     value: tier,
     label: t(`pricing.${tier}`),
   }));
+
+  if (pricingOnly) {
+    return (
+      <div className="border-b bg-white/80 py-2">
+        <PageContainer>
+          <div className="flex items-center gap-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+              {t("priceLabel")}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {pricingOptions.map((option) => {
+                const active = pricingTiers.includes(option.value);
+                return (
+                  <Button
+                    key={option.value}
+                    type="button"
+                    size="sm"
+                    variant={active ? "default" : "outline"}
+                    onClick={() => togglePricingTier(option.value)}
+                  >
+                    {option.label}
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+        </PageContainer>
+      </div>
+    );
+  }
 
   return (
     <div className="border-b bg-white/90 py-3 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/80">
