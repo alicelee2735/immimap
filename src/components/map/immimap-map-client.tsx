@@ -2,13 +2,10 @@
 
 import {
   memo,
-  useCallback,
   useEffect,
   useMemo,
   useRef,
-  useState,
   type MouseEvent,
-  type RefObject,
 } from "react";
 import L, { type LatLngBoundsExpression } from "leaflet";
 import {
@@ -23,8 +20,7 @@ import "leaflet/dist/leaflet.css";
 import "react-leaflet-cluster/dist/assets/MarkerCluster.css";
 import "react-leaflet-cluster/dist/assets/MarkerCluster.Default.css";
 
-import type { Embassy, ImmigrationService } from "@/types/immimap";
-import { getEmbassies, getWaitTier } from "@/lib/embassy-data";
+import type { ImmigrationService } from "@/types/immimap";
 import { useMapFiltersStore } from "@/stores/map-filters";
 
 const OSM_TILE =
@@ -62,6 +58,21 @@ function MapFocus({ lat, lng }: { lat: number; lng: number }) {
   useEffect(() => {
     map.flyTo([lat, lng], Math.max(map.getZoom(), 9), { duration: 0.45 });
   }, [map, lat, lng]);
+  return null;
+}
+
+function MapResetOnDeselect() {
+  const map = useMap();
+  const selectedServiceId = useMapFiltersStore((s) => s.selectedServiceId);
+  const previousSelection = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (previousSelection.current && !selectedServiceId) {
+      map.fitBounds(DEFAULT_BOUNDS, { padding: [32, 32], animate: true });
+    }
+    previousSelection.current = selectedServiceId;
+  }, [map, selectedServiceId]);
+
   return null;
 }
 
@@ -185,13 +196,9 @@ function createClusterIcon(cluster: L.MarkerCluster) {
 
 type MapMarkerProps = {
   service: ImmigrationService;
-  registerMarker: (id: string, marker: L.Marker | null) => void;
 };
 
-const MapMarker = memo(function MapMarker({
-  service,
-  registerMarker,
-}: MapMarkerProps) {
+const MapMarker = memo(function MapMarker({ service }: MapMarkerProps) {
   const isActive = useMapFiltersStore(
     (s) =>
       s.hoveredProviderId === service.id || s.selectedServiceId === service.id,
@@ -212,14 +219,6 @@ const MapMarker = memo(function MapMarker({
     }),
     [onSelect, service.id, setHoveredId],
   );
-
-  useEffect(() => {
-    registerMarker(service.id, markerRef.current);
-
-    return () => {
-      registerMarker(service.id, null);
-    };
-  }, [registerMarker, service.id]);
 
   useEffect(() => {
     const element = markerRef.current?.getElement();
@@ -248,228 +247,18 @@ const MapMarker = memo(function MapMarker({
   );
 });
 
-type ClusterHoverRevealProps = {
-  clusterRef: RefObject<L.MarkerClusterGroup | null>;
-  markerRefs: RefObject<Map<string, L.Marker>>;
-};
-
-function ClusterHoverReveal({
-  clusterRef,
-  markerRefs,
-}: ClusterHoverRevealProps) {
-  const hoveredProviderId = useMapFiltersStore((s) => s.hoveredProviderId);
-  const previousMarkerRef = useRef<L.Marker | null>(null);
-
-  useEffect(() => {
-    previousMarkerRef.current
-      ?.getElement()
-      ?.classList.remove("immimap-marker-highlighted");
-
-    if (!hoveredProviderId) {
-      previousMarkerRef.current = null;
-      return;
-    }
-
-    const marker = markerRefs.current.get(hoveredProviderId);
-    const clusterGroup = clusterRef.current;
-    if (!marker || !clusterGroup) return;
-
-    previousMarkerRef.current = marker;
-    clusterGroup.zoomToShowLayer(marker, () => {
-      marker.getElement()?.classList.add("immimap-marker-highlighted");
-    });
-  }, [clusterRef, hoveredProviderId, markerRefs]);
-
-  return null;
-}
-
-// ── Embassy layer ─────────────────────────────────────────────────────────────
-
-/** Hex colours matching the wait-tier definitions in embassy-data.ts */
-const TIER_COLORS = {
-  critical: "#dc2626",
-  elevated: "#f59e0b",
-  normal: "#16a34a",
-} as const;
-
-function createEmbassyIcon(waitDays: number) {
-  const tier = getWaitTier(waitDays);
-  const color = TIER_COLORS[tier];
-  return L.divIcon({
-    className: "immimap-embassy-icon",
-    iconSize: [28, 36],
-    iconAnchor: [14, 36],
-    popupAnchor: [0, -34],
-    html: `
-      <div style="color:${color};display:flex;align-items:center;justify-content:center;" aria-hidden="true">
-        <svg focusable="false" viewBox="0 0 28 36" width="28" height="36">
-          <path
-            d="M14 1C7.4 1 2 6.4 2 13c0 8.5 12 24 12 24S26 21.5 26 13C26 6.4 20.6 1 14 1Z"
-            fill="currentColor"
-            stroke="white"
-            stroke-width="2"
-          />
-          <rect x="9" y="9" width="10" height="7" rx="1" fill="white" opacity="0.9" />
-          <line x1="14" y1="9" x2="14" y2="7" stroke="white" stroke-width="1.5" />
-          <line x1="11" y1="7" x2="17" y2="7" stroke="white" stroke-width="1.5" />
-        </svg>
-      </div>
-    `,
-  });
-}
-
-const EmbassyMarker = memo(function EmbassyMarker({
-  embassy,
-}: {
-  embassy: Embassy;
-}) {
-  const icon = useMemo(
-    () => createEmbassyIcon(embassy.avg_interview_wait_days),
-    [embassy.avg_interview_wait_days],
-  );
-  const position = useMemo(
-    () => [embassy.latitude, embassy.longitude] as [number, number],
-    [embassy.latitude, embassy.longitude],
-  );
-  const tier = getWaitTier(embassy.avg_interview_wait_days);
-  const tierLabel =
-    tier === "critical"
-      ? "300+ days"
-      : tier === "elevated"
-        ? "30–299 days"
-        : "< 30 days";
-
-  return (
-    <Marker position={position} icon={icon}>
-      <Popup>
-        <div className="min-w-[180px] space-y-2 py-1">
-          <p className="font-semibold leading-snug">{embassy.name}</p>
-          <p className="text-xs text-muted-foreground">
-            {embassy.city}, {embassy.country}
-          </p>
-          <div className="flex items-center gap-2 pt-0.5">
-            <span
-              className="inline-block h-2.5 w-2.5 rounded-full"
-              style={{ background: TIER_COLORS[tier] }}
-            />
-            <span className="text-xs font-medium">
-              ~{embassy.avg_interview_wait_days} days ({tierLabel})
-            </span>
-          </div>
-        </div>
-      </Popup>
-    </Marker>
-  );
-});
-
-function EmbassyLayer() {
-  const embassies = useMemo(() => getEmbassies(), []);
-  return (
-    <>
-      {embassies.map((embassy) => (
-        <EmbassyMarker key={embassy.id} embassy={embassy} />
-      ))}
-    </>
-  );
-}
-
-/** Toggle button rendered as a Leaflet control (top-left). */
-function MapLayerToggle({
-  showEmbassies,
-  onToggle,
-}: {
-  showEmbassies: boolean;
-  onToggle: () => void;
-}) {
-  return (
-    <div
-      className="leaflet-top leaflet-left"
-      style={{ marginTop: "10px", marginLeft: "10px" }}
-      onDoubleClick={(e) => e.stopPropagation()}
-      onMouseDown={(e) => e.stopPropagation()}
-      onWheel={(e) => e.stopPropagation()}
-    >
-      <div className="leaflet-control">
-        <button
-          type="button"
-          onClick={onToggle}
-          className={`flex h-8 items-center gap-2 rounded-md border px-3 text-xs font-medium shadow-sm transition-colors ${
-            showEmbassies
-              ? "border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100"
-              : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-          }`}
-          aria-pressed={showEmbassies}
-          title={showEmbassies ? "Hide embassies" : "Show US embassies"}
-        >
-          <span
-            className="inline-block h-2 w-2 rounded-full"
-            style={{ background: showEmbassies ? "#2563eb" : "#94a3b8" }}
-            aria-hidden
-          />
-          Embassies
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// ── Legend ────────────────────────────────────────────────────────────────────
-
-function EmbassyLegend() {
-  return (
-    <div
-      className="leaflet-bottom leaflet-left"
-      style={{ marginBottom: "10px", marginLeft: "10px" }}
-    >
-      <div className="leaflet-control rounded-md border border-slate-200 bg-white px-3 py-2 shadow-sm">
-        <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
-          Interview wait
-        </p>
-        {(
-          [
-            { color: "#dc2626", label: "300+ days" },
-            { color: "#f59e0b", label: "30–299 days" },
-            { color: "#16a34a", label: "< 30 days" },
-          ] as const
-        ).map(({ color, label }) => (
-          <div key={label} className="flex items-center gap-2 py-0.5">
-            <span
-              className="inline-block h-2.5 w-2.5 rounded-full"
-              style={{ background: color }}
-            />
-            <span className="text-xs text-slate-600">{label}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ── Main component ─────────────────────────────────────────────────────────────
-
 type Props = {
   services: ImmigrationService[];
   ariaLabel: string;
 };
 
 export function ImmimapMapClient({ services, ariaLabel }: Props) {
-  const [showEmbassies, setShowEmbassies] = useState(false);
   const selectedServiceId = useMapFiltersStore((s) => s.selectedServiceId);
-  const clusterRef = useRef<L.MarkerClusterGroup | null>(null);
-  const markerRefs = useRef(new Map<string, L.Marker>());
 
   const selected = useMemo(
     () => services.find((s) => s.id === selectedServiceId),
     [services, selectedServiceId],
   );
-  const registerMarker = useCallback((id: string, marker: L.Marker | null) => {
-    if (marker) {
-      markerRefs.current.set(id, marker);
-      return;
-    }
-
-    markerRefs.current.delete(id);
-  }, []);
 
   return (
     <div
@@ -494,12 +283,9 @@ export function ImmimapMapClient({ services, ariaLabel }: Props) {
           url={OSM_TILE}
         />
         <MapZoomControls />
-        <MapLayerToggle
-          showEmbassies={showEmbassies}
-          onToggle={() => setShowEmbassies((v) => !v)}
-        />
         <SmoothWheelZoom />
         <FitVisibleServices services={services} />
+        <MapResetOnDeselect />
         {selected ? (
           <MapFocus
             lat={selected.latitude}
@@ -507,7 +293,6 @@ export function ImmimapMapClient({ services, ariaLabel }: Props) {
           />
         ) : null}
         <MarkerClusterGroup
-          ref={clusterRef}
           chunkedLoading
           showCoverageOnHover={false}
           spiderfyOnMaxZoom
@@ -516,16 +301,9 @@ export function ImmimapMapClient({ services, ariaLabel }: Props) {
           maxClusterRadius={56}
         >
           {services.map((service) => (
-            <MapMarker
-              key={service.id}
-              service={service}
-              registerMarker={registerMarker}
-            />
+            <MapMarker key={service.id} service={service} />
           ))}
         </MarkerClusterGroup>
-        <ClusterHoverReveal clusterRef={clusterRef} markerRefs={markerRefs} />
-        {showEmbassies && <EmbassyLayer />}
-        {showEmbassies && <EmbassyLegend />}
       </MapContainer>
     </div>
   );

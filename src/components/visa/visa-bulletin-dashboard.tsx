@@ -111,6 +111,12 @@ export function VisaBulletinDashboard() {
             year: dataset.bulletin_year,
           })}
         </h2>
+        <div
+          className="max-w-3xl rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-900"
+          role="note"
+        >
+          {t("dataAccuracyDisclaimer")}
+        </div>
       </div>
 
       <div className="rounded-lg border border-slate-200 bg-white px-6 py-6 sm:px-8">

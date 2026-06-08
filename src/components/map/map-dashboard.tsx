@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants, Button } from "@/components/ui/button";
 import { PageContainer } from "@/components/layout/page-container";
 import { ImmimapMap } from "@/components/map/immimap-map";
-import { MapFiltersBar } from "@/components/map/map-filters-bar";
 import { ServiceDetailSheet } from "@/components/map/service-detail-sheet";
 import {
   DEFAULT_SEARCH_VALUES,
@@ -16,9 +15,10 @@ import {
   type OrganizationSearchValues,
 } from "@/components/search/organization-search";
 import { useOrganizations } from "@/hooks/use-organizations";
+import { filterServicesByQuery } from "@/lib/search-services";
 import { cn } from "@/lib/utils";
 import { formatDisplayPhone } from "@/lib/phone";
-import { filterServicesByPricing, useMapFiltersStore } from "@/stores/map-filters";
+import { filterServices, useMapFiltersStore } from "@/stores/map-filters";
 import type {
   ImmigrationService,
   IntakeStatus,
@@ -81,6 +81,7 @@ function IntakeIndicator({ status }: { status: IntakeStatus }) {
 type ServiceResultCardProps = {
   service: ImmigrationService;
   selected: boolean;
+  hovered: boolean;
   onSelect: () => void;
   setHoveredId: (id: string | null) => void;
 };
@@ -88,6 +89,7 @@ type ServiceResultCardProps = {
 function ServiceResultCard({
   service,
   selected,
+  hovered,
   onSelect,
   setHoveredId,
 }: ServiceResultCardProps) {
@@ -120,7 +122,11 @@ function ServiceResultCard({
       }}
       className={cn(
         "cursor-pointer transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
-        selected ? "bg-blue-50/40" : "hover:bg-slate-50/70",
+        selected
+          ? "bg-blue-50/40"
+          : hovered
+            ? "bg-blue-50/50 ring-1 ring-inset ring-blue-200/80"
+            : "hover:bg-slate-50/70",
       )}
     >
       <div
@@ -242,20 +248,49 @@ function ServiceResultCard({
   );
 }
 
+function SidebarSkeleton() {
+  return (
+    <div className="divide-y divide-gray-200" aria-hidden>
+      {Array.from({ length: 4 }).map((_, index) => (
+        <div key={index} className="animate-pulse space-y-3 px-4 py-4 sm:px-5">
+          <div className="h-32 rounded-md bg-slate-200" />
+          <div className="flex gap-2">
+            <div className="h-5 w-16 rounded-full bg-slate-200" />
+            <div className="h-5 w-20 rounded-full bg-slate-200" />
+          </div>
+          <div className="h-5 w-3/4 rounded bg-slate-200" />
+          <div className="space-y-2">
+            <div className="h-3 w-full rounded bg-slate-100" />
+            <div className="h-3 w-5/6 rounded bg-slate-100" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function MapDashboard() {
   const t = useTranslations("Map");
   const [search, setSearch] = useState<OrganizationSearchValues>(
     DEFAULT_SEARCH_VALUES,
   );
-  const { services, loading, error, usingFallback } = useOrganizations(search);
+  const { services, loading, error, usingFallback } = useOrganizations();
+  const states = useMapFiltersStore((s) => s.states);
+  const categories = useMapFiltersStore((s) => s.categories);
   const pricingTiers = useMapFiltersStore((s) => s.pricingTiers);
   const selectedServiceId = useMapFiltersStore((s) => s.selectedServiceId);
+  const hoveredProviderId = useMapFiltersStore((s) => s.hoveredProviderId);
   const selectService = useMapFiltersStore((s) => s.selectService);
   const setHoveredId = useMapFiltersStore((s) => s.setHoveredProviderId);
 
+  const storeFiltered = useMemo(
+    () => filterServices(services, { states, categories, pricingTiers }),
+    [services, states, categories, pricingTiers],
+  );
+
   const visible = useMemo(
-    () => filterServicesByPricing(services, pricingTiers),
-    [services, pricingTiers],
+    () => filterServicesByQuery(storeFiltered, search.query),
+    [storeFiltered, search.query],
   );
 
   useEffect(() => {
@@ -267,35 +302,43 @@ export function MapDashboard() {
     }
   }, [selectService, selectedServiceId, visible]);
 
-  const empty = visible.length === 0;
+  const empty = !loading && visible.length === 0;
+  const fatalError = !loading && error && services.length === 0;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col bg-slate-50">
-      <OrganizationSearch values={search} onChange={setSearch} />
-      <MapFiltersBar pricingOnly />
-      <PageContainer className="grid min-h-0 max-w-none flex-1 gap-0 py-6 md:grid-cols-[minmax(0,1fr)_440px] md:px-6 lg:px-8">
-        <section className="relative min-h-[520px] border-b border-slate-200 bg-background md:h-[760px] md:border-b-0 md:border-r">
+    <div className="flex min-h-0 flex-1 flex-col overflow-visible bg-slate-50">
+      <OrganizationSearch
+        values={search}
+        onChange={setSearch}
+        suggestions={storeFiltered}
+        onSelectSuggestion={(service) => selectService(service.id)}
+      />
+      <PageContainer className="grid min-h-0 max-w-none flex-1 gap-0 py-4 md:grid-cols-[minmax(0,1fr)_440px] md:px-6 md:py-6 lg:px-8">
+        <section className="relative z-0 min-h-[45vh] border-b border-slate-200 bg-background md:h-[760px] md:min-h-[520px] md:border-b-0 md:border-r">
+          <ImmimapMap services={loading ? [] : visible} />
           {loading ? (
             <div
-              className="flex h-full min-h-[420px] w-full flex-col items-center justify-center gap-3 bg-muted/30 text-muted-foreground"
+              className="pointer-events-none absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-[1px]"
               role="status"
               aria-live="polite"
             >
-              <Loader2 className="h-8 w-8 animate-spin text-primary" aria-hidden />
-              <p className="text-sm font-medium">{t("loadingMap")}</p>
+              <div className="flex flex-col items-center gap-3 rounded-lg border border-slate-200 bg-background/95 px-6 py-4 shadow-sm">
+                <Loader2 className="h-7 w-7 animate-spin text-primary" aria-hidden />
+                <p className="text-sm font-medium text-muted-foreground">
+                  {t("loadingMap")}
+                </p>
+              </div>
             </div>
-          ) : (
-            <ImmimapMap services={visible} />
-          )}
-          {error && usingFallback ? (
-            <div className="pointer-events-none absolute inset-x-0 top-4 flex justify-center px-4">
+          ) : null}
+          {error && usingFallback && services.length > 0 ? (
+            <div className="pointer-events-none absolute inset-x-0 top-4 z-10 flex justify-center px-4">
               <p className="pointer-events-auto rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
-                {error} Showing cached provider data.
+                {t("serviceUnavailable")} {t("showingCachedData")}
               </p>
             </div>
           ) : null}
           {empty ? (
-            <div className="pointer-events-none absolute inset-0 flex items-start justify-center px-4 pt-16">
+            <div className="pointer-events-none absolute inset-0 z-10 flex items-start justify-center px-4 pt-16">
               <div
                 className="pointer-events-auto max-w-md rounded-lg border border-slate-200 bg-background/95 px-4 py-3 text-center backdrop-blur"
                 role="status"
@@ -311,8 +354,8 @@ export function MapDashboard() {
           ) : null}
         </section>
 
-        <aside className="flex min-h-0 flex-col bg-white md:h-[760px]">
-          <div className="border-b border-slate-200 px-4 py-4 sm:px-5">
+        <aside className="flex max-h-[50vh] min-h-0 flex-col bg-white md:h-[760px] md:max-h-none">
+          <div className="shrink-0 border-b border-slate-200 px-4 py-4 sm:px-5">
             <p className="text-sm font-medium uppercase tracking-widest text-gray-500">
               {t("resultsEyebrow")}
             </p>
@@ -322,7 +365,9 @@ export function MapDashboard() {
                   {t("resultsTitle")}
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {t("resultsCount", { count: visible.length })}
+                  {loading
+                    ? t("loadingResults")
+                    : t("resultsCount", { count: visible.length })}
                 </p>
               </div>
               <Badge
@@ -336,38 +381,42 @@ export function MapDashboard() {
 
           <div className="immimap-results-scroll min-h-0 flex-1 overflow-y-auto">
             {loading ? (
-              <div className="flex h-32 items-center justify-center text-sm text-muted-foreground">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {t("loadingMap")}
-              </div>
-            ) : error ? (
+              <SidebarSkeleton />
+            ) : fatalError ? (
               <div className="mx-4 mt-4 rounded-md border border-red-100 bg-red-50 p-4 text-sm text-red-700">
-                <p className="font-medium">Sync issue</p>
-                <p className="mt-1">
-                  We couldn&apos;t refresh the latest providers. Showing cached
-                  data.
-                </p>
+                <p className="font-medium">{t("serviceUnavailable")}</p>
+                <p className="mt-1">{t("serviceUnavailableHint")}</p>
               </div>
-            ) : empty ? (
-              <div className="px-4 py-6 text-center sm:px-5">
-                <p className="text-sm font-medium">{t("emptyStateTitle")}</p>
-                <p className="mt-1 text-sm text-muted-foreground">
+            ) : error && usingFallback ? (
+              <div className="mx-4 mt-4 rounded-md border border-amber-100 bg-amber-50 p-4 text-sm text-amber-800">
+                <p className="font-medium">{t("serviceUnavailable")}</p>
+                <p className="mt-1">{t("showingCachedData")}</p>
+              </div>
+            ) : null}
+            {!loading && !fatalError && empty ? (
+              <div className="px-4 py-8 text-center sm:px-5">
+                <p className="text-sm font-medium text-foreground">
+                  {t("emptyStateTitle")}
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {t("emptyStateHint")}
                 </p>
               </div>
-            ) : (
+            ) : null}
+            {!loading && !fatalError && !empty ? (
               <div className="divide-y divide-gray-200">
                 {visible.map((service) => (
                   <ServiceResultCard
                     key={service.id}
                     service={service}
                     selected={service.id === selectedServiceId}
+                    hovered={service.id === hoveredProviderId}
                     onSelect={() => selectService(service.id)}
                     setHoveredId={setHoveredId}
                   />
                 ))}
               </div>
-            )}
+            ) : null}
           </div>
 
           {/* Provenance footer */}

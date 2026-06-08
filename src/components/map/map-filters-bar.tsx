@@ -59,7 +59,7 @@ function FilterSegment<T extends string>({
         </span>
         <ChevronDown className="h-4 w-4 text-primary transition group-data-[popup-open]:rotate-180" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-64 rounded-2xl p-2" align="start">
+      <DropdownMenuContent className="z-[100] w-64 rounded-2xl p-2" align="start">
         {options.map((option) => {
           const active = selected.includes(option.value);
           return (
@@ -131,9 +131,9 @@ export function MapFiltersBar({ pricingOnly = false }: MapFiltersBarProps) {
 
   if (pricingOnly) {
     return (
-      <div className="border-b bg-white/80 py-2">
+      <div className="relative z-[100] border-b bg-white/80 py-2">
         <PageContainer>
-          <div className="flex items-center gap-3">
+          <div className="relative z-[100] flex items-center gap-3">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
               {t("priceLabel")}
             </p>
@@ -160,10 +160,10 @@ export function MapFiltersBar({ pricingOnly = false }: MapFiltersBarProps) {
   }
 
   return (
-    <div className="border-b bg-white/90 py-3 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/80">
+    <div className="relative z-[100] border-b bg-white/90 py-3 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/80">
       <PageContainer>
         <p className="mb-2 text-sm font-semibold text-foreground">{t("title")}</p>
-        <div className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm md:flex">
+        <div className="relative z-[100] rounded-[1.5rem] border border-slate-200 bg-white shadow-sm md:flex">
           <FilterSegment
             title={t("stateLabel")}
             value={selectionLabel({

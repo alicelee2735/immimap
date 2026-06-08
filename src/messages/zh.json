@@ -80,8 +80,12 @@
   "Map": {
     "loadingMap": "地图加载中…",
     "mapAriaLabel": "美国境内移民服务提供者的交互式地图",
-    "emptyStateTitle": "没有符合筛选条件的服务机构",
-    "emptyStateHint": "请调整筛选条件，或重置后重新查看地图上的机构。",
+    "emptyStateTitle": "未找到符合筛选条件的已验证服务机构。",
+    "emptyStateHint": "请尝试调整搜索条件。我们的机构目录正在持续扩充中。",
+    "loadingResults": "正在加载服务机构…",
+    "serviceUnavailable": "服务暂时不可用。",
+    "serviceUnavailableHint": "无法加载服务机构数据，请稍后再试。",
+    "showingCachedData": "正在显示缓存的服务机构数据。",
     "resultsEyebrow": "服务机构列表",
     "resultsTitle": "移民服务机构",
     "resultsCount": "找到 {count} 家服务机构",
@@ -92,6 +96,9 @@
   },
   "Search": {
     "title": "搜索服务机构",
+    "queryLabel": "搜索服务机构",
+    "queryPlaceholder": "按机构名称或城市搜索…",
+    "noMatches": "未找到匹配的服务机构。",
     "nameLabel": "机构名称",
     "namePlaceholder": "按名称搜索…",
     "cityLabel": "城市",
@@ -170,6 +177,7 @@
     "statusBadgeBacklog": "积压/等待",
     "priorPeriod": "上期：{months} 个月",
     "sourceLine": "来源：美国公民及移民服务局",
+    "dataAccuracyDisclaimer": "数据与 USCIS 及美国国务院官方来源实时同步。实际审理时间和优先日期可能因个案情况、受理办公室及补件请求（RFE）等因素而有显著差异。",
     "disclaimer": "审理时间估算来源于 USCIS 官方数据，每日自动同步。向申请人提供建议前请务必在 uscis.gov 核实最新时间。"
   },
   "NotFound": {
@@ -342,6 +350,7 @@
       "EB4": "特殊移民",
       "EB5": "投资移民"
     },
-    "disclaimer": "最终行动日期数据来源于美国国务院官方签证公告。向当事人提供建议前，请务必在 travel.state.gov 核实最新截止日期。"
+    "disclaimer": "最终行动日期数据来源于美国国务院官方签证公告。向当事人提供建议前，请务必在 travel.state.gov 核实最新截止日期。",
+    "dataAccuracyDisclaimer": "数据与 USCIS 及美国国务院官方来源实时同步。实际审理时间和优先日期可能因个案情况、受理办公室及补件请求（RFE）等因素而有显著差异。"
   }
 }

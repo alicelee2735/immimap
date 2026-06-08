@@ -87,6 +87,12 @@ export function ProcessingDashboard() {
           {t("pageTitle")}
         </h1>
         <p className="max-w-3xl text-muted-foreground">{t("pageLead")}</p>
+        <div
+          className="max-w-3xl rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-900"
+          role="note"
+        >
+          {t("dataAccuracyDisclaimer")}
+        </div>
       </div>
 
       <div className="overflow-hidden border border-slate-200 bg-white">

@@ -80,8 +80,12 @@
   "Map": {
     "loadingMap": "Loading map…",
     "mapAriaLabel": "Interactive map of immigration service providers in the United States",
-    "emptyStateTitle": "No providers match these filters",
-    "emptyStateHint": "Adjust filters or reset to see organizations on the map.",
+    "emptyStateTitle": "No verified providers found for these filters.",
+    "emptyStateHint": "Try adjusting your search criteria. We are continually expanding our directory.",
+    "loadingResults": "Loading providers…",
+    "serviceUnavailable": "Service temporarily unavailable.",
+    "serviceUnavailableHint": "We couldn't load provider data. Please try again in a few minutes.",
+    "showingCachedData": "Showing cached provider data.",
     "resultsEyebrow": "Provider marketplace",
     "resultsTitle": "Immigration providers",
     "resultsCount": "{count, plural, =0 {No providers} one {# provider} other {# providers}} found",
@@ -92,6 +96,9 @@
   },
   "Search": {
     "title": "Search providers",
+    "queryLabel": "Search providers",
+    "queryPlaceholder": "Search by organization name or city…",
+    "noMatches": "No matching providers found.",
     "nameLabel": "Organization name",
     "namePlaceholder": "Search by name…",
     "cityLabel": "City",
@@ -170,6 +177,7 @@
     "statusBadgeBacklog": "Backlog/Waiting",
     "priorPeriod": "Prior period: {months} mo",
     "sourceLine": "Source: U.S. Citizenship and Immigration Services",
+    "dataAccuracyDisclaimer": "Data is live-synced from official USCIS and State Department sources. Actual processing times and priority dates may vary significantly based on individual case factors, field offices, and Requests for Evidence (RFEs).",
     "disclaimer": "Processing time estimates are derived from official USCIS data and updated on a daily automated sync. Always verify current estimates at uscis.gov before advising clients."
   },
   "NotFound": {
@@ -341,6 +349,7 @@
       "EB4": "Special immigrants",
       "EB5": "Immigrant investors"
     },
-    "disclaimer": "Final action dates are derived from official U.S. State Department Visa Bulletin data. Always confirm current cutoff dates at travel.state.gov before advising clients."
+    "disclaimer": "Final action dates are derived from official U.S. State Department Visa Bulletin data. Always confirm current cutoff dates at travel.state.gov before advising clients.",
+    "dataAccuracyDisclaimer": "Data is live-synced from official USCIS and State Department sources. Actual processing times and priority dates may vary significantly based on individual case factors, field offices, and Requests for Evidence (RFEs)."
   }
 }

@@ -1,23 +1,18 @@
 "use client";
 
-import { Search, X } from "lucide-react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { MapPin, Search, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { ProviderSearchCard } from "@/components/filters/provider-search-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { PageContainer } from "@/components/layout/page-container";
 import type { OrganizationFilters } from "@/types/database.types";
-import type { ServiceCategory, USState } from "@/types/immimap";
-
-const STATES: USState[] = ["CA", "TX", "FL", "NY", "NJ"];
+import type { ImmigrationService, ServiceCategory } from "@/types/immimap";
+import { cn } from "@/lib/utils";
+import { filterServicesByQuery } from "@/lib/search-services";
 
 const CATEGORY_TO_SERVICE: Record<ServiceCategory, string> = {
   asylum: "Asylum",
@@ -34,29 +29,20 @@ const SERVICE_TO_CATEGORY = Object.fromEntries(
 ) as Record<string, ServiceCategory>;
 
 export type OrganizationSearchValues = {
-  name: string;
-  city: string;
-  state: USState | "all";
-  category: ServiceCategory | "all";
+  query: string;
 };
 
 type Props = {
   values: OrganizationSearchValues;
   onChange: (values: OrganizationSearchValues) => void;
+  suggestions: ImmigrationService[];
+  onSelectSuggestion?: (service: ImmigrationService) => void;
 };
 
 export function organizationSearchToFilters(
   values: OrganizationSearchValues,
 ): OrganizationFilters {
-  return {
-    name: values.name.trim() || undefined,
-    city: values.city.trim() || undefined,
-    state: values.state === "all" ? undefined : values.state,
-    category:
-      values.category === "all"
-        ? undefined
-        : CATEGORY_TO_SERVICE[values.category],
-  };
+  return {};
 }
 
 export function buildOrganizationsQuery(
@@ -85,123 +71,157 @@ export function buildOrganizationsQuery(
 }
 
 export const DEFAULT_SEARCH_VALUES: OrganizationSearchValues = {
-  name: "",
-  city: "",
-  state: "all",
-  category: "all",
+  query: "",
 };
 
-export function OrganizationSearch({ values, onChange }: Props) {
+const MAX_SUGGESTIONS = 8;
+
+export function OrganizationSearch({
+  values,
+  onChange,
+  suggestions,
+  onSelectSuggestion,
+}: Props) {
   const t = useTranslations("Search");
   const tFilters = useTranslations("Filters");
+  const listboxId = useId();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(false);
 
-  const hasActiveFilters =
-    values.name.trim().length > 0 ||
-    values.city.trim().length > 0 ||
-    values.state !== "all" ||
-    values.category !== "all";
+  const trimmedQuery = values.query.trim();
+  const hasQuery = trimmedQuery.length > 0;
+
+  const matchingSuggestions = useMemo(() => {
+    if (!hasQuery) {
+      return [];
+    }
+
+    return filterServicesByQuery(suggestions, trimmedQuery).slice(
+      0,
+      MAX_SUGGESTIONS,
+    );
+  }, [hasQuery, suggestions, trimmedQuery]);
+
+  useEffect(() => {
+    if (!hasQuery) {
+      setOpen(false);
+    }
+  }, [hasQuery]);
+
+  useEffect(() => {
+    function handlePointerDown(event: MouseEvent) {
+      if (!containerRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handlePointerDown);
+    return () => document.removeEventListener("mousedown", handlePointerDown);
+  }, []);
 
   return (
-    <div className="border-b bg-white/90 py-3 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/80">
-      <PageContainer>
-        <p className="mb-2 text-sm font-semibold text-foreground">{t("title")}</p>
-        <div className="grid gap-3 rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_160px_180px_auto] md:items-end">
+    <div className="relative z-[100] shrink-0 overflow-visible border-b bg-white py-3">
+      <PageContainer className="overflow-visible">
+        <ProviderSearchCard
+          labelNamespace="filters"
+          searchSlot={
+        <div ref={containerRef} className="relative overflow-visible px-3 py-3">
           <div className="space-y-1.5">
-            <Label htmlFor="org-search-name">{t("nameLabel")}</Label>
-            <div className="relative">
+            <Label htmlFor="org-search-query">{t("queryLabel")}</Label>
+            <div className="relative overflow-visible">
               <Search
                 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
                 aria-hidden
               />
               <Input
-                id="org-search-name"
-                value={values.name}
-                onChange={(event) =>
-                  onChange({ ...values, name: event.target.value })
-                }
-                placeholder={t("namePlaceholder")}
+                id="org-search-query"
+                role="combobox"
+                aria-expanded={open && matchingSuggestions.length > 0}
+                aria-controls={listboxId}
+                aria-autocomplete="list"
+                value={values.query}
+                onChange={(event) => {
+                  onChange({ query: event.target.value });
+                  setOpen(true);
+                }}
+                onFocus={() => {
+                  if (hasQuery) {
+                    setOpen(true);
+                  }
+                }}
+                placeholder={t("queryPlaceholder")}
                 className="pl-9"
+                autoComplete="off"
               />
+              {hasQuery ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-950"
+                  onClick={() => {
+                    onChange(DEFAULT_SEARCH_VALUES);
+                    setOpen(false);
+                  }}
+                  aria-label={tFilters("reset")}
+                  title={tFilters("reset")}
+                >
+                  <X className="h-4 w-4" aria-hidden />
+                </Button>
+              ) : null}
             </div>
           </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="org-search-city">{t("cityLabel")}</Label>
-            <Input
-              id="org-search-city"
-              value={values.city}
-              onChange={(event) =>
-                onChange({ ...values, city: event.target.value })
-              }
-              placeholder={t("cityPlaceholder")}
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="org-search-state">{tFilters("stateLabel")}</Label>
-            <Select
-              value={values.state}
-              onValueChange={(state) =>
-                onChange({
-                  ...values,
-                  state: state as OrganizationSearchValues["state"],
-                })
-              }
+          {open && hasQuery ? (
+            <div
+              className="absolute left-3 right-3 top-full z-[200] mt-1 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg"
+              role="listbox"
+              id={listboxId}
             >
-              <SelectTrigger id="org-search-state" className="w-full">
-                <SelectValue placeholder={t("allStates")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("allStates")}</SelectItem>
-                {STATES.map((state) => (
-                  <SelectItem key={state} value={state}>
-                    {tFilters(`states.${state}`)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="org-search-category">{tFilters("serviceLabel")}</Label>
-            <Select
-              value={values.category}
-              onValueChange={(category) =>
-                onChange({
-                  ...values,
-                  category: category as OrganizationSearchValues["category"],
-                })
-              }
-            >
-              <SelectTrigger id="org-search-category" className="w-full">
-                <SelectValue placeholder={t("allCategories")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("allCategories")}</SelectItem>
-                {(Object.keys(CATEGORY_TO_SERVICE) as ServiceCategory[]).map(
-                  (category) => (
-                    <SelectItem key={category} value={category}>
-                      {tFilters(`services.${category}`)}
-                    </SelectItem>
-                  ),
-                )}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="justify-self-end rounded-full text-muted-foreground hover:bg-primary/10 hover:text-primary"
-            onClick={() => onChange(DEFAULT_SEARCH_VALUES)}
-            disabled={!hasActiveFilters}
-            aria-label={tFilters("reset")}
-            title={tFilters("reset")}
-          >
-            <X className="h-4 w-4" aria-hidden />
-          </Button>
+              {matchingSuggestions.length > 0 ? (
+                <ul className="max-h-72 overflow-y-auto py-1">
+                  {matchingSuggestions.map((service) => (
+                    <li key={service.id}>
+                      <button
+                        type="button"
+                        role="option"
+                        aria-selected={false}
+                        className={cn(
+                          "flex w-full items-start gap-3 px-3 py-2.5 text-left transition-colors hover:bg-primary/5",
+                        )}
+                        onMouseDown={(event) => event.preventDefault()}
+                        onClick={() => {
+                          onChange({ query: service.name });
+                          onSelectSuggestion?.(service);
+                          setOpen(false);
+                        }}
+                      >
+                        <MapPin
+                          className="mt-0.5 h-4 w-4 shrink-0 text-primary"
+                          aria-hidden
+                        />
+                        <span className="min-w-0">
+                          <span className="block truncate text-sm font-medium text-foreground">
+                            {service.name}
+                          </span>
+                          <span className="block truncate text-xs text-muted-foreground">
+                            {service.address}
+                          </span>
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="px-3 py-3 text-sm text-muted-foreground">
+                  {t("noMatches")}
+                </p>
+              )}
+            </div>
+          ) : null}
         </div>
+      }
+        />
       </PageContainer>
     </div>
   );

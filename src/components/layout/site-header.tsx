@@ -22,9 +22,7 @@ export function SiteHeader() {
     { href: "/processing", label: t("processing") },
     { href: "/visa-bulletin", label: t("visaBulletin") },
     { href: "/about", label: t("about") },
-    { href: "/join", label: t("join") },
   ];
-  const donateActive = pathname === "/donate";
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur-md">
@@ -59,17 +57,6 @@ export function SiteHeader() {
               {item.label}
             </TrackedNavLink>
           ))}
-          <TrackedNavLink
-            href="/donate"
-            navLabel={t("donate")}
-            navSurface="desktop"
-            className={cn(
-              "text-sm font-medium leading-none tracking-[-0.01em] text-slate-500 transition-colors duration-150 hover:text-slate-950",
-              donateActive && "text-[#2563eb]",
-            )}
-          >
-            {t("donate")}
-          </TrackedNavLink>
         </nav>
 
         <div className="flex shrink-0 items-center justify-end gap-x-8">
@@ -143,18 +130,6 @@ export function SiteHeader() {
           </nav>
 
           <div className="mt-10 flex flex-col items-start gap-5 pt-6">
-            <TrackedNavLink
-              href="/donate"
-              navLabel={t("donate")}
-              navSurface="mobile"
-              onClick={() => setMobileMenuOpen(false)}
-              className={cn(
-                "text-base font-medium text-slate-500 transition-colors duration-150 hover:text-slate-950",
-                donateActive && "text-[#2563eb]",
-              )}
-            >
-              {t("donate")}
-            </TrackedNavLink>
             <div
               className="flex items-center gap-4"
               role="group"

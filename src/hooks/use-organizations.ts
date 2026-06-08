@@ -2,11 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import {
-  buildOrganizationsQuery,
-  organizationSearchToFilters,
-  type OrganizationSearchValues,
-} from "@/components/search/organization-search";
 import type { OrganizationWithServices } from "@/types/database.types";
 import type { ImmigrationService } from "@/types/immimap";
 import { getCatalogServices } from "@/lib/catalog-data";
@@ -15,7 +10,7 @@ function jsonFallbackServices(): ImmigrationService[] {
   return getCatalogServices();
 }
 
-export function useOrganizations(search: OrganizationSearchValues) {
+export function useOrganizations() {
   const [organizations, setOrganizations] = useState<OrganizationWithServices[]>(
     [],
   );
@@ -29,15 +24,14 @@ export function useOrganizations(search: OrganizationSearchValues) {
     setError(null);
 
     try {
-      const filters = organizationSearchToFilters(search);
-      const query = buildOrganizationsQuery(filters);
-      const response = await fetch(`/api/organizations${query}`);
+      const response = await fetch("/api/organizations");
 
       if (response.status === 503) {
         const fallback = jsonFallbackServices();
         setUsingFallback(true);
-        setServices(filterFallbackServices(fallback, search));
+        setServices(fallback);
         setOrganizations([]);
+        setError("Service temporarily unavailable.");
         return;
       }
 
@@ -60,24 +54,20 @@ export function useOrganizations(search: OrganizationSearchValues) {
     } catch (fetchError) {
       const fallback = jsonFallbackServices();
       setUsingFallback(true);
-      setServices(filterFallbackServices(fallback, search));
+      setServices(fallback);
       setOrganizations([]);
       setError(
         fetchError instanceof Error
           ? fetchError.message
-          : "Failed to load organizations.",
+          : "Service temporarily unavailable.",
       );
     } finally {
       setLoading(false);
     }
-  }, [search]);
+  }, []);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      void fetchOrganizations();
-    }, 250);
-
-    return () => window.clearTimeout(timer);
+    void fetchOrganizations();
   }, [fetchOrganizations]);
 
   return {
@@ -118,43 +108,4 @@ function organizationWithServicesToImmigrationService(
     languages: org.languages,
     catchmentNote: org.catchment_note,
   };
-}
-
-function filterFallbackServices(
-  services: ImmigrationService[],
-  search: OrganizationSearchValues,
-): ImmigrationService[] {
-  const name = search.name.trim().toLowerCase();
-  const city = search.city.trim().toLowerCase();
-
-  return services.filter((service) => {
-    if (search.state !== "all" && service.state !== search.state) {
-      return false;
-    }
-
-    if (search.category !== "all") {
-      const offering =
-        search.category === "asylum"
-          ? "Asylum"
-          : search.category === "family"
-            ? "Family"
-            : search.category === "daca"
-              ? "DACA"
-              : "Employment";
-
-      if (!service.services_offered.includes(offering)) {
-        return false;
-      }
-    }
-
-    if (name && !service.name.toLowerCase().includes(name)) {
-      return false;
-    }
-
-    if (city && !service.address.toLowerCase().includes(city)) {
-      return false;
-    }
-
-    return true;
-  });
 }
