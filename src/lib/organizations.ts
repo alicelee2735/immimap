@@ -194,7 +194,7 @@ export async function fetchOrganizations(
     return [];
   }
 
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseAdminClient();
   const states = filters.state
     ? Array.isArray(filters.state)
       ? filters.state

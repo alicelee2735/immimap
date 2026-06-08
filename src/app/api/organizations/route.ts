@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { getErrorMessage } from "@/lib/errors";
 import {
   createOrganization,
   fetchOrganizations,
@@ -21,8 +22,7 @@ export async function GET(request: NextRequest) {
     const organizations = await fetchOrganizations(filters);
     return NextResponse.json({ organizations });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Failed to fetch organizations.";
+    const message = getErrorMessage(error, "Failed to fetch organizations.");
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
