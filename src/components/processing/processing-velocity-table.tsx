@@ -1,15 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { ExternalLink } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
-import {
-  getDeltaMonths,
-  getUniqueFormTypes,
-  shortOfficeName,
-} from "@/lib/uscis-data";
+import { getDeltaMonths, shortOfficeName } from "@/lib/uscis-data";
 import type { UscisProcessingDataset } from "@/types/immimap";
 
 // ── Status pill ───────────────────────────────────────────────────────────────
@@ -38,24 +34,30 @@ function StatusPill({
 // ── Velocity badge ────────────────────────────────────────────────────────────
 
 function VelocityBadge({ delta }: { delta: number | null }) {
+  const t = useTranslations("Processing");
+
   if (delta === null) {
     return <span className="text-xs text-slate-300">—</span>;
   }
   if (delta < 0) {
     return (
       <span className="tabular-nums text-xs font-medium text-emerald-600">
-        ▲ {Math.abs(delta)} mo faster
+        {t("velocityFaster", { count: Math.abs(delta) })}
       </span>
     );
   }
   if (delta > 0) {
     return (
       <span className="tabular-nums text-xs font-medium text-amber-600">
-        ▼ {delta} mo slower
+        {t("velocitySlower", { count: delta })}
       </span>
     );
   }
-  return <span className="text-xs font-medium text-slate-400">• Stable</span>;
+  return (
+    <span className="text-xs font-medium text-slate-400">
+      {t("velocityStable")}
+    </span>
+  );
 }
 
 // ── Cross-center comparison strip ─────────────────────────────────────────────
@@ -65,6 +67,8 @@ function CenterComparisonStrip({
 }: {
   rows: UscisProcessingDataset["rows"];
 }) {
+  const t = useTranslations("Processing");
+
   if (rows.length < 2) return null;
 
   const sorted = [...rows].sort(
@@ -90,7 +94,8 @@ function CenterComparisonStrip({
               <p className="mt-1 font-variant-numeric tabular-nums text-2xl font-semibold text-gray-950">
                 {row.estimated_months}
                 <span className="ml-0.5 text-sm font-normal text-slate-400">
-                  {" "}mo
+                  {" "}
+                  {t("monthsUnit")}
                 </span>
               </p>
               <div className="mt-0.5">
@@ -108,13 +113,18 @@ function CenterComparisonStrip({
 
 type Props = {
   data: UscisProcessingDataset;
-  locale: string;
+  selectedForm: string | null;
+  formattedLastUpdated: string | null;
+  formattedPreviousPeriod: string | null;
 };
 
-export function ProcessingVelocityTable({ data, locale }: Props) {
+export function ProcessingVelocityTable({
+  data,
+  selectedForm,
+  formattedLastUpdated,
+  formattedPreviousPeriod,
+}: Props) {
   const t = useTranslations("Processing");
-  const formTypes = useMemo(() => getUniqueFormTypes(data), [data]);
-  const [selectedForm, setSelectedForm] = useState<string | null>(null);
 
   const visibleRows = useMemo(
     () =>
@@ -132,48 +142,8 @@ export function ProcessingVelocityTable({ data, locale }: Props) {
     [data.rows, selectedForm],
   );
 
-  const lastUpdated = new Date(data.last_updated_iso);
-  const previousPeriod = data.previous_period_iso
-    ? new Date(data.previous_period_iso)
-    : null;
-
   return (
     <div>
-      {/* ── Sticky form-code filter ──────────────────────────────────────── */}
-      <div className="sticky top-[80px] z-10 border-b border-slate-200 bg-white/95 backdrop-blur-md">
-        <div className="flex overflow-x-auto">
-          <button
-            type="button"
-            onClick={() => setSelectedForm(null)}
-            className={cn(
-              "shrink-0 border-b-2 px-4 py-3 text-sm font-medium transition-colors",
-              !selectedForm
-                ? "border-blue-600 text-blue-600"
-                : "border-transparent text-slate-500 hover:text-slate-900",
-            )}
-          >
-            All forms
-          </button>
-          {formTypes.map((form) => (
-            <button
-              key={form}
-              type="button"
-              onClick={() =>
-                setSelectedForm((prev) => (prev === form ? null : form))
-              }
-              className={cn(
-                "shrink-0 border-b-2 px-4 py-3 font-mono text-sm font-medium transition-colors",
-                selectedForm === form
-                  ? "border-blue-600 text-blue-600"
-                  : "border-transparent text-slate-500 hover:text-slate-900",
-              )}
-            >
-              {form}
-            </button>
-          ))}
-        </div>
-      </div>
-
       {/* ── Cross-center comparison ──────────────────────────────────────── */}
       {comparisonRows && <CenterComparisonStrip rows={comparisonRows} />}
 
@@ -203,7 +173,7 @@ export function ProcessingVelocityTable({ data, locale }: Props) {
               <p className="mt-3 text-2xl font-bold tracking-tight text-blue-600 tabular-nums">
                 {row.estimated_months}
                 <span className="ml-1 text-base font-semibold text-blue-600/80">
-                  mo
+                  {t("monthsUnit")}
                 </span>
               </p>
               <div className="mt-4 border-t border-gray-100 pt-3 text-sm text-gray-500">
@@ -228,40 +198,31 @@ export function ProcessingVelocityTable({ data, locale }: Props) {
       <div className="border-t border-slate-100 px-4 py-4 sm:px-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-0.5">
-            <p className="text-xs font-medium text-slate-500">
-              Database state current as of:{" "}
-              <time
-                dateTime={data.last_updated_iso}
-                className="tabular-nums text-slate-700"
-              >
-                {lastUpdated.toLocaleString(
-                  locale === "zh" ? "zh-CN" : "en-US",
-                  {
-                    dateStyle: "medium",
-                    timeStyle: "short",
-                    timeZone: "UTC",
-                  },
-                )}{" "}
-                UTC
-              </time>
-            </p>
-            {previousPeriod && (
+            {formattedLastUpdated && (
+              <p className="text-xs font-medium text-slate-500">
+                {t("dbCurrentAsOf")}{" "}
+                <time
+                  dateTime={data.last_updated_iso}
+                  className="tabular-nums text-slate-700"
+                >
+                  {formattedLastUpdated} {t("utc")}
+                </time>
+              </p>
+            )}
+            {formattedPreviousPeriod && data.previous_period_iso && (
               <p className="text-xs text-slate-400">
-                Compared to:{" "}
+                {t("comparedTo")}{" "}
                 <time
                   dateTime={data.previous_period_iso}
                   className="tabular-nums"
                 >
-                  {previousPeriod.toLocaleString(
-                    locale === "zh" ? "zh-CN" : "en-US",
-                    { dateStyle: "medium", timeZone: "UTC" },
-                  )}
+                  {formattedPreviousPeriod}
                 </time>
               </p>
             )}
             {data.sync_cadence && (
               <p className="text-xs text-slate-400">
-                Automated sync cycle: {data.sync_cadence}
+                {t("automatedSyncCycle", { cadence: data.sync_cadence })}
               </p>
             )}
           </div>
@@ -272,7 +233,7 @@ export function ProcessingVelocityTable({ data, locale }: Props) {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:underline"
             >
-              View source data
+              {t("viewSourceData")}
               <ExternalLink className="h-3 w-3" aria-hidden />
             </a>
           )}

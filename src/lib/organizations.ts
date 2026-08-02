@@ -109,15 +109,22 @@ export function organizationToImmigrationService(
     .map((service) => service.name)
     .filter((name): name is ServiceOffering => Boolean(name));
 
+  const latitude = Number(org.lat);
+  const longitude = Number(org.lng);
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+    return null;
+  }
+
   return {
     id: org.legacy_id ?? org.id,
     dbId: org.id,
     name: org.name,
     type: org.org_type ?? "NGO",
     state: org.state as USState,
+    city: org.city,
     address: org.address,
-    latitude: org.lat,
-    longitude: org.lng,
+    latitude,
+    longitude,
     pricing: (org.pricing as ImmigrationService["pricing"]) ?? "Low-cost",
     services_offered: servicesOffered,
     thumbnail_image_url: org.thumbnail_image_url ?? "",

@@ -7,6 +7,7 @@ type Props = {
   sourceLabel: string;
   sourceUrl: string;
   updatedAt: string | null;
+  formattedUpdatedAt?: string | null;
   officialLinkLabel?: string;
   officialLinkUrl?: string;
   stale?: boolean;
@@ -32,6 +33,7 @@ export function DataProvenanceFooter({
   sourceLabel,
   sourceUrl,
   updatedAt,
+  formattedUpdatedAt,
   officialLinkLabel,
   officialLinkUrl,
   stale = false,
@@ -39,7 +41,8 @@ export function DataProvenanceFooter({
   const t = useTranslations("Provenance");
   const locale = useLocale();
 
-  const formattedDate = formatUpdatedAt(updatedAt, locale);
+  const formattedDate =
+    formattedUpdatedAt ?? formatUpdatedAt(updatedAt, locale);
 
   return (
     <footer className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-muted-foreground">

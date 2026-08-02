@@ -10,6 +10,12 @@ type ProviderSearchCardProps = {
   searchSlot?: ReactNode;
   footer?: ReactNode;
   className?: string;
+  searchActive?: boolean;
+  onResetSearch?: () => void;
+  /** Hide the 50-state dropdown (states are selected via search autocomplete). */
+  hideStateFilter?: boolean;
+  /** Tighter spacing for the floating map toolbar. */
+  compact?: boolean;
 };
 
 export function ProviderSearchCard({
@@ -17,7 +23,40 @@ export function ProviderSearchCard({
   searchSlot,
   footer,
   className,
+  searchActive = false,
+  onResetSearch,
+  hideStateFilter = false,
+  compact = false,
 }: ProviderSearchCardProps) {
+  if (compact) {
+    return (
+      <div
+        className={cn(
+          "relative z-[1000] flex flex-wrap items-center gap-2 overflow-visible rounded-2xl border border-slate-200/80 bg-white/95 p-2.5 shadow-xl backdrop-blur-md sm:gap-3",
+          className,
+        )}
+      >
+        {searchSlot ? (
+          <div className="relative min-w-[min(100%,14rem)] flex-1 overflow-visible sm:min-w-[15rem]">
+            {searchSlot}
+          </div>
+        ) : null}
+        <div
+          className="mx-1 hidden h-6 w-px shrink-0 bg-slate-200 sm:block"
+          aria-hidden
+        />
+        <HomeStyleFilterBar
+          labelNamespace={labelNamespace}
+          searchActive={searchActive}
+          onResetSearch={onResetSearch}
+          hideStateFilter={hideStateFilter}
+          compact
+        />
+        {footer}
+      </div>
+    );
+  }
+
   return (
     <div
       className={cn(
@@ -26,12 +65,18 @@ export function ProviderSearchCard({
       )}
     >
       {searchSlot ? (
-        <div className="overflow-visible border-b border-slate-200">
+        <div className="overflow-visible border-b border-slate-200/80">
           {searchSlot}
         </div>
       ) : null}
-      <div className="relative overflow-visible">
-        <HomeStyleFilterBar labelNamespace={labelNamespace} />
+      <div className="relative z-50 overflow-visible">
+        <HomeStyleFilterBar
+          labelNamespace={labelNamespace}
+          searchActive={searchActive}
+          onResetSearch={onResetSearch}
+          hideStateFilter={hideStateFilter}
+          compact={false}
+        />
       </div>
       {footer ? <div className="overflow-visible">{footer}</div> : null}
     </div>

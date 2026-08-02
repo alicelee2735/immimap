@@ -21,7 +21,7 @@ export default async function MapPage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <main className="flex min-h-0 flex-1 flex-col overflow-visible bg-background">
+    <main className="relative flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden">
       <MapDashboard />
     </main>
   );

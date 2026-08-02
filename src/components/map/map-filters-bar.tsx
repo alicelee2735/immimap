@@ -12,10 +12,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { useMapFiltersStore } from "@/stores/map-filters";
-import type { PricingTier, ServiceCategory, USState } from "@/types/immimap";
+import { ALL_STATES, useMapFiltersStore } from "@/stores/map-filters";
+import type { PricingTier, ServiceCategory } from "@/types/immimap";
 
-const STATES: USState[] = ["CA", "TX", "FL", "NY", "NJ"];
 const CATEGORIES: ServiceCategory[] = [
   "asylum",
   "family",
@@ -30,6 +29,8 @@ type FilterSegmentProps<T extends string> = {
   options: { value: T; label: string }[];
   selected: T[];
   onToggle: (value: T) => void;
+  allOptionLabel?: string;
+  onSelectAll?: () => void;
   isLast?: boolean;
 };
 
@@ -39,8 +40,15 @@ function FilterSegment<T extends string>({
   options,
   selected,
   onToggle,
+  allOptionLabel,
+  onSelectAll,
   isLast,
 }: FilterSegmentProps<T>) {
+  const allSelected =
+    options.length > 0 &&
+    selected.length === options.length &&
+    options.every((option) => selected.includes(option.value));
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -59,7 +67,25 @@ function FilterSegment<T extends string>({
         </span>
         <ChevronDown className="h-4 w-4 text-primary transition group-data-[popup-open]:rotate-180" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="z-[100] w-64 rounded-2xl p-2" align="start">
+      <DropdownMenuContent
+        className="z-[9999] w-64 rounded-2xl bg-white p-2"
+        positionerClassName="z-[9999]"
+        align="start"
+      >
+        {allOptionLabel && onSelectAll ? (
+          <DropdownMenuCheckboxItem
+            checked={allSelected}
+            onClick={onSelectAll}
+            className={cn(
+              "px-3 py-2 text-sm font-medium",
+              allSelected
+                ? "text-primary"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {allOptionLabel}
+          </DropdownMenuCheckboxItem>
+        ) : null}
         {options.map((option) => {
           const active = selected.includes(option.value);
           return (
@@ -114,11 +140,13 @@ export function MapFiltersBar({ pricingOnly = false }: MapFiltersBarProps) {
   const toggleState = useMapFiltersStore((s) => s.toggleState);
   const toggleCategory = useMapFiltersStore((s) => s.toggleCategory);
   const togglePricingTier = useMapFiltersStore((s) => s.togglePricingTier);
+  const setCategories = useMapFiltersStore((s) => s.setCategories);
+  const setPricingTiers = useMapFiltersStore((s) => s.setPricingTiers);
   const resetFilters = useMapFiltersStore((s) => s.resetFilters);
 
-  const stateOptions = STATES.map((state) => ({
+  const stateOptions = ALL_STATES.map((state) => ({
     value: state,
-    label: t(`states.${state}`),
+    label: t.has(`states.${state}`) ? t(`states.${state}`) : state,
   }));
   const serviceOptions = CATEGORIES.map((category) => ({
     value: category,
@@ -160,10 +188,10 @@ export function MapFiltersBar({ pricingOnly = false }: MapFiltersBarProps) {
   }
 
   return (
-    <div className="relative z-[100] border-b bg-white/90 py-3 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/80">
+    <div className="relative z-50 border-b bg-white/90 py-3 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/80">
       <PageContainer>
         <p className="mb-2 text-sm font-semibold text-foreground">{t("title")}</p>
-        <div className="relative z-[100] rounded-[1.5rem] border border-slate-200 bg-white shadow-sm md:flex">
+        <div className="relative z-50 rounded-[1.5rem] border border-slate-200 bg-white shadow-sm md:flex">
           <FilterSegment
             title={t("stateLabel")}
             value={selectionLabel({
@@ -193,6 +221,8 @@ export function MapFiltersBar({ pricingOnly = false }: MapFiltersBarProps) {
             options={serviceOptions}
             selected={categories}
             onToggle={toggleCategory}
+            allOptionLabel={t("allServices")}
+            onSelectAll={() => setCategories([...CATEGORIES])}
           />
           <FilterSegment
             title={t("priceLabel")}
@@ -208,6 +238,8 @@ export function MapFiltersBar({ pricingOnly = false }: MapFiltersBarProps) {
             options={pricingOptions}
             selected={pricingTiers}
             onToggle={togglePricingTier}
+            allOptionLabel={t("allPrices")}
+            onSelectAll={() => setPricingTiers([...PRICING])}
           />
           <div className="flex items-center justify-center px-3 py-3 md:border-l md:border-slate-200">
             <Button

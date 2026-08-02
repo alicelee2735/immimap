@@ -1,6 +1,6 @@
 {
   "LocaleLayout": {
-    "title": "ImmiMap — 移民法律服务与 USCIS 进度透明"
+    "title": "ImmiMap — 移民法律援助与了解你的权利"
   },
   "Metadata": {
     "homeTitle": "ImmiMap | 美国移民法律与社会服务地图",
@@ -14,7 +14,9 @@
     "joinTitle": "加入团队 | ImmiMap",
     "joinDescription": "我们正在招募志愿开发者和社交媒体负责人，共同推动 ImmiMap 平台的成长。",
     "verifyTitle": "核验标准 | ImmiMap",
-    "verifyDescription": "了解 ImmiMap 如何审核并标注非营利移民服务机构为「已核验」，以及这些机构如何出现在公开地图上。"
+    "verifyDescription": "了解 ImmiMap 如何审核并标注非营利移民服务机构为「已核验」，以及这些机构如何出现在公开地图上。",
+    "knowYourRightsTitle": "了解你的权利 | ImmiMap",
+    "knowYourRightsDescription": "关于美国宪法与移民相关权利的简明实用指引。本页不构成法律意见，仅作为知情行动的起点。"
   },
   "Verify": {
     "eyebrow": "信任与质量",
@@ -67,6 +69,7 @@
     "mainNav": "主导航",
     "home": "首页",
     "map": "地图",
+    "knowYourRights": "了解你的权利",
     "processing": "审理时间",
     "visaBulletin": "签证公告",
     "about": "关于我们",
@@ -90,15 +93,20 @@
     "resultsTitle": "移民服务机构",
     "resultsCount": "找到 {count} 家服务机构",
     "liveResults": "实时筛选",
-    "viewDetails": "查看详情",
+    "viewDetails": "查看详情 ➔",
     "provenanceTimestamp": "数据库同步于：",
     "provenanceCadence": "自动同步：每日 04:00 UTC"
   },
   "Search": {
     "title": "搜索服务机构",
     "queryLabel": "搜索服务机构",
-    "queryPlaceholder": "按机构名称或城市搜索…",
+    "queryPlaceholder": "按机构名称、城市或州搜索（例如 California、CA、Houston）…",
     "noMatches": "未找到匹配的服务机构。",
+    "statesSection": "州",
+    "stateHint": "查看该州全部服务机构",
+    "locationsSection": "地点",
+    "providersSection": "服务机构",
+    "locationProviderCount": "{count} 家机构",
     "nameLabel": "机构名称",
     "namePlaceholder": "按名称搜索…",
     "cityLabel": "城市",
@@ -109,19 +117,66 @@
   "Filters": {
     "title": "查找服务机构",
     "reset": "重置筛选",
+    "resetAll": "全部重置 ✕",
     "stateLabel": "州",
     "serviceLabel": "服务类型",
     "priceLabel": "费用类别",
-    "allStates": "CA、TX、FL、NY、NJ",
+    "allStates": "所有州",
     "allServices": "所有服务类型",
     "allPrices": "所有费用类别",
     "selectedCount": "已选 {count} 项",
     "states": {
+      "AL": "阿拉巴马",
+      "AK": "阿拉斯加",
+      "AZ": "亚利桑那",
+      "AR": "阿肯色",
       "CA": "加利福尼亚",
-      "TX": "德克萨斯",
+      "CO": "科罗拉多",
+      "CT": "康涅狄格",
+      "DC": "华盛顿哥伦比亚特区",
+      "DE": "特拉华",
       "FL": "佛罗里达",
+      "GA": "佐治亚",
+      "HI": "夏威夷",
+      "ID": "爱达荷",
+      "IL": "伊利诺伊",
+      "IN": "印第安纳",
+      "IA": "艾奥瓦",
+      "KS": "堪萨斯",
+      "KY": "肯塔基",
+      "LA": "路易斯安那",
+      "ME": "缅因",
+      "MD": "马里兰",
+      "MA": "马萨诸塞",
+      "MI": "密歇根",
+      "MN": "明尼苏达",
+      "MS": "密西西比",
+      "MO": "密苏里",
+      "MT": "蒙大拿",
+      "NE": "内布拉斯加",
+      "NV": "内华达",
+      "NH": "新罕布什尔",
+      "NJ": "新泽西",
+      "NM": "新墨西哥",
       "NY": "纽约",
-      "NJ": "新泽西"
+      "NC": "北卡罗来纳",
+      "ND": "北达科他",
+      "OH": "俄亥俄",
+      "OK": "俄克拉荷马",
+      "OR": "俄勒冈",
+      "PA": "宾夕法尼亚",
+      "RI": "罗得岛",
+      "SC": "南卡罗来纳",
+      "SD": "南达科他",
+      "TN": "田纳西",
+      "TX": "德克萨斯",
+      "UT": "犹他",
+      "VT": "佛蒙特",
+      "VA": "弗吉尼亚",
+      "WA": "华盛顿州",
+      "WV": "西弗吉尼亚",
+      "WI": "威斯康星",
+      "WY": "怀俄明"
     },
     "services": {
       "asylum": "庇护",
@@ -144,7 +199,12 @@
     "languagesLabel": "服务语言",
     "servicesLabel": "服务项目",
     "provenanceLabel": "数据库同步于：",
-    "syncCadence": "自动同步：每日 04:00 UTC"
+    "syncCadence": "自动同步：每日 04:00 UTC",
+    "intakeOpen": "正在接受新案件",
+    "intakeLimited": "名额有限",
+    "intakeLimitedDetail": "名额有限，提交前请先联系",
+    "intakeWaitlist": "候补名单中",
+    "intakePaused": "暂停受理 / 候补名单开放中"
   },
   "Pricing": {
     "pro_bono": "公益代理",
@@ -176,6 +236,16 @@
     "statusBadgeCurrent": "正常",
     "statusBadgeBacklog": "积压/等待",
     "priorPeriod": "上期：{months} 个月",
+    "allForms": "全部表格",
+    "monthsUnit": "个月",
+    "velocityFaster": "▲ 加快 {count} 个月",
+    "velocitySlower": "▼ 放缓 {count} 个月",
+    "velocityStable": "• 稳定",
+    "dbCurrentAsOf": "数据库截至：",
+    "comparedTo": "对比基准：",
+    "automatedSyncCycle": "自动同步周期：{cadence}",
+    "viewSourceData": "查看原始数据",
+    "utc": "UTC",
     "sourceLine": "来源：美国公民及移民服务局",
     "dataAccuracyDisclaimer": "数据与 USCIS 及美国国务院官方来源实时同步。实际审理时间和优先日期可能因个案情况、受理办公室及补件请求（RFE）等因素而有显著差异。",
     "disclaimer": "审理时间估算来源于 USCIS 官方数据，每日自动同步。向申请人提供建议前请务必在 uscis.gov 核实最新时间。"
@@ -188,11 +258,12 @@
   },
   "Home": {
     "heroEyebrow": "社会影响力 · 开放数据 · 无障碍优先",
-    "heroTitle": "更清晰地找到移民服务资源。",
+    "heroTitle": "更清晰地找到移民服务资源",
     "heroSubtitle": "覆盖全美 NGO 与法律援助的可视化目录。为无障碍而设计，由开放数据驱动。",
-    "heroBody": "ImmiMap 帮助家庭、倡导者和社区组织更快找到可信赖的移民支持资源。你可以先按地点、服务类型和费用筛选，再在不丢失地图上下文的情况下比较服务机构。",
+    "heroBody": "ImmiMap 帮助家庭、倡导者和社区组织更快找到可信赖的移民支持资源——告别零散名单与过时联系方式。",
+    "exploreMap": "探索地图 ➔",
     "search": {
-      "allStates": "CA, TX, FL, NY, NJ",
+      "allStates": "所有州",
       "allServices": "所有服务类型",
       "allPrices": "所有费用类别",
       "helper": "在这里选择筛选条件，然后打开地图查看匹配机构。",
@@ -206,32 +277,40 @@
       "description": "这一体验旨在减少寻求帮助时的阻力，同时为倡导者提供足够信息，以便做出更可靠的转介。",
       "steps": {
         "location": {
-          "title": "按地点筛选",
-          "description": "选择州或地区，将列表缩小到真正有可能服务申请人的机构。"
+          "title": "定位你的区域",
+          "description": "打开地图，按城市、州或邮编搜索，查看真正有可能为你提供服务的机构。"
         },
         "compare": {
           "title": "比较服务",
-          "description": "在同一界面查看服务类别、费用档位、联系方式和语言支持。"
+          "description": "快速浏览费用档位、服务类别与语言支持，需要时再打开完整档案。"
         },
         "connect": {
           "title": "联系援助",
-          "description": "打开机构详情，在支持的设备上直接拨号，或访问机构网站开始下一步。"
+          "description": "直接拨号、访问机构网站，或把已核验的机构信息分享给需要帮助的人。"
         }
       }
     },
     "features": {
       "openData": {
         "title": "开放数据",
-        "description": "来自官方来源的实时更新。"
+        "description": "来自公共登记信息并定期刷新，让联系方式更可信。"
       },
       "multilingual": {
         "title": "多语言",
-        "description": "完整支持英文和中文访问。"
+        "description": "完整支持英文和中文——为真正使用它的社区而建。"
       },
       "socialImpact": {
         "title": "社会影响",
-        "description": "将弱势社区直接连接到经核验的援助资源。"
+        "description": "把家庭与倡导者连接到已核验的非营利援助，而非付费墙目录。"
       }
+    },
+    "preview": {
+      "badge": "已核验非营利机构",
+      "providerName": "社区法律援助",
+      "location": "奥克兰, CA",
+      "pricing": "公益免费",
+      "service": "家庭类",
+      "cta": "在地图上查看"
     },
     "join": {
       "eyebrow": "加入网络",
@@ -239,10 +318,37 @@
       "description": "支持开放移民数据、机构核验，以及面向移民家庭的无障碍工具。"
     }
   },
+  "KnowYourRights": {
+    "eyebrow": "权利与尊严",
+    "title": "了解你的权利",
+    "lead": "在美国的每一个人——不论移民身份——都享有宪法权利。本页提供简明入门说明，不能替代专业法律意见。",
+    "disclaimer": "ImmiMap 不是律师事务所，也不提供法律意见。具体情况因人而异。请咨询合格律师或经认证的代理人，获取针对你案件的指导。",
+    "sections": {
+      "remainSilent": {
+        "title": "你有权保持沉默",
+        "description": "你可以拒绝回答关于移民身份、出生地或入境方式的问题。你可以表示希望保持沉默，并要求与律师交谈。"
+      },
+      "documents": {
+        "title": "不要签署你不理解的文件",
+        "description": "如需口译请提出要求。不要签署你未阅读或不理解的文件。签署可能意味着放弃重要权利。"
+      },
+      "homeEntry": {
+        "title": "进入住家通常需要搜查令",
+        "description": "未经同意，ICE 通常需要由法官签署的司法搜查令才能进入你的住所。你可以要求执法人员把搜查令从门缝塞入，或贴在窗上给你查看后再开门。"
+      },
+      "attorney": {
+        "title": "你有权获得律师帮助",
+        "description": "在移民程序中，你有权自费聘请律师或经认证的代理人。你可以索取免费或低收费法律服务名单。"
+      }
+    },
+    "ctaTitle": "需要寻找法律援助？",
+    "ctaDescription": "在 ImmiMap 目录中查找你附近的已核验非营利机构与法律援助提供者。",
+    "ctaButton": "探索地图 ➔"
+  },
   "About": {
     "eyebrow": "关于 ImmiMap",
     "title": "可靠的移民支持资源应该更容易被找到。",
-    "lead": "ImmiMap 是一个公共利益导向的目录，聚合移民法律援助、非营利支持和透明的 USCIS 审理信息。",
+    "lead": "ImmiMap 是一个公共利益导向的目录，提供可及的移民法律援助、经核验的非营利支持，以及核心的“了解您的权利”法律指南。",
     "mission": {
       "title": "我们的使命",
       "description": "我们帮助移民、家庭和倡导者减少猜测，更快找到可信赖的服务。目标很简单：让获得专业帮助的第一步更清晰、更快速、更可及。"
@@ -253,7 +359,7 @@
     },
     "transparency": {
       "title": "数据透明",
-      "description": "机构与审理时间数据采用可追溯、可更新、可审核的结构。当前演示数据会清楚标注，系统也已为接入经核验的数据流水线做好准备。"
+      "description": "机构目录数据采用可追溯、可更新、可审核的结构。当前演示数据会清楚标注，系统也已为接入经核验的数据流水线做好准备。"
     }
   },
   "Join": {
@@ -278,7 +384,7 @@
     "eyebrow": "捐赠",
     "title": "支持经核验的移民援助。",
     "lead": "你的捐赠将帮助我们持续维护服务机构数据，让家庭和倡导者更容易找到可信赖的帮助。",
-    "proceeds": "100% of proceeds are redistributed to verified immigration NGOs mapped on this platform.",
+    "proceeds": "捐款的 100% 将分配给本平台地图上经核验的移民非营利机构。",
     "checkout": "通过 Stripe Checkout 捐赠",
     "secure": "安全支付由 Stripe 提供。"
   },

@@ -1,4 +1,55 @@
-export type USState = "CA" | "TX" | "FL" | "NY" | "NJ";
+export type USState =
+  | "AL"
+  | "AK"
+  | "AZ"
+  | "AR"
+  | "CA"
+  | "CO"
+  | "CT"
+  | "DC"
+  | "DE"
+  | "FL"
+  | "GA"
+  | "HI"
+  | "ID"
+  | "IL"
+  | "IN"
+  | "IA"
+  | "KS"
+  | "KY"
+  | "LA"
+  | "ME"
+  | "MD"
+  | "MA"
+  | "MI"
+  | "MN"
+  | "MS"
+  | "MO"
+  | "MT"
+  | "NE"
+  | "NV"
+  | "NH"
+  | "NJ"
+  | "NM"
+  | "NY"
+  | "NC"
+  | "ND"
+  | "OH"
+  | "OK"
+  | "OR"
+  | "PA"
+  | "RI"
+  | "SC"
+  | "SD"
+  | "TN"
+  | "TX"
+  | "UT"
+  | "VT"
+  | "VA"
+  | "WA"
+  | "WV"
+  | "WI"
+  | "WY";
 
 export type ServiceCategory =
   | "asylum"
@@ -34,6 +85,8 @@ export type ImmigrationService = {
   name: string;
   type: ProviderType;
   state: USState;
+  /** City name from the organization record (falls back to address parsing when absent). */
+  city?: string;
   address: string;
   latitude: number;
   longitude: number;

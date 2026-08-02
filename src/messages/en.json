@@ -1,6 +1,6 @@
 {
   "LocaleLayout": {
-    "title": "ImmiMap — Immigration services & USCIS transparency"
+    "title": "ImmiMap — Immigration legal aid & Know Your Rights"
   },
   "Metadata": {
     "homeTitle": "ImmiMap | Map of immigration legal & social services",
@@ -14,7 +14,9 @@
     "joinTitle": "Join the team | ImmiMap",
     "joinDescription": "We are recruiting volunteer web developers and social media leads to help scale the ImmiMap platform.",
     "verifyTitle": "How we verify | ImmiMap",
-    "verifyDescription": "Learn how ImmiMap evaluates and labels nonprofit immigration organizations as verified before they appear on the public map."
+    "verifyDescription": "Learn how ImmiMap evaluates and labels nonprofit immigration organizations as verified before they appear on the public map.",
+    "knowYourRightsTitle": "Know Your Rights | ImmiMap",
+    "knowYourRightsDescription": "Clear, practical guidance on constitutional and immigration rights in the United States. Not legal advice — a starting point for informed action."
   },
   "Verify": {
     "eyebrow": "Trust & quality",
@@ -67,6 +69,7 @@
     "mainNav": "Primary",
     "home": "Home",
     "map": "Map",
+    "knowYourRights": "Know Your Rights",
     "processing": "Processing times",
     "visaBulletin": "Visa Bulletin",
     "about": "About Us",
@@ -90,15 +93,20 @@
     "resultsTitle": "Immigration providers",
     "resultsCount": "{count, plural, =0 {No providers} one {# provider} other {# providers}} found",
     "liveResults": "Live filters",
-    "viewDetails": "View details",
+    "viewDetails": "View details ➔",
     "provenanceTimestamp": "Registry synchronized:",
     "provenanceCadence": "Auto-sync: Daily at 04:00 UTC"
   },
   "Search": {
     "title": "Search providers",
     "queryLabel": "Search providers",
-    "queryPlaceholder": "Search by organization name or city…",
+    "queryPlaceholder": "Search by organization name, city, or state (e.g., 'California', 'CA', 'Houston')…",
     "noMatches": "No matching providers found.",
+    "statesSection": "States",
+    "stateHint": "View all providers in this state",
+    "locationsSection": "Locations",
+    "providersSection": "Providers",
+    "locationProviderCount": "{count, plural, one {# provider} other {# providers}}",
     "nameLabel": "Organization name",
     "namePlaceholder": "Search by name…",
     "cityLabel": "City",
@@ -109,19 +117,66 @@
   "Filters": {
     "title": "Explore providers",
     "reset": "Reset filters",
+    "resetAll": "Reset all ✕",
     "stateLabel": "State",
     "serviceLabel": "Service type",
     "priceLabel": "Price category",
-    "allStates": "CA, TX, FL, NY, NJ",
+    "allStates": "All states",
     "allServices": "All service types",
     "allPrices": "All price categories",
     "selectedCount": "{count} selected",
     "states": {
+      "AL": "Alabama",
+      "AK": "Alaska",
+      "AZ": "Arizona",
+      "AR": "Arkansas",
       "CA": "California",
-      "TX": "Texas",
+      "CO": "Colorado",
+      "CT": "Connecticut",
+      "DC": "Washington, D.C.",
+      "DE": "Delaware",
       "FL": "Florida",
+      "GA": "Georgia",
+      "HI": "Hawaii",
+      "ID": "Idaho",
+      "IL": "Illinois",
+      "IN": "Indiana",
+      "IA": "Iowa",
+      "KS": "Kansas",
+      "KY": "Kentucky",
+      "LA": "Louisiana",
+      "ME": "Maine",
+      "MD": "Maryland",
+      "MA": "Massachusetts",
+      "MI": "Michigan",
+      "MN": "Minnesota",
+      "MS": "Mississippi",
+      "MO": "Missouri",
+      "MT": "Montana",
+      "NE": "Nebraska",
+      "NV": "Nevada",
+      "NH": "New Hampshire",
+      "NJ": "New Jersey",
+      "NM": "New Mexico",
       "NY": "New York",
-      "NJ": "New Jersey"
+      "NC": "North Carolina",
+      "ND": "North Dakota",
+      "OH": "Ohio",
+      "OK": "Oklahoma",
+      "OR": "Oregon",
+      "PA": "Pennsylvania",
+      "RI": "Rhode Island",
+      "SC": "South Carolina",
+      "SD": "South Dakota",
+      "TN": "Tennessee",
+      "TX": "Texas",
+      "UT": "Utah",
+      "VT": "Vermont",
+      "VA": "Virginia",
+      "WA": "Washington",
+      "WV": "West Virginia",
+      "WI": "Wisconsin",
+      "WY": "Wyoming"
     },
     "services": {
       "asylum": "Asylum",
@@ -144,7 +199,12 @@
     "languagesLabel": "Languages",
     "servicesLabel": "Services offered",
     "provenanceLabel": "Registry synchronized:",
-    "syncCadence": "Auto-sync: Daily at 04:00 UTC"
+    "syncCadence": "Auto-sync: Daily at 04:00 UTC",
+    "intakeOpen": "Accepting new cases",
+    "intakeLimited": "Limited availability",
+    "intakeLimitedDetail": "Limited availability — contact before submitting",
+    "intakeWaitlist": "Waitlist active",
+    "intakePaused": "Intake paused / waitlist active"
   },
   "Pricing": {
     "pro_bono": "Pro bono",
@@ -176,8 +236,18 @@
     "statusBadgeCurrent": "Current",
     "statusBadgeBacklog": "Backlog/Waiting",
     "priorPeriod": "Prior period: {months} mo",
+    "allForms": "All forms",
+    "monthsUnit": "mo",
+    "velocityFaster": "▲ {count} mo faster",
+    "velocitySlower": "▼ {count} mo slower",
+    "velocityStable": "• Stable",
+    "dbCurrentAsOf": "Database state current as of:",
+    "comparedTo": "Compared to:",
+    "automatedSyncCycle": "Automated sync cycle: {cadence}",
+    "viewSourceData": "View source data",
+    "utc": "UTC",
     "sourceLine": "Source: U.S. Citizenship and Immigration Services",
-    "dataAccuracyDisclaimer": "Data is live-synced from official USCIS and State Department sources. Actual processing times and priority dates may vary significantly based on individual case factors, field offices, and Requests for Evidence (RFEs).",
+    "dataAccuracyDisclaimer": "Data is live-synced from official U.S. Citizenship and Immigration Services (USCIS) sources. Actual processing times and priority dates may vary significantly based on individual case factors, field offices, and Requests for Evidence (RFEs).",
     "disclaimer": "Processing time estimates are derived from official USCIS data and updated on a daily automated sync. Always verify current estimates at uscis.gov before advising clients."
   },
   "NotFound": {
@@ -188,11 +258,12 @@
   },
   "Home": {
     "heroEyebrow": "Social impact · Open data · Accessibility-first",
-    "heroTitle": "Navigate Immigration Services with Clarity.",
+    "heroTitle": "Navigate Immigration Services with Clarity",
     "heroSubtitle": "A visual directory of NGOs and legal aid across the US. Designed for accessibility, powered by open data.",
-    "heroBody": "ImmiMap helps families, advocates, and community organizations find credible immigration support faster. Start with location, service type, and price filters, then compare providers without losing context.",
+    "heroBody": "ImmiMap helps families, advocates, and community organizations find credible immigration support faster — without the noise of scattered directories or outdated contact lists.",
+    "exploreMap": "Explore the Map ➔",
     "search": {
-      "allStates": "CA, TX, FL, NY, NJ",
+      "allStates": "All states",
       "allServices": "All service types",
       "allPrices": "All price categories",
       "helper": "Choose filters here, then open the map to explore matching providers.",
@@ -206,32 +277,40 @@
       "description": "The experience is designed to reduce friction for people who need help quickly while still giving advocates enough context to make a confident referral.",
       "steps": {
         "location": {
-          "title": "Filter by Location",
-          "description": "Choose a state or region to narrow the provider list to organizations that can realistically serve the person seeking help."
+          "title": "Find your area",
+          "description": "Open the map and search by city, state, or zip to see organizations that can realistically serve you."
         },
         "compare": {
-          "title": "Compare Services",
-          "description": "Review service categories, pricing tiers, contact information, and language availability in one place."
+          "title": "Compare services",
+          "description": "Scan pricing tiers, service categories, and languages — then open a full profile when you are ready."
         },
         "connect": {
-          "title": "Connect with Help",
-          "description": "Open provider details, call directly on supported devices, or visit the organization website to begin the next step."
+          "title": "Connect with help",
+          "description": "Call directly, visit the organization website, or share a verified listing with someone who needs support."
         }
       }
     },
     "features": {
       "openData": {
         "title": "Open Data",
-        "description": "Real-time updates from official sources."
+        "description": "Listings drawn from public registries and refreshed regularly so contact details stay trustworthy."
       },
       "multilingual": {
         "title": "Multilingual",
-        "description": "Fully accessible in English and Chinese."
+        "description": "Fully accessible in English and Chinese — built for the communities who use it."
       },
       "socialImpact": {
         "title": "Social Impact",
-        "description": "Directly connecting vulnerable communities to verified aid."
+        "description": "Connecting families and advocates to verified nonprofit aid, not paywalled directories."
       }
+    },
+    "preview": {
+      "badge": "Verified nonprofit",
+      "providerName": "Community Legal Aid",
+      "location": "Oakland, CA",
+      "pricing": "Pro bono",
+      "service": "Family",
+      "cta": "View on map"
     },
     "join": {
       "eyebrow": "Join the network",
@@ -239,10 +318,37 @@
       "description": "Support open immigration data, provider verification, and accessible tools for families navigating a complex system."
     }
   },
+  "KnowYourRights": {
+    "eyebrow": "Rights & dignity",
+    "title": "Know Your Rights",
+    "lead": "Everyone in the United States has constitutional rights — regardless of immigration status. This page is a plain-language starting point, not a substitute for legal advice.",
+    "disclaimer": "ImmiMap is not a law firm and does not provide legal advice. Situations vary. Contact a qualified attorney or accredited representative for guidance specific to your case.",
+    "sections": {
+      "remainSilent": {
+        "title": "You have the right to remain silent",
+        "description": "You can decline to answer questions about your immigration status, where you were born, or how you entered the country. You may say you wish to remain silent and ask to speak with a lawyer."
+      },
+      "documents": {
+        "title": "Do not sign anything you do not understand",
+        "description": "Ask for an interpreter if you need one. Do not sign documents you have not read or that you do not understand. Signing can waive important rights."
+      },
+      "homeEntry": {
+        "title": "Home entry requires a warrant",
+        "description": "ICE generally needs a judicial warrant signed by a judge to enter your home without consent. You can ask officers to slip the warrant under the door or hold it to a window before opening."
+      },
+      "attorney": {
+        "title": "You have the right to an attorney",
+        "description": "In immigration proceedings you have the right to hire a lawyer or accredited representative — at your own expense. Ask for a list of free or low-cost legal services."
+      }
+    },
+    "ctaTitle": "Need help finding legal aid?",
+    "ctaDescription": "Explore verified nonprofits and legal aid providers near you on the ImmiMap directory.",
+    "ctaButton": "Explore the Map ➔"
+  },
   "About": {
     "eyebrow": "About ImmiMap",
     "title": "Reliable immigration support should be easier to find.",
-    "lead": "ImmiMap is a public-interest directory for immigration legal aid, nonprofit support, and transparent USCIS processing information.",
+    "lead": "ImmiMap is a public-interest directory providing accessible immigration legal aid, verified nonprofit support, and essential 'Know Your Rights' resources.",
     "mission": {
       "title": "Our Mission",
       "description": "We help immigrants, families, and advocates locate trustworthy services with less guesswork. The goal is simple: make the first step toward qualified help clearer, faster, and more accessible."
@@ -253,7 +359,7 @@
     },
     "transparency": {
       "title": "Data Transparency",
-      "description": "Provider and processing-time data is modeled so each record can be traced, refreshed, and reviewed. Current demo data is clearly labeled, and the system is ready for verified source pipelines."
+      "description": "Provider listings are modeled so each record can be traced, refreshed, and reviewed. Current demo data is clearly labeled, and the system is ready for verified source pipelines."
     }
   },
   "Join": {
@@ -350,6 +456,6 @@
       "EB5": "Immigrant investors"
     },
     "disclaimer": "Final action dates are derived from official U.S. State Department Visa Bulletin data. Always confirm current cutoff dates at travel.state.gov before advising clients.",
-    "dataAccuracyDisclaimer": "Data is live-synced from official USCIS and State Department sources. Actual processing times and priority dates may vary significantly based on individual case factors, field offices, and Requests for Evidence (RFEs)."
+    "dataAccuracyDisclaimer": "Data is live-synced from official U.S. Department of State sources. Actual processing times and priority dates may vary significantly based on individual case factors, field offices, and Requests for Evidence (RFEs)."
   }
 }

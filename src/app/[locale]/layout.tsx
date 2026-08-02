@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -57,23 +58,27 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
 
+  // Path for SSR nav active state only — never used for scroll locking.
+  const headerStore = await headers();
+  const pathname = headerStore.get("x-pathname") ?? "/";
+
   return (
     <html
-      className={clsx("h-full", inter.variable, notoSansSC.variable)}
+      className={clsx("min-h-full", inter.variable, notoSansSC.variable)}
       lang={locale}
       suppressHydrationWarning
     >
       <body
         className={clsx(
-          "flex min-h-full flex-col bg-background text-foreground antialiased",
+          "flex min-h-dvh flex-col bg-background text-foreground antialiased",
           locale === "zh" ? notoSansSC.className : inter.className,
         )}
         suppressHydrationWarning
       >
         <NextIntlClientProvider>
           <GoogleAnalytics />
-          <SiteHeader />
-          {children}
+          <SiteHeader pathname={pathname} />
+          <div className="flex min-h-0 flex-1 flex-col">{children}</div>
         </NextIntlClientProvider>
       </body>
     </html>

@@ -19,7 +19,7 @@ function MapLoadingFallback() {
   const t = useTranslations("Map");
   return (
     <div
-      className="flex h-full min-h-[420px] w-full flex-col items-center justify-center gap-3 bg-muted/30 text-muted-foreground"
+      className="flex h-full w-full flex-col items-center justify-center gap-3 bg-muted/30 text-muted-foreground"
       role="status"
       aria-live="polite"
     >
@@ -36,6 +36,8 @@ type Props = {
 export function ImmimapMap({ services }: Props) {
   const t = useTranslations("Map");
   return (
-    <ImmimapMapClient services={services} ariaLabel={t("mapAriaLabel")} />
+    <div className="h-full w-full">
+      <ImmimapMapClient services={services} ariaLabel={t("mapAriaLabel")} />
+    </div>
   );
 }

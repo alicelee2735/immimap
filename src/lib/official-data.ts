@@ -49,6 +49,8 @@ function mapRecord(row: {
   };
 }
 
+const SUPABASE_FETCH_TIMEOUT_MS = 4_000;
+
 async function fetchLatestRecord(
   dataType: OfficialDataType,
 ): Promise<OfficialDataRecord | null> {
@@ -56,20 +58,37 @@ async function fetchLatestRecord(
     return null;
   }
 
-  const supabase = getSupabaseAdminClient();
-  const { data, error } = await supabase
-    .from("official_data_store")
-    .select("*")
-    .eq("data_type", dataType)
-    .order("updated_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+  try {
+    const query = getSupabaseAdminClient()
+      .from("official_data_store")
+      .select("*")
+      .eq("data_type", dataType)
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
-  if (error) {
-    throw error;
+    const result = await Promise.race([
+      query,
+      new Promise<null>((resolve) => {
+        setTimeout(() => resolve(null), SUPABASE_FETCH_TIMEOUT_MS);
+      }),
+    ]);
+
+    if (!result) {
+      return null;
+    }
+
+    const { data, error } = result;
+    if (error) {
+      console.warn(`Supabase fetch failed for ${dataType}:`, error.message);
+      return null;
+    }
+
+    return data ? mapRecord(data) : null;
+  } catch (error) {
+    console.warn(`Supabase fetch failed for ${dataType}:`, error);
+    return null;
   }
-
-  return data ? mapRecord(data) : null;
 }
 
 function isRecordStale(updatedAt: string, maxAgeDays: number): boolean {

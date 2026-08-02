@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { MapPin, Search, X } from "lucide-react";
+import { Building2, Landmark, MapPin, Search, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { ProviderSearchCard } from "@/components/filters/provider-search-card";
@@ -10,9 +10,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PageContainer } from "@/components/layout/page-container";
 import type { OrganizationFilters } from "@/types/database.types";
-import type { ImmigrationService, ServiceCategory } from "@/types/immimap";
+import type {
+  ImmigrationService,
+  ServiceCategory,
+  USState,
+} from "@/types/immimap";
 import { cn } from "@/lib/utils";
-import { filterServicesByQuery } from "@/lib/search-services";
+import {
+  collectLocationSuggestions,
+  filterServicesByQuery,
+  type LocationSuggestion,
+} from "@/lib/search-services";
+import {
+  collectStateSuggestions,
+  type StateSuggestion,
+} from "@/lib/us-states";
 
 const CATEGORY_TO_SERVICE: Record<ServiceCategory, string> = {
   asylum: "Asylum",
@@ -30,6 +42,12 @@ const SERVICE_TO_CATEGORY = Object.fromEntries(
 
 export type OrganizationSearchValues = {
   query: string;
+  /** Exact city filter applied when a location suggestion is chosen. */
+  city: string | null;
+  /** State paired with `city` for disambiguation (e.g. Springfield). */
+  cityState: string | null;
+  /** When a state suggestion is chosen, lock the map filter to this state. */
+  selectedState: USState | null;
 };
 
 type Props = {
@@ -37,12 +55,20 @@ type Props = {
   onChange: (values: OrganizationSearchValues) => void;
   suggestions: ImmigrationService[];
   onSelectSuggestion?: (service: ImmigrationService) => void;
+  onSelectLocation?: (location: LocationSuggestion) => void;
+  onSelectState?: (state: StateSuggestion) => void;
+  onClear?: () => void;
+  /** Floating glass overlay inside the map canvas (default: full-width bar). */
+  variant?: "bar" | "floating";
 };
 
 export function organizationSearchToFilters(
   values: OrganizationSearchValues,
 ): OrganizationFilters {
-  return {};
+  return {
+    city: values.city ?? undefined,
+    state: values.selectedState ?? undefined,
+  };
 }
 
 export function buildOrganizationsQuery(
@@ -72,41 +98,65 @@ export function buildOrganizationsQuery(
 
 export const DEFAULT_SEARCH_VALUES: OrganizationSearchValues = {
   query: "",
+  city: null,
+  cityState: null,
+  selectedState: null,
 };
 
-const MAX_SUGGESTIONS = 8;
+const MAX_PROVIDER_SUGGESTIONS = 6;
+const MAX_LOCATION_SUGGESTIONS = 5;
+const MAX_STATE_SUGGESTIONS = 5;
 
 export function OrganizationSearch({
   values,
   onChange,
   suggestions,
   onSelectSuggestion,
+  onSelectLocation,
+  onSelectState,
+  onClear,
+  variant = "bar",
 }: Props) {
   const t = useTranslations("Search");
   const tFilters = useTranslations("Filters");
   const listboxId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
+  const isFloating = variant === "floating";
 
   const trimmedQuery = values.query.trim();
   const hasQuery = trimmedQuery.length > 0;
 
-  const matchingSuggestions = useMemo(() => {
+  const stateSuggestions = useMemo(
+    () => collectStateSuggestions(trimmedQuery, MAX_STATE_SUGGESTIONS),
+    [trimmedQuery],
+  );
+
+  const locationSuggestions = useMemo(
+    () =>
+      collectLocationSuggestions(
+        suggestions,
+        trimmedQuery,
+        MAX_LOCATION_SUGGESTIONS,
+      ),
+    [suggestions, trimmedQuery],
+  );
+
+  const providerSuggestions = useMemo(() => {
     if (!hasQuery) {
       return [];
     }
 
     return filterServicesByQuery(suggestions, trimmedQuery).slice(
       0,
-      MAX_SUGGESTIONS,
+      MAX_PROVIDER_SUGGESTIONS,
     );
   }, [hasQuery, suggestions, trimmedQuery]);
 
-  useEffect(() => {
-    if (!hasQuery) {
-      setOpen(false);
-    }
-  }, [hasQuery]);
+  const hasMatches =
+    stateSuggestions.length > 0 ||
+    locationSuggestions.length > 0 ||
+    providerSuggestions.length > 0;
 
   useEffect(() => {
     function handlePointerDown(event: MouseEvent) {
@@ -119,15 +169,38 @@ export function OrganizationSearch({
     return () => document.removeEventListener("mousedown", handlePointerDown);
   }, []);
 
-  return (
-    <div className="relative z-[100] shrink-0 overflow-visible border-b bg-white py-3">
-      <PageContainer className="overflow-visible">
-        <ProviderSearchCard
-          labelNamespace="filters"
-          searchSlot={
-        <div ref={containerRef} className="relative overflow-visible px-3 py-3">
-          <div className="space-y-1.5">
-            <Label htmlFor="org-search-query">{t("queryLabel")}</Label>
+  const clearSearch = () => {
+    onChange(DEFAULT_SEARCH_VALUES);
+    onClear?.();
+    setOpen(false);
+  };
+
+  const suggestionsOpen = open && hasQuery;
+
+  const searchCard = (
+    <ProviderSearchCard
+      labelNamespace="filters"
+      hideStateFilter
+      compact={isFloating}
+      searchActive={Boolean(
+        values.query.trim() || values.city || values.selectedState,
+      )}
+      onResetSearch={() => {
+        onChange(DEFAULT_SEARCH_VALUES);
+        onClear?.();
+      }}
+      searchSlot={
+        <div
+          ref={containerRef}
+          className={cn(
+            "relative overflow-visible",
+            isFloating ? "w-full" : "px-3 py-2",
+          )}
+        >
+          <div className={cn(!isFloating && "space-y-1.5")}>
+            <Label htmlFor="org-search-query" className="sr-only">
+              {t("queryLabel")}
+            </Label>
             <div className="relative overflow-visible">
               <Search
                 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
@@ -136,12 +209,17 @@ export function OrganizationSearch({
               <Input
                 id="org-search-query"
                 role="combobox"
-                aria-expanded={open && matchingSuggestions.length > 0}
+                aria-expanded={suggestionsOpen}
                 aria-controls={listboxId}
                 aria-autocomplete="list"
                 value={values.query}
                 onChange={(event) => {
-                  onChange({ query: event.target.value });
+                  onChange({
+                    query: event.target.value,
+                    city: null,
+                    cityState: null,
+                    selectedState: null,
+                  });
                   setOpen(true);
                 }}
                 onFocus={() => {
@@ -150,7 +228,11 @@ export function OrganizationSearch({
                   }
                 }}
                 placeholder={t("queryPlaceholder")}
-                className="pl-9"
+                className={cn(
+                  "pl-9 shadow-none",
+                  isFloating &&
+                    "h-9 border-0 bg-transparent focus-visible:border-0 focus-visible:ring-0",
+                )}
                 autoComplete="off"
               />
               {hasQuery ? (
@@ -159,10 +241,7 @@ export function OrganizationSearch({
                   variant="ghost"
                   size="icon-sm"
                   className="absolute right-1 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-950"
-                  onClick={() => {
-                    onChange(DEFAULT_SEARCH_VALUES);
-                    setOpen(false);
-                  }}
+                  onClick={clearSearch}
                   aria-label={tFilters("reset")}
                   title={tFilters("reset")}
                 >
@@ -172,46 +251,163 @@ export function OrganizationSearch({
             </div>
           </div>
 
-          {open && hasQuery ? (
+          {suggestionsOpen ? (
             <div
-              className="absolute left-3 right-3 top-full z-[200] mt-1 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg"
+              className="absolute left-0 right-0 top-full z-[1050] mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg"
               role="listbox"
               id={listboxId}
             >
-              {matchingSuggestions.length > 0 ? (
-                <ul className="max-h-72 overflow-y-auto py-1">
-                  {matchingSuggestions.map((service) => (
-                    <li key={service.id}>
-                      <button
-                        type="button"
-                        role="option"
-                        aria-selected={false}
+              {hasMatches ? (
+                <div className="max-h-80 overflow-y-auto py-1">
+                  {stateSuggestions.length > 0 ? (
+                    <div>
+                      <p className="px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                        {t("statesSection")}
+                      </p>
+                      <ul>
+                        {stateSuggestions.map((state) => (
+                          <li key={state.code}>
+                            <button
+                              type="button"
+                              role="option"
+                              aria-selected={false}
+                              className="flex w-full items-start gap-3 px-3 py-2.5 text-left transition-colors hover:bg-primary/5"
+                              onMouseDown={(event) => event.preventDefault()}
+                              onClick={() => {
+                                onSelectState?.(state);
+                                onChange({
+                                  query: state.label,
+                                  city: null,
+                                  cityState: null,
+                                  selectedState: state.code,
+                                });
+                                setOpen(false);
+                              }}
+                            >
+                              <Landmark
+                                className="mt-0.5 h-4 w-4 shrink-0 text-primary"
+                                aria-hidden
+                              />
+                              <span className="min-w-0">
+                                <span className="block truncate text-sm font-medium text-foreground">
+                                  {state.label}
+                                </span>
+                                <span className="block truncate text-xs text-muted-foreground">
+                                  {t("stateHint")}
+                                </span>
+                              </span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+
+                  {locationSuggestions.length > 0 ? (
+                    <div>
+                      <p
                         className={cn(
-                          "flex w-full items-start gap-3 px-3 py-2.5 text-left transition-colors hover:bg-primary/5",
+                          "px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-slate-400",
+                          stateSuggestions.length > 0
+                            ? "border-t border-slate-100 pt-2"
+                            : "pt-2",
                         )}
-                        onMouseDown={(event) => event.preventDefault()}
-                        onClick={() => {
-                          onChange({ query: service.name });
-                          onSelectSuggestion?.(service);
-                          setOpen(false);
-                        }}
                       >
-                        <MapPin
-                          className="mt-0.5 h-4 w-4 shrink-0 text-primary"
-                          aria-hidden
-                        />
-                        <span className="min-w-0">
-                          <span className="block truncate text-sm font-medium text-foreground">
-                            {service.name}
-                          </span>
-                          <span className="block truncate text-xs text-muted-foreground">
-                            {service.address}
-                          </span>
-                        </span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+                        {t("locationsSection")}
+                      </p>
+                      <ul>
+                        {locationSuggestions.map((location) => (
+                          <li key={location.label}>
+                            <button
+                              type="button"
+                              role="option"
+                              aria-selected={false}
+                              className="flex w-full items-start gap-3 px-3 py-2.5 text-left transition-colors hover:bg-primary/5"
+                              onMouseDown={(event) => event.preventDefault()}
+                              onClick={() => {
+                                onSelectLocation?.(location);
+                                onChange({
+                                  query: location.label,
+                                  city: location.city,
+                                  cityState: location.state,
+                                  selectedState: location.state,
+                                });
+                                setOpen(false);
+                              }}
+                            >
+                              <MapPin
+                                className="mt-0.5 h-4 w-4 shrink-0 text-primary"
+                                aria-hidden
+                              />
+                              <span className="min-w-0">
+                                <span className="block truncate text-sm font-medium text-foreground">
+                                  {location.label}
+                                </span>
+                                <span className="block truncate text-xs text-muted-foreground">
+                                  {t("locationProviderCount", {
+                                    count: location.count,
+                                  })}
+                                </span>
+                              </span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+
+                  {providerSuggestions.length > 0 ? (
+                    <div>
+                      <p
+                        className={cn(
+                          "px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-slate-400",
+                          stateSuggestions.length > 0 ||
+                            locationSuggestions.length > 0
+                            ? "border-t border-slate-100 pt-2"
+                            : "pt-2",
+                        )}
+                      >
+                        {t("providersSection")}
+                      </p>
+                      <ul>
+                        {providerSuggestions.map((service) => (
+                          <li key={service.id}>
+                            <button
+                              type="button"
+                              role="option"
+                              aria-selected={false}
+                              className="flex w-full items-start gap-3 px-3 py-2.5 text-left transition-colors hover:bg-primary/5"
+                              onMouseDown={(event) => event.preventDefault()}
+                              onClick={() => {
+                                onSelectSuggestion?.(service);
+                                onChange({
+                                  query: service.name,
+                                  city: null,
+                                  cityState: null,
+                                  selectedState: null,
+                                });
+                                setOpen(false);
+                              }}
+                            >
+                              <Building2
+                                className="mt-0.5 h-4 w-4 shrink-0 text-slate-500"
+                                aria-hidden
+                              />
+                              <span className="min-w-0">
+                                <span className="block truncate text-sm font-medium text-foreground">
+                                  {service.name}
+                                </span>
+                                <span className="block truncate text-xs text-muted-foreground">
+                                  {service.address}
+                                </span>
+                              </span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                </div>
               ) : (
                 <p className="px-3 py-3 text-sm text-muted-foreground">
                   {t("noMatches")}
@@ -221,10 +417,28 @@ export function OrganizationSearch({
           ) : null}
         </div>
       }
-        />
-      </PageContainer>
+    />
+  );
+
+  if (isFloating) {
+    return (
+      <div
+        className="pointer-events-none absolute left-4 top-4 z-[1000] right-4 max-w-4xl"
+        onDoubleClick={(event) => event.stopPropagation()}
+        onMouseDown={(event) => event.stopPropagation()}
+        onWheel={(event) => event.stopPropagation()}
+      >
+        <div className="pointer-events-auto w-full">{searchCard}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative z-[100] shrink-0 border-b bg-white py-2">
+      <PageContainer className="overflow-visible">{searchCard}</PageContainer>
     </div>
   );
 }
 
 export { SERVICE_TO_CATEGORY };
+export type { LocationSuggestion, StateSuggestion };

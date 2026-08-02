@@ -21,8 +21,8 @@ import type {
 
 type Props = {
   entries: VisaBulletinEntry[];
-  bulletinMonth: number;
   bulletinYear: number;
+  bulletinMonthLabel: string;
 };
 
 function formatBulletinDate(value: string, locale: string): string {
@@ -34,8 +34,8 @@ function formatBulletinDate(value: string, locale: string): string {
 
 export function VisaBulletinGrid({
   entries,
-  bulletinMonth,
   bulletinYear,
+  bulletinMonthLabel,
 }: Props) {
   const t = useTranslations("VisaBulletin");
   const locale = useLocale();
@@ -60,13 +60,6 @@ export function VisaBulletinGrid({
     [entries, selectedCountry],
   );
 
-  const monthName = new Date(
-    Date.UTC(bulletinYear, bulletinMonth - 1, 1),
-  ).toLocaleString(locale === "zh" ? "zh-CN" : "en-US", {
-    month: "long",
-    timeZone: "UTC",
-  });
-
   const activeChartLabel = t(`chartTypes.${chartType}`);
 
   return (
@@ -77,7 +70,7 @@ export function VisaBulletinGrid({
             {t("gridTitle")}
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            {t("gridSubtitle", { month: monthName, year: bulletinYear })}
+            {t("gridSubtitle", { month: bulletinMonthLabel, year: bulletinYear })}
           </p>
         </div>
 

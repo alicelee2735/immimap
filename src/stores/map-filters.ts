@@ -8,7 +8,59 @@ import type {
   USState,
 } from "@/types/immimap";
 
-const ALL_STATES: USState[] = ["CA", "TX", "FL", "NY", "NJ"];
+export const ALL_STATES: USState[] = [
+  "AL",
+  "AK",
+  "AZ",
+  "AR",
+  "CA",
+  "CO",
+  "CT",
+  "DC",
+  "DE",
+  "FL",
+  "GA",
+  "HI",
+  "ID",
+  "IL",
+  "IN",
+  "IA",
+  "KS",
+  "KY",
+  "LA",
+  "ME",
+  "MD",
+  "MA",
+  "MI",
+  "MN",
+  "MS",
+  "MO",
+  "MT",
+  "NE",
+  "NV",
+  "NH",
+  "NJ",
+  "NM",
+  "NY",
+  "NC",
+  "ND",
+  "OH",
+  "OK",
+  "OR",
+  "PA",
+  "RI",
+  "SC",
+  "SD",
+  "TN",
+  "TX",
+  "UT",
+  "VT",
+  "VA",
+  "WA",
+  "WV",
+  "WI",
+  "WY",
+];
 const ALL_CATEGORIES: ServiceCategory[] = [
   "asylum",
   "family",
@@ -36,6 +88,11 @@ export type MapFiltersState = {
   pricingTiers: PricingTier[];
   selectedServiceId: string | null;
   hoveredProviderId: string | null;
+  /** Bumped by "Reset all" to force a national map overview. */
+  nationalFrameToken: number;
+  /** Optional explicit bounds request (e.g. state selection). */
+  focusBounds: [[number, number], [number, number]] | null;
+  focusBoundsToken: number;
   setStates: (states: USState[]) => void;
   setCategories: (categories: ServiceCategory[]) => void;
   setPricingTiers: (pricingTiers: PricingTier[]) => void;
@@ -43,16 +100,32 @@ export type MapFiltersState = {
   toggleCategory: (category: ServiceCategory) => void;
   togglePricingTier: (tier: PricingTier) => void;
   resetFilters: () => void;
+  /** Full marketplace reset: filters + selection + national map frame. */
+  resetAll: () => void;
+  requestNationalFrame: () => void;
+  requestFocusBounds: (
+    bounds: [[number, number], [number, number]],
+  ) => void;
+  clearFocusBounds: () => void;
   selectService: (id: string | null) => void;
   setHoveredProviderId: (id: string | null) => void;
 };
 
+function defaultFilterSlice() {
+  return {
+    states: [...ALL_STATES] as USState[],
+    categories: [...ALL_CATEGORIES] as ServiceCategory[],
+    pricingTiers: [...ALL_PRICING] as PricingTier[],
+    selectedServiceId: null as string | null,
+    hoveredProviderId: null as string | null,
+  };
+}
+
 export const useMapFiltersStore = create<MapFiltersState>((set) => ({
-  states: [...ALL_STATES],
-  categories: [...ALL_CATEGORIES],
-  pricingTiers: [...ALL_PRICING],
-  selectedServiceId: null,
-  hoveredProviderId: null,
+  ...defaultFilterSlice(),
+  nationalFrameToken: 0,
+  focusBounds: null,
+  focusBoundsToken: 0,
 
   setStates: (states) => set({ states }),
   setCategories: (categories) => set({ categories }),
@@ -82,12 +155,29 @@ export const useMapFiltersStore = create<MapFiltersState>((set) => ({
       return { pricingTiers: next };
     }),
 
-  resetFilters: () =>
-    set({
-      states: [...ALL_STATES],
-      categories: [...ALL_CATEGORIES],
-      pricingTiers: [...ALL_PRICING],
-    }),
+  resetFilters: () => set({ ...defaultFilterSlice() }),
+
+  resetAll: () =>
+    set((s) => ({
+      ...defaultFilterSlice(),
+      focusBounds: null,
+      nationalFrameToken: s.nationalFrameToken + 1,
+    })),
+
+  requestNationalFrame: () =>
+    set((s) => ({
+      focusBounds: null,
+      nationalFrameToken: s.nationalFrameToken + 1,
+    })),
+
+  requestFocusBounds: (bounds) =>
+    set((s) => ({
+      selectedServiceId: null,
+      focusBounds: bounds,
+      focusBoundsToken: s.focusBoundsToken + 1,
+    })),
+
+  clearFocusBounds: () => set({ focusBounds: null }),
 
   selectService: (id) => set({ selectedServiceId: id }),
   setHoveredProviderId: (id) =>
@@ -95,6 +185,19 @@ export const useMapFiltersStore = create<MapFiltersState>((set) => ({
       state.hoveredProviderId === id ? state : { hoveredProviderId: id },
     ),
 }));
+
+export function areFiltersAtDefaults(
+  filters: Pick<MapFiltersState, "states" | "categories" | "pricingTiers">,
+): boolean {
+  return (
+    filters.states.length === ALL_STATES.length &&
+    ALL_STATES.every((state) => filters.states.includes(state)) &&
+    filters.categories.length === ALL_CATEGORIES.length &&
+    ALL_CATEGORIES.every((category) => filters.categories.includes(category)) &&
+    filters.pricingTiers.length === ALL_PRICING.length &&
+    ALL_PRICING.every((tier) => filters.pricingTiers.includes(tier))
+  );
+}
 
 export function filterServices(
   services: ImmigrationService[],

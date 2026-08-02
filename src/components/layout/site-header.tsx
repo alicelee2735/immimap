@@ -9,26 +9,32 @@ import { PageContainer } from "@/components/layout/page-container";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Link, usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
+import { isNavItemActive } from "@/lib/nav-pathname";
 import { cn } from "@/lib/utils";
 
-export function SiteHeader() {
+type Props = {
+  pathname: string;
+};
+
+export function SiteHeader({ pathname: serverPathname }: Props) {
   const t = useTranslations("Nav");
   const locale = useLocale();
-  const pathname = usePathname();
+  const clientPathname = usePathname();
+  const pathname = clientPathname ?? serverPathname;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navItems = [
     { href: "/", label: t("home") },
     { href: "/map", label: t("map") },
-    { href: "/processing", label: t("processing") },
-    { href: "/visa-bulletin", label: t("visaBulletin") },
+    { href: "/know-your-rights", label: t("knowYourRights") },
     { href: "/about", label: t("about") },
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur-md">
+    <header className="z-40 shrink-0 border-b border-slate-200/70 bg-white/80 backdrop-blur-md">
       <PageContainer className="grid h-20 grid-cols-[auto_1fr_auto] items-center gap-x-8">
         <Link
           href="/"
+          suppressHydrationWarning
           className="flex shrink-0 items-baseline gap-3 text-left"
         >
           <span className="text-sm font-bold uppercase tracking-[0.18em] text-[#2563eb]">
@@ -43,20 +49,24 @@ export function SiteHeader() {
           className="hidden items-baseline justify-start gap-x-8 md:flex"
           aria-label={t("mainNav")}
         >
-          {navItems.map((item) => (
-            <TrackedNavLink
-              key={item.href}
-              href={item.href}
-              navLabel={item.label}
-              navSurface="desktop"
-              className={cn(
-                "text-sm font-medium leading-none tracking-[-0.01em] text-slate-500 transition-colors duration-150 hover:text-slate-950",
-                pathname === item.href && "text-[#2563eb]",
-              )}
-            >
-              {item.label}
-            </TrackedNavLink>
-          ))}
+          {navItems.map((item) => {
+            const active = isNavItemActive(pathname, item.href);
+            return (
+              <TrackedNavLink
+                key={item.href}
+                href={item.href}
+                navLabel={item.label}
+                navSurface="desktop"
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "text-sm font-medium leading-none tracking-[-0.01em] text-slate-500 transition-colors duration-150 hover:text-slate-950",
+                  active && "text-[#2563eb]",
+                )}
+              >
+                {item.label}
+              </TrackedNavLink>
+            );
+          })}
         </nav>
 
         <div className="flex shrink-0 items-center justify-end gap-x-8">
@@ -112,21 +122,25 @@ export function SiteHeader() {
           </div>
 
           <nav className="flex flex-col items-start gap-5" aria-label={t("mainNav")}>
-            {navItems.map((item) => (
-              <TrackedNavLink
-                key={item.href}
-                href={item.href}
-                navLabel={item.label}
-                navSurface="mobile"
-                onClick={() => setMobileMenuOpen(false)}
-                className={cn(
-                  "text-lg font-medium tracking-[-0.01em] text-slate-500 transition-colors duration-150 hover:text-slate-950",
-                  pathname === item.href && "text-[#2563eb]",
-                )}
-              >
-                {item.label}
-              </TrackedNavLink>
-            ))}
+            {navItems.map((item) => {
+              const active = isNavItemActive(pathname, item.href);
+              return (
+                <TrackedNavLink
+                  key={item.href}
+                  href={item.href}
+                  navLabel={item.label}
+                  navSurface="mobile"
+                  onClick={() => setMobileMenuOpen(false)}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "text-lg font-medium tracking-[-0.01em] text-slate-500 transition-colors duration-150 hover:text-slate-950",
+                    active && "text-[#2563eb]",
+                  )}
+                >
+                  {item.label}
+                </TrackedNavLink>
+              );
+            })}
           </nav>
 
           <div className="mt-10 flex flex-col items-start gap-5 pt-6">

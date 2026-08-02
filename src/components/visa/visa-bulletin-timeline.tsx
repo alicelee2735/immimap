@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useId } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 import {
@@ -37,9 +37,9 @@ function dateToPct(date: Date): number {
   );
 }
 
-function formatDate(iso: string): string {
+function formatDate(iso: string, locale: string): string {
   const d = new Date(`${iso}T00:00:00Z`);
-  return d.toLocaleDateString("en-US", {
+  return d.toLocaleDateString(locale === "zh" ? "zh-CN" : "en-US", {
     month: "short",
     year: "numeric",
     day: "numeric",
@@ -59,14 +59,17 @@ type Props = {
   entries: VisaBulletinEntry[];
   bulletinMonth: number;
   bulletinYear: number;
+  bulletinMonthLabel: string;
 };
 
 export function VisaBulletinTimeline({
   entries,
   bulletinMonth,
   bulletinYear,
+  bulletinMonthLabel,
 }: Props) {
   const t = useTranslations("VisaBulletin");
+  const locale = useLocale();
   const categoryId = useId();
   const countryId = useId();
   const dateId = useId();
@@ -98,11 +101,6 @@ export function VisaBulletinTimeline({
 
     return { isCurrent, cutoffPct, userPct, cutoffDate, userDate, waitMonths };
   }, [cutoff, priorityDateStr]);
-
-  const MONTH_NAMES = [
-    "", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-  ];
 
   return (
     <div className="space-y-8">
@@ -176,7 +174,7 @@ export function VisaBulletinTimeline({
       {/* ── Cutoff info (always shown) ───────────────────────────────────── */}
       <div className="rounded-lg border border-slate-200 bg-white px-5 py-4">
         <p className="text-sm font-medium uppercase tracking-widest text-gray-500">
-          {MONTH_NAMES[bulletinMonth]} {bulletinYear} — {t("cutoffLabel")}
+          {bulletinMonthLabel} {bulletinYear} — {t("cutoffLabel")}
         </p>
         {cutoff === "C" ? (
           <p className="mt-1 text-2xl font-semibold text-emerald-600">
@@ -188,7 +186,7 @@ export function VisaBulletinTimeline({
           </p>
         ) : cutoff ? (
           <p className="mt-1 text-2xl font-semibold text-gray-900">
-            {formatDate(cutoff)}
+            {formatDate(cutoff, locale)}
           </p>
         ) : (
           <p className="mt-1 text-xl text-gray-400">{t("noData")}</p>
@@ -294,7 +292,7 @@ export function VisaBulletinTimeline({
                       {t("cutoffMarker")}
                     </span>
                     <span className="whitespace-nowrap">
-                      {formatDate(cutoff)}
+                      {formatDate(cutoff, locale)}
                     </span>
                   </div>
                 );
@@ -331,7 +329,7 @@ export function VisaBulletinTimeline({
                     {t("yourDateMarker")}
                   </span>
                   <span className="whitespace-nowrap">
-                    {formatDate(priorityDateStr)}
+                    {formatDate(priorityDateStr, locale)}
                   </span>
                 </div>
               )}
@@ -389,8 +387,8 @@ export function VisaBulletinTimeline({
                       )}
                     >
                       {t("statusWaitingDetail", {
-                        cutoff: formatDate(cutoff),
-                        userDate: formatDate(priorityDateStr),
+                        cutoff: formatDate(cutoff, locale),
+                        userDate: formatDate(priorityDateStr, locale),
                       })}
                     </p>
                   </div>

@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ExternalLink, Globe, Languages, Loader2, MapPin, Phone } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { Languages, Loader2, MapPin } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants, Button } from "@/components/ui/button";
-import { PageContainer } from "@/components/layout/page-container";
+import { Button } from "@/components/ui/button";
 import { ImmimapMap } from "@/components/map/immimap-map";
 import { ServiceDetailSheet } from "@/components/map/service-detail-sheet";
 import {
@@ -15,13 +14,12 @@ import {
   type OrganizationSearchValues,
 } from "@/components/search/organization-search";
 import { useOrganizations } from "@/hooks/use-organizations";
-import { filterServicesByQuery } from "@/lib/search-services";
+import { filterServicesByQuery, filterServicesByCity, getServiceCity } from "@/lib/search-services";
+import { STATE_BOUNDING_BOXES } from "@/lib/us-states";
 import { cn } from "@/lib/utils";
-import { formatDisplayPhone } from "@/lib/phone";
 import { filterServices, useMapFiltersStore } from "@/stores/map-filters";
 import type {
   ImmigrationService,
-  IntakeStatus,
   PricingLabel,
   ServiceOffering,
 } from "@/types/immimap";
@@ -53,31 +51,6 @@ const PRICING_LABEL_TO_KEY: Record<PricingLabel, "pro_bono" | "low_cost" | "paid
   Paid: "paid",
 };
 
-function IntakeIndicator({ status }: { status: IntakeStatus }) {
-  if (status === "OPEN") {
-    return (
-      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600">
-        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden />
-        Accepting new cases
-      </span>
-    );
-  }
-  if (status === "LIMITED") {
-    return (
-      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600">
-        <span className="h-1.5 w-1.5 rounded-full bg-amber-400" aria-hidden />
-        Limited availability
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500">
-      <span className="h-1.5 w-1.5 rounded-full border border-slate-400 bg-transparent" aria-hidden />
-      Waitlist active
-    </span>
-  );
-}
-
 type ServiceResultCardProps = {
   service: ImmigrationService;
   selected: boolean;
@@ -86,6 +59,7 @@ type ServiceResultCardProps = {
   setHoveredId: (id: string | null) => void;
 };
 
+/** Compact sidebar list card — essentials only; full profile lives in the detail drawer. */
 function ServiceResultCard({
   service,
   selected,
@@ -95,8 +69,14 @@ function ServiceResultCard({
 }: ServiceResultCardProps) {
   const tMap = useTranslations("Map");
   const tPrice = useTranslations("Pricing");
-  const tDetail = useTranslations("ServiceDetail");
   const cardRef = useRef<HTMLDivElement | null>(null);
+  const city = getServiceCity(service);
+  const locationLabel = city ? `${city}, ${service.state}` : service.state;
+  const languages = service.languages?.filter(Boolean) ?? [];
+  const languagePreview =
+    languages.length > 2
+      ? `${languages.slice(0, 2).join(", ")} +${languages.length - 2}`
+      : languages.join(", ");
 
   useEffect(() => {
     if (selected) {
@@ -129,120 +109,53 @@ function ServiceResultCard({
             : "hover:bg-slate-50/70",
       )}
     >
-      <div
-        className="h-32 bg-cover bg-center"
-        role="img"
-        aria-label={`${service.name} location image`}
-        style={{ backgroundImage: `url(${service.thumbnail_image_url})` }}
-      />
-      <div className="space-y-3 px-4 py-4 sm:px-5">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0 space-y-2">
-            <div className="flex flex-wrap gap-2">
-              <Badge
-                variant="outline"
-                className={cn(
-                  "border font-medium",
-                  offeringTone(service.services_offered[0]),
-                )}
-              >
-                {service.services_offered[0]}
-              </Badge>
-              <Badge
-                variant={pricingVariant(service.pricing)}
-                className="uppercase tracking-wide"
-              >
-                {tPrice(PRICING_LABEL_TO_KEY[service.pricing])}
-              </Badge>
-            </div>
-            <h3 className="text-base font-semibold tracking-tight sm:text-lg">
-              {service.name}
-            </h3>
-          </div>
-          <span className="rounded-full border border-slate-200 bg-muted px-2 py-1 text-xs font-semibold text-muted-foreground">
-            {service.state}
-          </span>
+      <div className="space-y-2.5 px-4 py-3.5 sm:px-5">
+        <div className="flex flex-wrap gap-1.5">
+          <Badge
+            variant="outline"
+            className={cn(
+              "border font-medium",
+              offeringTone(service.services_offered[0]),
+            )}
+          >
+            {service.services_offered[0]}
+          </Badge>
+          <Badge
+            variant={pricingVariant(service.pricing)}
+            className="uppercase tracking-wide"
+          >
+            {tPrice(PRICING_LABEL_TO_KEY[service.pricing])}
+          </Badge>
         </div>
 
-        {service.intakeStatus && (
-          <IntakeIndicator status={service.intakeStatus} />
-        )}
+        <h3 className="text-base font-semibold tracking-tight text-slate-950 sm:text-lg">
+          {service.name}
+        </h3>
 
-        <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-          {service.description ?? tDetail("noDescription")}
+        <p className="flex items-center gap-1.5 text-sm text-slate-500">
+          <MapPin className="h-3.5 w-3.5 shrink-0 text-[#2563eb]" aria-hidden />
+          <span>{locationLabel}</span>
         </p>
 
-        <div className="space-y-2 text-sm">
-          <div className="flex gap-x-2 text-muted-foreground">
-            <MapPin
-              className="h-4 w-4 shrink-0 translate-y-[1px] text-primary"
-              aria-hidden
-            />
-            <span className="leading-relaxed">{service.address}</span>
-          </div>
-          {service.phone ? (
-            <div className="flex items-center gap-x-2 text-muted-foreground">
-              <Phone
-                className="h-4 w-4 shrink-0 translate-y-[1px] text-primary"
-                aria-hidden
-              />
-              <a
-                className="font-medium text-foreground underline-offset-4 hover:text-primary hover:underline"
-                href={`tel:${service.phone}`}
-              >
-                {formatDisplayPhone(service.phone)}
-              </a>
-            </div>
-          ) : null}
-          {service.languages && service.languages.length > 0 ? (
-            <div className="flex items-start gap-x-2 text-muted-foreground">
-              <Globe
-                className="h-4 w-4 shrink-0 translate-y-[1px] text-primary"
-                aria-hidden
-              />
-              <span className="leading-relaxed">
-                {service.languages.join(", ")}
-              </span>
-            </div>
-          ) : (
-            <div className="flex items-center gap-x-2 text-muted-foreground">
-              <Languages
-                className="h-4 w-4 shrink-0 text-primary"
-                aria-hidden
-              />
-              <span>{service.services_offered.join(", ")}</span>
-            </div>
-          )}
-        </div>
+        {languagePreview ? (
+          <p className="flex items-start gap-1.5 text-xs text-slate-500">
+            <Languages className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden />
+            <span className="leading-relaxed">{languagePreview}</span>
+          </p>
+        ) : null}
 
-        <div className="flex flex-wrap gap-2 pt-1">
-          <Button
-            type="button"
-            size="sm"
-            onClick={(event) => {
-              event.stopPropagation();
-              onSelect();
-            }}
-          >
-            {tMap("viewDetails")}
-          </Button>
-          {service.website ? (
-            <a
-              href={service.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(event) => event.stopPropagation()}
-              className={buttonVariants({
-                variant: "outline",
-                size: "sm",
-                className: "gap-1.5",
-              })}
-            >
-              <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-              {tDetail("visitWebsite")}
-            </a>
-          ) : null}
-        </div>
+        <Button
+          type="button"
+          variant="link"
+          size="sm"
+          className="h-auto px-0 text-sm font-semibold text-[#2563eb]"
+          onClick={(event) => {
+            event.stopPropagation();
+            onSelect();
+          }}
+        >
+          {tMap("viewDetails")}
+        </Button>
       </div>
     </div>
   );
@@ -252,17 +165,13 @@ function SidebarSkeleton() {
   return (
     <div className="divide-y divide-gray-200" aria-hidden>
       {Array.from({ length: 4 }).map((_, index) => (
-        <div key={index} className="animate-pulse space-y-3 px-4 py-4 sm:px-5">
-          <div className="h-32 rounded-md bg-slate-200" />
+        <div key={index} className="animate-pulse space-y-2.5 px-4 py-3.5 sm:px-5">
           <div className="flex gap-2">
             <div className="h-5 w-16 rounded-full bg-slate-200" />
             <div className="h-5 w-20 rounded-full bg-slate-200" />
           </div>
           <div className="h-5 w-3/4 rounded bg-slate-200" />
-          <div className="space-y-2">
-            <div className="h-3 w-full rounded bg-slate-100" />
-            <div className="h-3 w-5/6 rounded bg-slate-100" />
-          </div>
+          <div className="h-3 w-1/2 rounded bg-slate-100" />
         </div>
       ))}
     </div>
@@ -271,6 +180,7 @@ function SidebarSkeleton() {
 
 export function MapDashboard() {
   const t = useTranslations("Map");
+  const locale = useLocale();
   const [search, setSearch] = useState<OrganizationSearchValues>(
     DEFAULT_SEARCH_VALUES,
   );
@@ -282,16 +192,35 @@ export function MapDashboard() {
   const hoveredProviderId = useMapFiltersStore((s) => s.hoveredProviderId);
   const selectService = useMapFiltersStore((s) => s.selectService);
   const setHoveredId = useMapFiltersStore((s) => s.setHoveredProviderId);
+  const setStates = useMapFiltersStore((s) => s.setStates);
+  const requestFocusBounds = useMapFiltersStore((s) => s.requestFocusBounds);
+  const clearFocusBounds = useMapFiltersStore((s) => s.clearFocusBounds);
 
   const storeFiltered = useMemo(
     () => filterServices(services, { states, categories, pricingTiers }),
     [services, states, categories, pricingTiers],
   );
 
-  const visible = useMemo(
-    () => filterServicesByQuery(storeFiltered, search.query),
-    [storeFiltered, search.query],
-  );
+  const visible = useMemo(() => {
+    if (search.city) {
+      return filterServicesByCity(
+        storeFiltered,
+        search.city,
+        search.cityState,
+      );
+    }
+    // State suggestion already narrowed the store filter — skip text matching.
+    if (search.selectedState) {
+      return storeFiltered;
+    }
+    return filterServicesByQuery(storeFiltered, search.query);
+  }, [
+    storeFiltered,
+    search.city,
+    search.cityState,
+    search.selectedState,
+    search.query,
+  ]);
 
   useEffect(() => {
     if (
@@ -306,23 +235,44 @@ export function MapDashboard() {
   const fatalError = !loading && error && services.length === 0;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-visible bg-slate-50">
-      <OrganizationSearch
-        values={search}
-        onChange={setSearch}
-        suggestions={storeFiltered}
-        onSelectSuggestion={(service) => selectService(service.id)}
-      />
-      <PageContainer className="grid min-h-0 max-w-none flex-1 gap-0 py-4 md:grid-cols-[minmax(0,1fr)_440px] md:px-6 md:py-6 lg:px-8">
-        <section className="relative z-0 min-h-[45vh] border-b border-slate-200 bg-background md:h-[760px] md:min-h-[520px] md:border-b-0 md:border-r">
-          <ImmimapMap services={loading ? [] : visible} />
+    <div className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden p-3 md:p-4">
+      {/* Map + sidebar: height strictly the fixed shell; never grow with content. */}
+      <div className="relative flex min-h-0 flex-1 flex-col gap-3 overflow-hidden md:flex-row md:gap-4">
+        <section className="relative z-0 min-h-0 min-w-0 flex-1 overflow-hidden rounded-2xl border border-slate-200/70 bg-background shadow-md">
+          <OrganizationSearch
+            variant="floating"
+            values={search}
+            onChange={setSearch}
+            suggestions={storeFiltered}
+            onSelectSuggestion={(service) => selectService(service.id)}
+            onSelectLocation={(location) => {
+              selectService(null);
+              clearFocusBounds();
+              setStates([location.state]);
+            }}
+            onSelectState={(state) => {
+              selectService(null);
+              setStates([state.code]);
+              const bounds = STATE_BOUNDING_BOXES[state.code];
+              if (bounds) {
+                requestFocusBounds(bounds);
+              }
+            }}
+            onClear={() => {
+              selectService(null);
+              clearFocusBounds();
+            }}
+          />
+          <div className="absolute inset-0 z-0 h-full w-full overflow-hidden">
+            <ImmimapMap services={loading ? [] : visible} />
+          </div>
           {loading ? (
             <div
-              className="pointer-events-none absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-[1px]"
+              className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-background/60 backdrop-blur-[1px]"
               role="status"
               aria-live="polite"
             >
-              <div className="flex flex-col items-center gap-3 rounded-lg border border-slate-200 bg-background/95 px-6 py-4 shadow-sm">
+              <div className="flex flex-col items-center gap-3 rounded-xl border border-slate-200 bg-background/95 px-6 py-4 shadow-sm">
                 <Loader2 className="h-7 w-7 animate-spin text-primary" aria-hidden />
                 <p className="text-sm font-medium text-muted-foreground">
                   {t("loadingMap")}
@@ -331,16 +281,16 @@ export function MapDashboard() {
             </div>
           ) : null}
           {error && usingFallback && services.length > 0 ? (
-            <div className="pointer-events-none absolute inset-x-0 top-4 z-10 flex justify-center px-4">
-              <p className="pointer-events-auto rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+            <div className="pointer-events-none absolute inset-x-0 top-[7.5rem] z-10 flex justify-center px-4 sm:top-4 sm:justify-end">
+              <p className="pointer-events-auto rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 shadow-sm">
                 {t("serviceUnavailable")} {t("showingCachedData")}
               </p>
             </div>
           ) : null}
           {empty ? (
-            <div className="pointer-events-none absolute inset-0 z-10 flex items-start justify-center px-4 pt-16">
+            <div className="pointer-events-none absolute inset-0 z-10 flex items-start justify-center px-4 pt-36 sm:pt-28">
               <div
-                className="pointer-events-auto max-w-md rounded-lg border border-slate-200 bg-background/95 px-4 py-3 text-center backdrop-blur"
+                className="pointer-events-auto max-w-md rounded-xl border border-slate-200 bg-background/95 px-4 py-3 text-center shadow-sm backdrop-blur"
                 role="status"
               >
                 <p className="text-sm font-medium text-foreground">
@@ -354,7 +304,7 @@ export function MapDashboard() {
           ) : null}
         </section>
 
-        <aside className="flex max-h-[50vh] min-h-0 flex-col bg-white md:h-[760px] md:max-h-none">
+        <aside className="relative z-10 flex min-h-0 w-full shrink-0 flex-col overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-sm max-md:h-[38%] max-md:max-h-[38%] md:h-full md:w-[400px]">
           <div className="shrink-0 border-b border-slate-200 px-4 py-4 sm:px-5">
             <p className="text-sm font-medium uppercase tracking-widest text-gray-500">
               {t("resultsEyebrow")}
@@ -379,7 +329,7 @@ export function MapDashboard() {
             </div>
           </div>
 
-          <div className="immimap-results-scroll min-h-0 flex-1 overflow-y-auto">
+          <div className="immimap-results-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain scroll-smooth">
             {loading ? (
               <SidebarSkeleton />
             ) : fatalError ? (
@@ -419,24 +369,28 @@ export function MapDashboard() {
             ) : null}
           </div>
 
-          {/* Provenance footer */}
           <div className="shrink-0 border-t border-slate-100 px-4 py-2.5 sm:px-5">
             <p className="text-xs text-slate-400">
               {t("provenanceTimestamp")}{" "}
               <time className="tabular-nums text-slate-500">
-                {new Date().toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                })}
+                {new Date().toLocaleDateString(
+                  locale === "zh" ? "zh-CN" : "en-US",
+                  {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  },
+                )}
               </time>
               {" · "}
               {t("provenanceCadence")}
             </p>
           </div>
+
+          {/* Absolute overlay: never contributes to parent height. */}
+          <ServiceDetailSheet services={services} />
         </aside>
-      </PageContainer>
-      <ServiceDetailSheet services={services} />
+      </div>
     </div>
   );
 }

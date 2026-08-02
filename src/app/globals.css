@@ -132,36 +132,72 @@
 /* Leaflet map inherits app font; cluster icons keep OSM attribution readable */
 .leaflet-container {
   font-family: inherit;
+  height: 100% !important;
+  width: 100% !important;
 }
 
 .immimap-leaflet {
+  height: 100% !important;
+  width: 100% !important;
   overflow: hidden;
-  touch-action: none;
+  border-radius: inherit;
+}
+
+.immimap-leaflet .leaflet-control-attribution {
+  border-radius: 0.5rem 0 0 0;
 }
 
 .immimap-marker-icon {
-  background: transparent;
-  border: 0;
+  background: transparent !important;
+  border: 0 !important;
 }
 
 .immimap-pin-graphic {
-  color: #475569;
-  filter: drop-shadow(0 3px 6px rgba(15, 23, 42, 0.3));
-  height: 42px;
-  transform: scale(1);
+  color: #1d4ed8;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(15, 23, 42, 0.28));
+  height: 100%;
+  line-height: 0;
+  pointer-events: none;
+  transform: translateY(0);
   transform-origin: 50% 100%;
   transition:
-    color 0.2s ease-in-out,
     filter 0.2s ease-in-out,
     transform 0.2s ease-in-out;
-  width: 32px;
+  width: 100%;
   will-change: transform, filter;
 }
 
+.immimap-pin-graphic svg {
+  display: block;
+  height: 100%;
+  overflow: visible;
+  width: 100%;
+}
+
+.immimap-marker-muted .immimap-pin-graphic {
+  opacity: 0.95;
+}
+
 .immimap-marker-highlighted .immimap-pin-graphic {
-  color: #2563eb;
-  filter: drop-shadow(0 0 15px rgba(37, 99, 235, 0.4));
-  transform: scale(1.5);
+  filter: drop-shadow(0 6px 14px rgba(37, 99, 235, 0.45));
+  opacity: 1;
+  animation: immimap-pin-bounce 0.55s ease-out;
+}
+
+@keyframes immimap-pin-bounce {
+  0% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-6px);
+  }
+  70% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 .immimap-cluster-icon {

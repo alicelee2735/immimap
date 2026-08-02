@@ -70,12 +70,16 @@ export function getVisaBulletinDataset(): VisaBulletinDataset {
 }
 
 export function getLatestBulletinEntries(): VisaBulletinEntry[] {
-  const { entries } = getVisaBulletinDataset();
-  const maxYear = Math.max(...entries.map((e) => e.year));
-  const maxMonth = Math.max(
-    ...entries.filter((e) => e.year === maxYear).map((e) => e.month),
+  return getBulletinEntriesFromDataset(getVisaBulletinDataset());
+}
+
+export function getBulletinEntriesFromDataset(
+  dataset: VisaBulletinDataset,
+): VisaBulletinEntry[] {
+  const { entries, bulletin_month, bulletin_year } = dataset;
+  return entries.filter(
+    (entry) => entry.year === bulletin_year && entry.month === bulletin_month,
   );
-  return entries.filter((e) => e.year === maxYear && e.month === maxMonth);
 }
 
 /** Entries for one country tab (filter-first grid). */
