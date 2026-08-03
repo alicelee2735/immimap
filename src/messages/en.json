@@ -16,7 +16,42 @@
     "verifyTitle": "How we verify | ImmiMap",
     "verifyDescription": "Learn how ImmiMap evaluates and labels nonprofit immigration organizations as verified before they appear on the public map.",
     "knowYourRightsTitle": "Know Your Rights | ImmiMap",
-    "knowYourRightsDescription": "Clear, practical guidance on constitutional and immigration rights in the United States. Not legal advice — a starting point for informed action."
+    "knowYourRightsDescription": "Clear, practical guidance on constitutional and immigration rights in the United States. Not legal advice — a starting point for informed action.",
+    "legalTitle": "Legal disclaimer | ImmiMap",
+    "legalDescription": "Important legal notices about ImmiMap: informational use only, no attorney-client relationship, credential verification, and unauthorized practice of law warnings."
+  },
+  "Footer": {
+    "shortDisclaimer": "ImmiMap is for informational purposes only and does not provide legal advice.",
+    "legalLink": "Legal disclaimer"
+  },
+  "Legal": {
+    "eyebrow": "Legal",
+    "title": "Legal disclaimer",
+    "lead": "Please read this disclaimer carefully before using ImmiMap. By accessing or using this site, you acknowledge that you understand and agree to the terms below.",
+    "lastUpdated": "Last updated: August 2026",
+    "contact": "Questions about this disclaimer? Contact us at support@immimap.org.",
+    "sections": {
+      "informational": {
+        "title": "General informational purposes only",
+        "body": "ImmiMap is a public directory and educational resource. All content on this website — including organization listings, maps, processing-time and visa-bulletin information, Know Your Rights materials, and related materials — is provided for general informational purposes only. Nothing on this site constitutes legal advice, a legal opinion, or a recommendation regarding any particular immigration case, application, or strategy."
+      },
+      "noRelationship": {
+        "title": "No attorney-client relationship",
+        "body": "Use of ImmiMap, including browsing listings, contacting a listed provider through information published here, or reading educational content, does not create an attorney-client, counsel, or any other professional relationship between you and ImmiMap, its operators, contributors, or any organization or individual listed on the site. A professional relationship is formed only when you and a qualified provider expressly agree to one under applicable law and professional rules."
+      },
+      "verifyCredentials": {
+        "title": "Independently verify credentials",
+        "body": "ImmiMap works to list organizations with publicly available or reviewed information, but listings may be incomplete, outdated, or incorrect. Before relying on any representative, you must independently verify their credentials, licensing status, scope of services, fees, languages offered, and availability. Confirm standing with the relevant state bar, the U.S. Department of Justice recognition and accreditation program (where applicable), and the organization itself."
+      },
+      "uplWarning": {
+        "title": "Unauthorized practice of law (UPL) warning",
+        "body": "Only licensed attorneys and U.S. Department of Justice (DOJ) recognized organizations / accredited representatives are authorized to provide immigration legal advice in the United States, subject to applicable law and the scope of their accreditation. Be cautious of \"notarios,\" notary publics, immigration consultants, and other unauthorized individuals who may offer immigration advice or document preparation. Using unauthorized providers can cause serious harm, including forms submitted incorrectly, missed deadlines, loss of status, denial of benefits, removal proceedings, or fraud. If someone claims they can \"fix\" immigration problems for cash, demand power of attorney for improper purposes, or tells you not to deal with licensed counsel, treat that as a red flag and seek help only from a licensed attorney or DOJ-accredited representative."
+      },
+      "liability": {
+        "title": "No warranties; limitation of liability",
+        "body": "ImmiMap is provided \"as is\" without warranties of any kind, express or implied, including accuracy, completeness, merchantability, or fitness for a particular purpose. To the fullest extent permitted by law, ImmiMap and its operators are not liable for any loss, damage, claim, or consequence arising from your use of the site, reliance on any listing or content, or contact with any third-party provider. Decisions about immigration matters should be made with qualified professional assistance tailored to your circumstances."
+      }
+    }
   },
   "Verify": {
     "eyebrow": "Trust & quality",

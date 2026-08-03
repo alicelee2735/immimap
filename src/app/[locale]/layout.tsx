@@ -6,6 +6,7 @@ import { Inter, Noto_Sans_SC } from "next/font/google";
 import { clsx } from "clsx";
 
 import { GoogleAnalytics } from "@/components/analytics/google-analytics";
+import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { routing } from "@/i18n/routing";
 
@@ -58,9 +59,13 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
 
-  // Path for SSR nav active state only — never used for scroll locking.
+  // Path for SSR nav active state and map-only chrome decisions.
   const headerStore = await headers();
   const pathname = headerStore.get("x-pathname") ?? "/";
+  const isMapRoute =
+    pathname === "/map" ||
+    pathname.startsWith("/map/") ||
+    pathname.endsWith("/map");
 
   return (
     <html
@@ -79,6 +84,7 @@ export default async function LocaleLayout({
           <GoogleAnalytics />
           <SiteHeader pathname={pathname} />
           <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+          {isMapRoute ? null : <SiteFooter />}
         </NextIntlClientProvider>
       </body>
     </html>
