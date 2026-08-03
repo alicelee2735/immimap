@@ -395,6 +395,11 @@
     "transparency": {
       "title": "Data Transparency",
       "description": "Provider listings are modeled so each record can be traced, refreshed, and reviewed. Current demo data is clearly labeled, and the system is ready for verified source pipelines."
+    },
+    "dataCorrection": {
+      "title": "Data correction & organization contact",
+      "description": "Legal nonprofits and organization representatives can use this form to report errors in directory listings or request updates — such as contact details, service areas, languages, intake status, or verification status.",
+      "openForm": "Open form in a new tab"
     }
   },
   "Join": {

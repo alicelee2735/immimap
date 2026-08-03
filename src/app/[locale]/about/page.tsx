@@ -1,3 +1,4 @@
+import { ExternalLink } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { PageContainer } from "@/components/layout/page-container";
@@ -5,6 +6,8 @@ import { PageContainer } from "@/components/layout/page-container";
 type Props = {
   params: Promise<{ locale: string }>;
 };
+
+const DATA_CORRECTION_FORM_URL = "https://forms.gle/SZryGqpSC6N3RV6F6";
 
 export default async function AboutPage({ params }: Props) {
   const { locale } = await params;
@@ -54,6 +57,24 @@ export default async function AboutPage({ params }: Props) {
             </article>
           ))}
         </div>
+
+        <section className="mt-10 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+          <h2 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">
+            {t("dataCorrection.title")}
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
+            {t("dataCorrection.description")}
+          </p>
+          <a
+            href={DATA_CORRECTION_FORM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 inline-flex h-11 items-center justify-center gap-1.5 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
+            <ExternalLink className="h-4 w-4" aria-hidden />
+            {t("dataCorrection.openForm")}
+          </a>
+        </section>
       </PageContainer>
     </main>
   );
