@@ -4,6 +4,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Inter, Noto_Sans_SC } from "next/font/google";
 import { clsx } from "clsx";
+import { Analytics } from "@vercel/analytics/next";
 
 import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 import { SiteFooter } from "@/components/layout/site-footer";
@@ -86,6 +87,7 @@ export default async function LocaleLayout({
           <div className="flex min-h-0 flex-1 flex-col">{children}</div>
           {isMapRoute ? null : <SiteFooter />}
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   );
