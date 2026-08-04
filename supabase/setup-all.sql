@@ -25,21 +25,30 @@ create table org_services (
   primary key (org_id, service_id)
 );
 
--- Public read access for the map catalog
+-- Public read access for the map catalog (writes: service_role only)
 alter table organizations enable row level security;
 alter table services enable row level security;
 alter table org_services enable row level security;
+alter table organizations force row level security;
+alter table services force row level security;
+alter table org_services force row level security;
 
+drop policy if exists "Public read organizations" on organizations;
 create policy "Public read organizations"
   on organizations for select
+  to anon, authenticated
   using (true);
 
+drop policy if exists "Public read services" on services;
 create policy "Public read services"
   on services for select
+  to anon, authenticated
   using (true);
 
+drop policy if exists "Public read org_services" on org_services;
 create policy "Public read org_services"
   on org_services for select
+  to anon, authenticated
   using (true);
 -- Extra columns to preserve ImmigrationService fields from services.json
 alter table organizations
@@ -84,13 +93,23 @@ create index data_ingestion_log_ran_at_idx
 
 alter table official_data_store enable row level security;
 alter table data_ingestion_log enable row level security;
+alter table official_data_store force row level security;
+alter table data_ingestion_log force row level security;
 
+drop policy if exists "Public read official data" on official_data_store;
 create policy "Public read official data"
   on official_data_store for select
   to anon, authenticated
   using (true);
 
--- Ingestion logs are admin-only (service role bypasses RLS)
+-- Ingestion logs are admin-only (service role bypasses RLS; no public policies)
+
+revoke insert, update, delete, truncate on all tables in schema public
+  from anon, authenticated;
+grant select on table
+  organizations, services, org_services, official_data_store
+  to anon, authenticated;
+revoke all on table data_ingestion_log from anon, authenticated;
 
 -- Track whether organization website URLs are reachable
 alter table organizations
