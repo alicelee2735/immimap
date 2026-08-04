@@ -183,30 +183,6 @@
     "catchmentNote": "Serves Central Texas; additional offices in San Antonio and Waco."
   },
   {
-    "id": "svc-tx-dallas-immigration-law-counsel",
-    "name": "North Texas Immigration Law Counsel",
-    "type": "Law Firm",
-    "state": "TX",
-    "address": "1910 Pacific Ave, Dallas, TX 75201",
-    "latitude": 32.7826,
-    "longitude": -96.7954,
-    "pricing": "Paid",
-    "services_offered": [
-      "Employment",
-      "Family",
-      "DACA",
-      "Citizenship"
-    ],
-    "thumbnail_image_url": "https://images.unsplash.com/photo-1497366412874-3415097a27e7?auto=format&fit=crop&w=900&q=80",
-    "website": "https://example.com/north-texas-immigration-law",
-    "description": "Representative Dallas immigration practice handling employment visas, family petitions, DACA renewals, and naturalization matters.",
-    "intakeStatus": "OPEN",
-    "languages": [
-      "English",
-      "Spanish"
-    ]
-  },
-  {
     "id": "svc-fl-miami-americans-immigrant-justice",
     "name": "Americans for Immigrant Justice",
     "type": "NGO",
@@ -283,30 +259,6 @@
       "Spanish"
     ],
     "catchmentNote": "Serves Orange, Osceola, and Seminole counties."
-  },
-  {
-    "id": "svc-fl-tampa-gulf-coast-immigration-law",
-    "name": "Gulf Coast Immigration Law Group",
-    "type": "Law Firm",
-    "state": "FL",
-    "address": "100 N Tampa St, Tampa, FL 33602",
-    "latitude": 27.9459,
-    "longitude": -82.4584,
-    "pricing": "Paid",
-    "services_offered": [
-      "Employment",
-      "Family",
-      "Citizenship",
-      "Removal Defense"
-    ],
-    "thumbnail_image_url": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
-    "website": "https://example.com/gulf-coast-immigration-law",
-    "description": "Representative Tampa immigration firm focused on business immigration, family petitions, and court-facing matters.",
-    "intakeStatus": "OPEN",
-    "languages": [
-      "English",
-      "Spanish"
-    ]
   },
   {
     "id": "svc-ny-new-york-hias",
@@ -494,29 +446,5 @@
       "Spanish"
     ],
     "catchmentNote": "Priority to Union County and Hudson County residents."
-  },
-  {
-    "id": "svc-nj-jersey-city-hudson-immigration-law",
-    "name": "Hudson Immigration Law Associates",
-    "type": "Law Firm",
-    "state": "NJ",
-    "address": "101 Hudson St, Jersey City, NJ 07302",
-    "latitude": 40.7165,
-    "longitude": -74.034,
-    "pricing": "Paid",
-    "services_offered": [
-      "Employment",
-      "Family",
-      "Citizenship",
-      "Removal Defense"
-    ],
-    "thumbnail_image_url": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
-    "website": "https://example.com/hudson-immigration-law",
-    "description": "Representative Jersey City immigration practice for employment visas, family petitions, waivers, and complex case strategy.",
-    "intakeStatus": "OPEN",
-    "languages": [
-      "English",
-      "Spanish"
-    ]
   }
 ]

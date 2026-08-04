@@ -7,6 +7,12 @@ const HOST_CORRECTIONS: Record<string, string> = {
   // official site is hyphenated we-count.org (Squarespace).
   "wecount.org": "https://www.we-count.org",
   "www.wecount.org": "https://www.we-count.org",
+  // Immigration Institute of the Bay Area (formerly International Institute)
+  "iibayarea.org": "https://iibayarea.org",
+  "www.iibayarea.org": "https://iibayarea.org",
+  // ABA ProBAR
+  "probar.org": "https://abaprobar.org",
+  "www.probar.org": "https://abaprobar.org",
 };
 
 /** Hosts / URL markers that indicate a domain sale or parking page. */

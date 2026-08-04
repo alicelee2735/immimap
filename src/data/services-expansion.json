@@ -164,7 +164,7 @@
       "TPS"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.iibayarea.org",
+    "website": "https://iibayarea.org",
     "description": "Immigrant integration services including legal screenings, citizenship, and family petitions.",
     "intakeStatus": "OPEN",
     "languages": [
@@ -375,31 +375,6 @@
     "catchmentNote": "Los Angeles County residents meeting income guidelines."
   },
   {
-    "id": "svc-ca-san-francisco-pacific-immigration-law",
-    "name": "Pacific Immigration Law Group",
-    "type": "Law Firm",
-    "state": "CA",
-    "address": "50 California St, San Francisco, CA 94111",
-    "latitude": 37.7936,
-    "longitude": -122.3965,
-    "pricing": "Low-cost",
-    "services_offered": [
-      "Employment",
-      "Family",
-      "Citizenship"
-    ],
-    "thumbnail_image_url": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.pacificimmigration.com",
-    "description": "San Francisco immigration practice focused on employment visas and family-based petitions.",
-    "intakeStatus": "OPEN",
-    "languages": [
-      "English",
-      "Spanish",
-      "French"
-    ],
-    "catchmentNote": "Bay Area and nationwide corporate immigration."
-  },
-  {
     "id": "svc-tx-san-antonio-raices-sa",
     "name": "RAICES San Antonio",
     "type": "NGO",
@@ -538,7 +513,7 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.probar.org",
+    "website": "https://abaprobar.org",
     "description": "American Bar Association-affiliated legal aid serving detained immigrants in South Texas.",
     "intakeStatus": "OPEN",
     "languages": [
@@ -564,7 +539,7 @@
       "TPS"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.jfonntx.org",
+    "website": "https://jfondfw.org",
     "description": "UMC-affiliated low-cost immigration legal services clinic in North Texas.",
     "intakeStatus": "LIMITED",
     "languages": [
@@ -649,31 +624,6 @@
     "catchmentNote": "Texas statewide with Austin headquarters."
   },
   {
-    "id": "svc-tx-laredo-laredo-legal-aid",
-    "name": "Laredo Immigrant Rights Clinic",
-    "type": "NGO",
-    "state": "TX",
-    "address": "1701 Victoria St, Laredo, TX 78040",
-    "latitude": 27.5036,
-    "longitude": -99.5075,
-    "pricing": "Pro bono",
-    "services_offered": [
-      "Removal Defense",
-      "Asylum",
-      "Humanitarian Relief"
-    ],
-    "thumbnail_image_url": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.laredoimmigrantrights.org",
-    "description": "Border community legal clinic serving asylum seekers and mixed-status families.",
-    "intakeStatus": "WAITLISTED",
-    "languages": [
-      "English",
-      "Spanish",
-      "Portuguese"
-    ],
-    "catchmentNote": "Webb County and border corridor."
-  },
-  {
     "id": "svc-tx-san-antonio-sa-legal-aid",
     "name": "Texas RioGrande Legal Aid San Antonio",
     "type": "NGO",
@@ -738,7 +688,7 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.cccct.org",
+    "website": "https://www.catholiccharitiescc.org",
     "description": "Coastal Texas diocesan immigration services for families and asylum seekers.",
     "intakeStatus": "WAITLISTED",
     "languages": [
@@ -775,31 +725,6 @@
     "catchmentNote": "El Paso and Southern New Mexico."
   },
   {
-    "id": "svc-tx-houston-lonestar-immigration-law",
-    "name": "Lone Star Immigration Law Firm",
-    "type": "Law Firm",
-    "state": "TX",
-    "address": "1200 Smith St, Houston, TX 77002",
-    "latitude": 29.7568,
-    "longitude": -95.3698,
-    "pricing": "Low-cost",
-    "services_offered": [
-      "Family",
-      "Removal Defense",
-      "Employment"
-    ],
-    "thumbnail_image_url": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.lonestarimmigrationlaw.com",
-    "description": "Houston-based immigration practice for employment, family, and removal defense cases.",
-    "intakeStatus": "LIMITED",
-    "languages": [
-      "English",
-      "Spanish",
-      "French"
-    ],
-    "catchmentNote": "Greater Houston and Gulf Coast region."
-  },
-  {
     "id": "svc-fl-fort-lauderdale-legal-aid-broward",
     "name": "Legal Aid Service of Broward County",
     "type": "NGO",
@@ -814,7 +739,7 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.legalaid.org",
+    "website": "https://www.legalaidbroward.org",
     "description": "Civil legal aid provider with immigration units serving low-income Broward residents.",
     "intakeStatus": "WAITLISTED",
     "languages": [
@@ -938,7 +863,7 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.jfonflorida.org",
+    "website": "https://floridailj.org",
     "description": "Low-cost immigration legal clinic serving Northeast Florida immigrant families.",
     "intakeStatus": "LIMITED",
     "languages": [
@@ -1022,31 +947,6 @@
       "Spanish"
     ],
     "catchmentNote": "Pinellas and Pasco counties."
-  },
-  {
-    "id": "svc-fl-tampa-bridge-love-tampa",
-    "name": "Bridge of Love and Hope Foundation",
-    "type": "NGO",
-    "state": "FL",
-    "address": "5105 N Armenia Ave, Tampa, FL 33603",
-    "latitude": 27.9901,
-    "longitude": -82.5089,
-    "pricing": "Low-cost",
-    "services_offered": [
-      "DACA",
-      "TPS",
-      "Family"
-    ],
-    "thumbnail_image_url": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.bridgeoflovehope.org",
-    "description": "Community nonprofit providing immigration legal navigation for Tampa Bay families.",
-    "intakeStatus": "WAITLISTED",
-    "languages": [
-      "English",
-      "Mandarin",
-      "Cantonese"
-    ],
-    "catchmentNote": "Hillsborough County."
   },
   {
     "id": "svc-fl-miami-university-miami-clinic",
@@ -1175,32 +1075,6 @@
     "catchmentNote": "South Miami-Dade agricultural communities."
   },
   {
-    "id": "svc-fl-miami-sunshine-immigration-law",
-    "name": "Sunshine Immigration Law Group",
-    "type": "Law Firm",
-    "state": "FL",
-    "address": "1001 Brickell Bay Dr, Miami, FL 33131",
-    "latitude": 25.7617,
-    "longitude": -80.1918,
-    "pricing": "Low-cost",
-    "services_offered": [
-      "Employment",
-      "Family",
-      "Citizenship",
-      "Removal Defense"
-    ],
-    "thumbnail_image_url": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.sunshineimmigrationlaw.com",
-    "description": "Miami immigration firm handling family, employment, and investor visa matters.",
-    "intakeStatus": "WAITLISTED",
-    "languages": [
-      "English",
-      "Spanish",
-      "French"
-    ],
-    "catchmentNote": "South Florida and international clients."
-  },
-  {
     "id": "svc-ny-new-york-african-services-committee",
     "name": "African Services Committee",
     "type": "NGO",
@@ -1314,7 +1188,7 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366412874-3415097a27e7?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.cala-ny.org",
+    "website": "https://www.calanyc.org",
     "description": "Brooklyn nonprofit specializing in Central American asylum and family cases.",
     "intakeStatus": "LIMITED",
     "languages": [
@@ -1439,7 +1313,7 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.cirrny.org",
+    "website": "https://www.nmcir.org",
     "description": "Washington Heights immigrant rights organization with legal services and advocacy.",
     "intakeStatus": "OPEN",
     "languages": [
@@ -1500,31 +1374,6 @@
     "catchmentNote": "Western and Central New York."
   },
   {
-    "id": "svc-ny-flushing-flushing-workers-center",
-    "name": "Flushing Workers Center",
-    "type": "NGO",
-    "state": "NY",
-    "address": "133-12 41st Ave, Flushing, NY 11355",
-    "latitude": 40.7587,
-    "longitude": -73.8315,
-    "pricing": "Pro bono",
-    "services_offered": [
-      "Asylum",
-      "Humanitarian Relief",
-      "Family"
-    ],
-    "thumbnail_image_url": "https://images.unsplash.com/photo-1497366412874-3415097a27e7?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.flushingworkers.org",
-    "description": "Queens worker center providing immigration legal navigation for Asian immigrant communities.",
-    "intakeStatus": "OPEN",
-    "languages": [
-      "English",
-      "Arabic",
-      "Spanish"
-    ],
-    "catchmentNote": "Queens and greater NYC."
-  },
-  {
     "id": "svc-ny-albany-empire-justice",
     "name": "Empire Justice Center Immigration Project",
     "type": "NGO",
@@ -1574,31 +1423,6 @@
       "Spanish"
     ],
     "catchmentNote": "Onondaga and surrounding Central NY counties."
-  },
-  {
-    "id": "svc-ny-white-plains-hudson-valley-immigration-law",
-    "name": "Hudson Valley Immigration Law Associates",
-    "type": "Law Firm",
-    "state": "NY",
-    "address": "50 Main St, White Plains, NY 10606",
-    "latitude": 41.033,
-    "longitude": -73.7629,
-    "pricing": "Low-cost",
-    "services_offered": [
-      "Employment",
-      "Family",
-      "Citizenship"
-    ],
-    "thumbnail_image_url": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.hudsonvalleyimmigrationlaw.com",
-    "description": "Westchester immigration practice for family, employment, and naturalization cases.",
-    "intakeStatus": "OPEN",
-    "languages": [
-      "English",
-      "Spanish",
-      "French"
-    ],
-    "catchmentNote": "Hudson Valley and NYC suburbs."
   },
   {
     "id": "svc-nj-camden-catholic-charities-camden",
@@ -1750,57 +1574,6 @@
     "catchmentNote": "Northeast New Jersey."
   },
   {
-    "id": "svc-nj-somerville-somerset-immigration-services",
-    "name": "Immigration Services of Somerset County",
-    "type": "NGO",
-    "state": "NJ",
-    "address": "27 Warren St, Somerville, NJ 08876",
-    "latitude": 40.5665,
-    "longitude": -74.6098,
-    "pricing": "Pro bono",
-    "services_offered": [
-      "DACA",
-      "Family",
-      "Citizenship",
-      "TPS"
-    ],
-    "thumbnail_image_url": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.immigrationservicessomerset.org",
-    "description": "County-based nonprofit providing immigration legal screenings and citizenship classes.",
-    "intakeStatus": "LIMITED",
-    "languages": [
-      "English",
-      "Korean",
-      "Spanish"
-    ],
-    "catchmentNote": "Somerset County."
-  },
-  {
-    "id": "svc-nj-newark-project-rain",
-    "name": "Project RAIN Newark",
-    "type": "NGO",
-    "state": "NJ",
-    "address": "915 Broad St, Newark, NJ 07102",
-    "latitude": 40.734,
-    "longitude": -74.1725,
-    "pricing": "Low-cost",
-    "services_offered": [
-      "Removal Defense",
-      "Family",
-      "Asylum"
-    ],
-    "thumbnail_image_url": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.projectrainnj.org",
-    "description": "Newark immigrant advocacy organization with legal support and community education.",
-    "intakeStatus": "WAITLISTED",
-    "languages": [
-      "English",
-      "Spanish",
-      "French"
-    ],
-    "catchmentNote": "Essex County."
-  },
-  {
     "id": "svc-nj-new-brunswick-latino-action-network",
     "name": "Latino Action Network Foundation",
     "type": "NGO",
@@ -1823,31 +1596,6 @@
       "Spanish"
     ],
     "catchmentNote": "Middlesex and surrounding counties."
-  },
-  {
-    "id": "svc-nj-jersey-city-hudson-county-legal-services",
-    "name": "Hudson County Legal Services",
-    "type": "NGO",
-    "state": "NJ",
-    "address": "595 Newark Ave, Jersey City, NJ 07306",
-    "latitude": 40.7348,
-    "longitude": -74.0641,
-    "pricing": "Low-cost",
-    "services_offered": [
-      "DACA",
-      "TPS",
-      "Family"
-    ],
-    "thumbnail_image_url": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.hudsoncountylegalservices.org",
-    "description": "County legal aid office serving low-income Hudson County immigrants.",
-    "intakeStatus": "LIMITED",
-    "languages": [
-      "English",
-      "Mandarin",
-      "Cantonese"
-    ],
-    "catchmentNote": "Hudson County."
   },
   {
     "id": "svc-nj-union-city-el-centro-hudson",
@@ -1873,131 +1621,5 @@
       "Portuguese"
     ],
     "catchmentNote": "Northern Hudson County."
-  },
-  {
-    "id": "svc-nj-atlantic-city-atlantic-county-legal-aid",
-    "name": "Atlantic County Legal Services Immigration Unit",
-    "type": "NGO",
-    "state": "NJ",
-    "address": "1201 Atlantic Ave, Atlantic City, NJ 08401",
-    "latitude": 39.3643,
-    "longitude": -74.4229,
-    "pricing": "Low-cost",
-    "services_offered": [
-      "Family",
-      "Citizenship",
-      "DACA"
-    ],
-    "thumbnail_image_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.aclegalservices.org",
-    "description": "South Jersey legal aid with immigration services for Atlantic County residents.",
-    "intakeStatus": "OPEN",
-    "languages": [
-      "English",
-      "Spanish",
-      "Haitian Creole"
-    ],
-    "catchmentNote": "Atlantic County and South Jersey."
-  },
-  {
-    "id": "svc-nj-paterson-paterson-immigrant-center",
-    "name": "Paterson Immigrant Resource Center",
-    "type": "NGO",
-    "state": "NJ",
-    "address": "60 Temple St, Paterson, NJ 07501",
-    "latitude": 40.9168,
-    "longitude": -74.1718,
-    "pricing": "Pro bono",
-    "services_offered": [
-      "Asylum",
-      "Humanitarian Relief",
-      "Family"
-    ],
-    "thumbnail_image_url": "https://images.unsplash.com/photo-1497366412874-3415097a27e7?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.patersonimmigrantcenter.org",
-    "description": "Passaic County immigrant resource hub with legal screenings and referrals.",
-    "intakeStatus": "LIMITED",
-    "languages": [
-      "English",
-      "Arabic",
-      "Spanish"
-    ],
-    "catchmentNote": "Passaic County."
-  },
-  {
-    "id": "svc-nj-cherry-hill-camden-center-immigration",
-    "name": "Camden Center for Immigration Services",
-    "type": "NGO",
-    "state": "NJ",
-    "address": "1930 Old Cuthbert Rd, Cherry Hill, NJ 08003",
-    "latitude": 39.9348,
-    "longitude": -75.0306,
-    "pricing": "Low-cost",
-    "services_offered": [
-      "Family",
-      "Employment",
-      "Citizenship"
-    ],
-    "thumbnail_image_url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.camdenimmigrationcenter.org",
-    "description": "South Jersey nonprofit providing immigration legal aid and community workshops.",
-    "intakeStatus": "WAITLISTED",
-    "languages": [
-      "English",
-      "Vietnamese",
-      "Spanish"
-    ],
-    "catchmentNote": "Camden and Burlington counties."
-  },
-  {
-    "id": "svc-nj-princeton-princeton-immigration-clinic",
-    "name": "Princeton Immigration Clinic",
-    "type": "NGO",
-    "state": "NJ",
-    "address": "102 Witherspoon St, Princeton, NJ 08542",
-    "latitude": 40.3495,
-    "longitude": -74.6593,
-    "pricing": "Pro bono",
-    "services_offered": [
-      "DACA",
-      "Family",
-      "Citizenship",
-      "TPS"
-    ],
-    "thumbnail_image_url": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.princetonimmigrationclinic.org",
-    "description": "Community legal clinic serving low-income immigrants in Mercer County.",
-    "intakeStatus": "OPEN",
-    "languages": [
-      "English",
-      "Korean",
-      "Spanish"
-    ],
-    "catchmentNote": "Mercer County."
-  },
-  {
-    "id": "svc-nj-newark-garden-state-immigration-law",
-    "name": "Garden State Immigration Law Group",
-    "type": "Law Firm",
-    "state": "NJ",
-    "address": "One Gateway Center, Newark, NJ 07102",
-    "latitude": 40.7345,
-    "longitude": -74.164,
-    "pricing": "Low-cost",
-    "services_offered": [
-      "Family",
-      "Removal Defense",
-      "Employment"
-    ],
-    "thumbnail_image_url": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    "website": "https://www.gardenstateimmigrationlaw.com",
-    "description": "Newark immigration firm handling family, employment, and removal proceedings.",
-    "intakeStatus": "LIMITED",
-    "languages": [
-      "English",
-      "Spanish",
-      "French"
-    ],
-    "catchmentNote": "Northern and Central New Jersey."
   }
 ]

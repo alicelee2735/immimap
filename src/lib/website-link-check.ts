@@ -3,6 +3,11 @@
  * Used by the audit script and any future server-side rechecks.
  */
 
+import {
+  canonicalizeWebsiteUrl,
+  looksLikeParkedPage,
+} from "@/lib/website-corrections";
+
 export type WebsiteCheckResult = {
   url: string;
   active: boolean;
@@ -26,15 +31,11 @@ const DEFAULT_HEADERS: Record<string, string> = {
 
 /** Normalize a stored website string into an absolute http(s) URL, or null. */
 export function normalizeWebsiteUrl(raw: string | null | undefined): string | null {
-  if (!raw) return null;
-  const trimmed = raw.trim();
-  if (!trimmed) return null;
+  const corrected = canonicalizeWebsiteUrl(raw);
+  if (!corrected) return null;
 
   try {
-    const withProtocol = /^https?:\/\//i.test(trimmed)
-      ? trimmed
-      : `https://${trimmed}`;
-    const parsed = new URL(withProtocol);
+    const parsed = new URL(corrected);
     if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
       return null;
     }
@@ -123,7 +124,6 @@ async function fetchOnce(
       headers,
       redirect: "follow",
       signal: controller.signal,
-      // Avoid browser-only defaults when run under Node/undici
       cache: "no-store",
     });
   } finally {
@@ -132,8 +132,8 @@ async function fetchOnce(
 }
 
 /**
- * Probe a website URL with HEAD (fallback GET) and a timeout.
- * Treats DNS failures, timeouts, 404/410, and 5xx as inactive.
+ * Probe a website URL with GET (falls back to HEAD) and a timeout.
+ * Treats DNS failures, timeouts, 404/410, 5xx, and domain-parking landers as inactive.
  */
 export async function checkWebsiteUrl(
   rawUrl: string,
@@ -155,24 +155,46 @@ export async function checkWebsiteUrl(
   }
 
   try {
+    // Prefer GET so parking pages that return HTTP 200 can be detected by body.
     let response: Response;
     try {
-      response = await fetchOnce(url, "HEAD", timeoutMs, headers);
-      // Some hosts reject HEAD; retry with GET
-      if (response.status === 405 || response.status === 501) {
-        response = await fetchOnce(url, "GET", timeoutMs, headers);
-      }
-    } catch {
       response = await fetchOnce(url, "GET", timeoutMs, headers);
+    } catch {
+      response = await fetchOnce(url, "HEAD", timeoutMs, headers);
     }
 
-    // Discard body promptly on GET to free the connection
-    if (response.body) {
+    let bodySnippet = "";
+    if (response.body && response.headers.get("content-type")?.includes("text")) {
+      try {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let received = 0;
+        while (received < 12_000) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          bodySnippet += decoder.decode(value, { stream: true });
+          received += value?.byteLength ?? 0;
+        }
+        await reader.cancel().catch(() => {});
+      } catch {
+        // ignore body read failures
+      }
+    } else if (response.body) {
       try {
         await response.body.cancel();
       } catch {
-        // ignore cancel failures
+        // ignore
       }
+    }
+
+    if (looksLikeParkedPage(bodySnippet, response.url)) {
+      return {
+        url,
+        active: false,
+        statusCode: response.status,
+        error: "Domain parking / for-sale page",
+        checkedAt,
+      };
     }
 
     const active = isSuccessStatus(response.status);
