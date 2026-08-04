@@ -33,7 +33,6 @@ type RawProvider = {
   city: string;
   state: string;
   zip: string;
-  phone: string;
   website: string | null;
   pricing: string;
   type: "NGO" | "Law Firm";
@@ -234,7 +233,6 @@ async function main() {
           name: provider.name,
           description: provider.description,
           website_url: provider.website,
-          phone: provider.phone,
           address: provider.address,
           city: provider.city,
           state: provider.state,

@@ -8,13 +8,24 @@
     "latitude": 34.0527,
     "longitude": -118.2629,
     "pricing": "Pro bono",
-    "services_offered": ["Asylum", "Family", "Citizenship", "Humanitarian Relief"],
+    "services_offered": [
+      "Asylum",
+      "Family",
+      "Citizenship",
+      "Humanitarian Relief"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12139778080",
     "website": "https://www.ajsocal.org",
     "description": "Community-centered immigration legal services for Asian American, Pacific Islander, and immigrant communities in Southern California.",
     "intakeStatus": "LIMITED",
-    "languages": ["English", "Mandarin", "Cantonese", "Korean", "Vietnamese", "Tagalog"],
+    "languages": [
+      "English",
+      "Mandarin",
+      "Cantonese",
+      "Korean",
+      "Vietnamese",
+      "Tagalog"
+    ],
     "catchmentNote": "Primarily serves Los Angeles County and surrounding Southern California region."
   },
   {
@@ -26,13 +37,20 @@
     "latitude": 34.0668,
     "longitude": -118.2766,
     "pricing": "Low-cost",
-    "services_offered": ["DACA", "Family", "Citizenship", "TPS"],
+    "services_offered": [
+      "DACA",
+      "Family",
+      "Citizenship",
+      "TPS"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12133531333",
     "website": "https://www.chirla.org",
     "description": "Large immigrant-rights nonprofit offering legal screenings, DACA renewal support, citizenship assistance, and community navigation.",
     "intakeStatus": "WAITLISTED",
-    "languages": ["English", "Spanish"],
+    "languages": [
+      "English",
+      "Spanish"
+    ],
     "catchmentNote": "Walk-in services available at the Los Angeles main office only."
   },
   {
@@ -44,13 +62,20 @@
     "latitude": 37.7749,
     "longitude": -122.4152,
     "pricing": "Low-cost",
-    "services_offered": ["Family", "Citizenship", "DACA", "Removal Defense"],
+    "services_offered": [
+      "Family",
+      "Citizenship",
+      "DACA",
+      "Removal Defense"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=80",
-    "phone": "+14152559497",
     "website": "https://www.ilrc.org",
     "description": "Training and legal resource organization supporting immigrant-serving practitioners, family immigration, and naturalization programs.",
     "intakeStatus": "OPEN",
-    "languages": ["English", "Spanish"],
+    "languages": [
+      "English",
+      "Spanish"
+    ],
     "catchmentNote": "Legal services focus on the Bay Area; training programs serve practitioners nationally."
   },
   {
@@ -62,13 +87,20 @@
     "latitude": 32.7345,
     "longitude": -117.1601,
     "pricing": "Pro bono",
-    "services_offered": ["Asylum", "Humanitarian Relief", "Removal Defense", "Family"],
+    "services_offered": [
+      "Asylum",
+      "Humanitarian Relief",
+      "Removal Defense",
+      "Family"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80",
-    "phone": "+16192367755",
     "website": "https://casacornelia.org",
     "description": "San Diego nonprofit law center focused on asylum seekers, children, and survivors of serious harm.",
     "intakeStatus": "LIMITED",
-    "languages": ["English", "Spanish"],
+    "languages": [
+      "English",
+      "Spanish"
+    ],
     "catchmentNote": "Serves clients in San Diego County and at the Southern border."
   },
   {
@@ -80,13 +112,22 @@
     "latitude": 29.7149,
     "longitude": -95.4989,
     "pricing": "Pro bono",
-    "services_offered": ["Asylum", "Humanitarian Relief", "Family", "Removal Defense"],
+    "services_offered": [
+      "Asylum",
+      "Humanitarian Relief",
+      "Family",
+      "Removal Defense"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
-    "phone": "+17134960450",
     "website": "https://www.tahirih.org",
     "description": "Legal and social services for immigrant survivors of gender-based violence and related humanitarian claims.",
     "intakeStatus": "LIMITED",
-    "languages": ["English", "Spanish", "Farsi", "Arabic"],
+    "languages": [
+      "English",
+      "Spanish",
+      "Farsi",
+      "Arabic"
+    ],
     "catchmentNote": "Specializes in cases involving gender-based violence; intake is screened."
   },
   {
@@ -98,13 +139,22 @@
     "latitude": 29.7136,
     "longitude": -95.4956,
     "pricing": "Low-cost",
-    "services_offered": ["Citizenship", "Family", "DACA", "TPS"],
+    "services_offered": [
+      "Citizenship",
+      "Family",
+      "DACA",
+      "TPS"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    "phone": "+17136679200",
     "website": "https://www.bakerripley.org",
     "description": "Neighborhood-based immigration assistance, citizenship workshops, and low-cost legal navigation in greater Houston.",
     "intakeStatus": "OPEN",
-    "languages": ["English", "Spanish", "Arabic", "Vietnamese"],
+    "languages": [
+      "English",
+      "Spanish",
+      "Arabic",
+      "Vietnamese"
+    ],
     "catchmentNote": "Services available across multiple Houston neighborhood centers."
   },
   {
@@ -116,13 +166,20 @@
     "latitude": 30.3296,
     "longitude": -97.7125,
     "pricing": "Low-cost",
-    "services_offered": ["Asylum", "DACA", "Family", "Removal Defense"],
+    "services_offered": [
+      "Asylum",
+      "DACA",
+      "Family",
+      "Removal Defense"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
-    "phone": "+15124789198",
     "website": "https://www.americangateways.org",
     "description": "Central Texas nonprofit providing immigration representation and legal orientation for detained and non-detained clients.",
     "intakeStatus": "OPEN",
-    "languages": ["English", "Spanish"],
+    "languages": [
+      "English",
+      "Spanish"
+    ],
     "catchmentNote": "Serves Central Texas; additional offices in San Antonio and Waco."
   },
   {
@@ -134,13 +191,20 @@
     "latitude": 32.7826,
     "longitude": -96.7954,
     "pricing": "Paid",
-    "services_offered": ["Employment", "Family", "DACA", "Citizenship"],
+    "services_offered": [
+      "Employment",
+      "Family",
+      "DACA",
+      "Citizenship"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366412874-3415097a27e7?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12145550184",
     "website": "https://example.com/north-texas-immigration-law",
     "description": "Representative Dallas immigration practice handling employment visas, family petitions, DACA renewals, and naturalization matters.",
     "intakeStatus": "OPEN",
-    "languages": ["English", "Spanish"]
+    "languages": [
+      "English",
+      "Spanish"
+    ]
   },
   {
     "id": "svc-fl-miami-americans-immigrant-justice",
@@ -151,13 +215,22 @@
     "latitude": 25.8071,
     "longitude": -80.3006,
     "pricing": "Pro bono",
-    "services_offered": ["Asylum", "Humanitarian Relief", "Removal Defense", "Family"],
+    "services_offered": [
+      "Asylum",
+      "Humanitarian Relief",
+      "Removal Defense",
+      "Family"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80",
-    "phone": "+13055715085",
     "website": "https://aijustice.org",
     "description": "Miami-based nonprofit law firm serving immigrants through detention, asylum, trafficking, and children's legal programs.",
     "intakeStatus": "WAITLISTED",
-    "languages": ["English", "Spanish", "Haitian Creole", "Portuguese"],
+    "languages": [
+      "English",
+      "Spanish",
+      "Haitian Creole",
+      "Portuguese"
+    ],
     "catchmentNote": "Primarily serves South Florida; detention cases accepted statewide."
   },
   {
@@ -169,13 +242,21 @@
     "latitude": 25.7741,
     "longitude": -80.1937,
     "pricing": "Low-cost",
-    "services_offered": ["Family", "Citizenship", "TPS", "Asylum"],
+    "services_offered": [
+      "Family",
+      "Citizenship",
+      "TPS",
+      "Asylum"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    "phone": "+13053721077",
     "website": "https://www.cclsmiami.org",
     "description": "Legal services program assisting South Florida immigrants with family petitions, naturalization, TPS, and humanitarian relief.",
     "intakeStatus": "LIMITED",
-    "languages": ["English", "Spanish", "Haitian Creole"],
+    "languages": [
+      "English",
+      "Spanish",
+      "Haitian Creole"
+    ],
     "catchmentNote": "Services are limited to the Archdiocese of Miami jurisdiction."
   },
   {
@@ -187,13 +268,20 @@
     "latitude": 28.6926,
     "longitude": -81.5104,
     "pricing": "Low-cost",
-    "services_offered": ["DACA", "Family", "Citizenship", "TPS"],
+    "services_offered": [
+      "DACA",
+      "Family",
+      "Citizenship",
+      "TPS"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80",
-    "phone": "+14078864671",
     "website": "https://www.hcc-offm.org",
     "description": "Central Florida community organization offering immigrant legal navigation, workshops, and family-focused support.",
     "intakeStatus": "OPEN",
-    "languages": ["English", "Spanish"],
+    "languages": [
+      "English",
+      "Spanish"
+    ],
     "catchmentNote": "Serves Orange, Osceola, and Seminole counties."
   },
   {
@@ -205,13 +293,20 @@
     "latitude": 27.9459,
     "longitude": -82.4584,
     "pricing": "Paid",
-    "services_offered": ["Employment", "Family", "Citizenship", "Removal Defense"],
+    "services_offered": [
+      "Employment",
+      "Family",
+      "Citizenship",
+      "Removal Defense"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
-    "phone": "+18135550176",
     "website": "https://example.com/gulf-coast-immigration-law",
     "description": "Representative Tampa immigration firm focused on business immigration, family petitions, and court-facing matters.",
     "intakeStatus": "OPEN",
-    "languages": ["English", "Spanish"]
+    "languages": [
+      "English",
+      "Spanish"
+    ]
   },
   {
     "id": "svc-ny-new-york-hias",
@@ -222,13 +317,23 @@
     "latitude": 40.7474,
     "longitude": -73.9937,
     "pricing": "Pro bono",
-    "services_offered": ["Asylum", "Humanitarian Relief", "Family", "Citizenship"],
+    "services_offered": [
+      "Asylum",
+      "Humanitarian Relief",
+      "Family",
+      "Citizenship"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12129672400",
     "website": "https://hias.org",
     "description": "Refugee and immigrant legal services organization supporting asylum seekers, refugees, and families in New York.",
     "intakeStatus": "LIMITED",
-    "languages": ["English", "Spanish", "Russian", "French", "Arabic"],
+    "languages": [
+      "English",
+      "Spanish",
+      "Russian",
+      "French",
+      "Arabic"
+    ],
     "catchmentNote": "Legal services available in New York and New Jersey."
   },
   {
@@ -240,13 +345,22 @@
     "latitude": 40.7074,
     "longitude": -74.0047,
     "pricing": "Pro bono",
-    "services_offered": ["Removal Defense", "Asylum", "Family", "Humanitarian Relief"],
+    "services_offered": [
+      "Removal Defense",
+      "Asylum",
+      "Family",
+      "Humanitarian Relief"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12125773300",
     "website": "https://legalaidnyc.org",
     "description": "Large public-interest legal organization providing removal defense and immigration representation for low-income New Yorkers.",
     "intakeStatus": "WAITLISTED",
-    "languages": ["English", "Spanish", "Bengali", "Mandarin"],
+    "languages": [
+      "English",
+      "Spanish",
+      "Bengali",
+      "Mandarin"
+    ],
     "catchmentNote": "Income-eligible New York City residents only."
   },
   {
@@ -258,13 +372,23 @@
     "latitude": 40.7363,
     "longitude": -73.8205,
     "pricing": "Pro bono",
-    "services_offered": ["Citizenship", "Family", "DACA", "TPS"],
+    "services_offered": [
+      "Citizenship",
+      "Family",
+      "DACA",
+      "TPS"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=80",
-    "phone": "+16466649400",
     "website": "https://www.cuny.edu/citizenshipnow",
     "description": "University-affiliated immigration assistance program known for citizenship application support and community clinics.",
     "intakeStatus": "OPEN",
-    "languages": ["English", "Spanish", "Korean", "Mandarin", "Bengali"],
+    "languages": [
+      "English",
+      "Spanish",
+      "Korean",
+      "Mandarin",
+      "Bengali"
+    ],
     "catchmentNote": "Open to New York City residents regardless of income."
   },
   {
@@ -276,13 +400,23 @@
     "latitude": 42.9353,
     "longitude": -78.8426,
     "pricing": "Low-cost",
-    "services_offered": ["Family", "Asylum", "Citizenship", "Humanitarian Relief"],
+    "services_offered": [
+      "Family",
+      "Asylum",
+      "Citizenship",
+      "Humanitarian Relief"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366412874-3415097a27e7?auto=format&fit=crop&w=900&q=80",
-    "phone": "+17168824963",
     "website": "https://www.jersbuffalo.org",
     "description": "Buffalo refugee-services organization offering legal help connected to resettlement, family reunification, and humanitarian cases.",
     "intakeStatus": "OPEN",
-    "languages": ["English", "Spanish", "Arabic", "Somali", "Burmese"],
+    "languages": [
+      "English",
+      "Spanish",
+      "Arabic",
+      "Somali",
+      "Burmese"
+    ],
     "catchmentNote": "Primarily serves Erie and Niagara counties in Western New York."
   },
   {
@@ -294,13 +428,21 @@
     "latitude": 40.7647,
     "longitude": -74.1802,
     "pricing": "Low-cost",
-    "services_offered": ["Family", "Citizenship", "DACA", "TPS"],
+    "services_offered": [
+      "Family",
+      "Citizenship",
+      "DACA",
+      "TPS"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19734885800",
     "website": "https://www.ccannj.org",
     "description": "Newark-area Catholic Charities program serving immigrants and refugees through screenings, applications, and referrals.",
     "intakeStatus": "LIMITED",
-    "languages": ["English", "Spanish", "Portuguese"],
+    "languages": [
+      "English",
+      "Spanish",
+      "Portuguese"
+    ],
     "catchmentNote": "Serves the Archdiocese of Newark (Essex, Bergen, Hudson, and Union counties)."
   },
   {
@@ -312,13 +454,20 @@
     "latitude": 40.7357,
     "longitude": -74.1735,
     "pricing": "Pro bono",
-    "services_offered": ["Removal Defense", "Asylum", "Humanitarian Relief", "Family"],
+    "services_offered": [
+      "Removal Defense",
+      "Asylum",
+      "Humanitarian Relief",
+      "Family"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19736451920",
     "website": "https://afsc.org",
     "description": "Immigrant-rights legal and advocacy program supporting detained and non-detained immigrants across New Jersey.",
     "intakeStatus": "OPEN",
-    "languages": ["English", "Spanish"],
+    "languages": [
+      "English",
+      "Spanish"
+    ],
     "catchmentNote": "Serves New Jersey statewide; detained clients accepted regardless of county."
   },
   {
@@ -330,13 +479,20 @@
     "latitude": 40.6639,
     "longitude": -74.2146,
     "pricing": "Pro bono",
-    "services_offered": ["DACA", "TPS", "Family", "Citizenship"],
+    "services_offered": [
+      "DACA",
+      "TPS",
+      "Family",
+      "Citizenship"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19083684790",
     "website": "https://www.maketheroadnj.org",
     "description": "Membership-based immigrant organization offering legal support and navigation for working-class immigrant communities.",
     "intakeStatus": "LIMITED",
-    "languages": ["English", "Spanish"],
+    "languages": [
+      "English",
+      "Spanish"
+    ],
     "catchmentNote": "Priority to Union County and Hudson County residents."
   },
   {
@@ -346,14 +502,21 @@
     "state": "NJ",
     "address": "101 Hudson St, Jersey City, NJ 07302",
     "latitude": 40.7165,
-    "longitude": -74.0340,
+    "longitude": -74.034,
     "pricing": "Paid",
-    "services_offered": ["Employment", "Family", "Citizenship", "Removal Defense"],
+    "services_offered": [
+      "Employment",
+      "Family",
+      "Citizenship",
+      "Removal Defense"
+    ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12015550122",
     "website": "https://example.com/hudson-immigration-law",
     "description": "Representative Jersey City immigration practice for employment visas, family petitions, waivers, and complex case strategy.",
     "intakeStatus": "OPEN",
-    "languages": ["English", "Spanish"]
+    "languages": [
+      "English",
+      "Spanish"
+    ]
   }
 ]

@@ -14,7 +14,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12132502500",
     "website": "https://www.carecen-la.org",
     "description": "Community-based legal services for Central American and immigrant families in Los Angeles.",
     "intakeStatus": "OPEN",
@@ -39,7 +38,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12132512500",
     "website": "https://www.esperanza-la.org",
     "description": "Catholic-affiliated legal services for low-income immigrants facing detention and deportation.",
     "intakeStatus": "LIMITED",
@@ -65,7 +63,6 @@
       "Humanitarian Relief"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12133851111",
     "website": "https://www.publiccounsel.org",
     "description": "Pro bono law firm serving vulnerable communities through immigration and civil legal aid.",
     "intakeStatus": "WAITLISTED",
@@ -91,7 +88,6 @@
       "DACA"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12138058000",
     "website": "https://www.immdef.org",
     "description": "Nonprofit removal defense and asylum representation for detained and non-detained clients.",
     "intakeStatus": "OPEN",
@@ -117,7 +113,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366412874-3415097a27e7?auto=format&fit=crop&w=900&q=80",
-    "phone": "+15104372500",
     "website": "https://www.centrolegal.org",
     "description": "Oakland-based immigrant rights organization providing legal services and community education.",
     "intakeStatus": "LIMITED",
@@ -143,7 +138,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
-    "phone": "+15105400188",
     "website": "https://eastbaysanctuary.org",
     "description": "Faith-based sanctuary organization supporting asylum seekers and refugees in the East Bay.",
     "intakeStatus": "WAITLISTED",
@@ -170,7 +164,6 @@
       "TPS"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
-    "phone": "+14153886200",
     "website": "https://www.iibayarea.org",
     "description": "Immigrant integration services including legal screenings, citizenship, and family petitions.",
     "intakeStatus": "OPEN",
@@ -196,7 +189,6 @@
       "Asylum"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    "phone": "+14154562575",
     "website": "https://www.canalalliance.org",
     "description": "Marin County immigrant services hub offering legal aid, education, and economic opportunity programs.",
     "intakeStatus": "LIMITED",
@@ -222,7 +214,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
-    "phone": "+14084532000",
     "website": "https://www.siren-bayarea.org",
     "description": "Advocacy and legal navigation for immigrant workers and families in Silicon Valley.",
     "intakeStatus": "WAITLISTED",
@@ -247,7 +238,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
-    "phone": "+14084660100",
     "website": "https://www.catholiccharitiesscc.org",
     "description": "Diocesan legal immigration program offering screenings, DACA, and citizenship assistance.",
     "intakeStatus": "OPEN",
@@ -273,7 +263,6 @@
       "Humanitarian Relief"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19164463300",
     "website": "https://www.crla.org",
     "description": "Statewide rural legal aid program with a Sacramento office serving farmworkers and immigrants.",
     "intakeStatus": "LIMITED",
@@ -299,7 +288,6 @@
       "DACA"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80",
-    "phone": "+15594970000",
     "website": "https://www.mixteco.org",
     "description": "Indigenous immigrant community organization providing legal navigation and language access.",
     "intakeStatus": "WAITLISTED",
@@ -325,7 +313,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366412874-3415097a27e7?auto=format&fit=crop&w=900&q=80",
-    "phone": "+16613251000",
     "website": "https://www.ufwfoundation.org",
     "description": "Farmworker advocacy organization offering immigration legal services and community education.",
     "intakeStatus": "OPEN",
@@ -351,7 +338,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19098842000",
     "website": "https://www.sbcsc.org",
     "description": "Inland Empire nonprofit providing immigration legal aid and social services.",
     "intakeStatus": "LIMITED",
@@ -378,7 +364,6 @@
       "TPS"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12138028000",
     "website": "https://www.lafla.org",
     "description": "Large civil legal aid provider with dedicated immigration units across Los Angeles.",
     "intakeStatus": "WAITLISTED",
@@ -404,7 +389,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    "phone": "+14153922000",
     "website": "https://www.pacificimmigration.com",
     "description": "San Francisco immigration practice focused on employment visas and family-based petitions.",
     "intakeStatus": "OPEN",
@@ -430,7 +414,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12102267333",
     "website": "https://www.raicestexas.org",
     "description": "Statewide immigration legal services nonprofit with a major San Antonio office.",
     "intakeStatus": "LIMITED",
@@ -455,7 +438,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19155445500",
     "website": "https://www.las-americas.org",
     "description": "Border-region legal services for asylum seekers, victims of violence, and detained immigrants.",
     "intakeStatus": "WAITLISTED",
@@ -481,7 +463,6 @@
       "Humanitarian Relief"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=80",
-    "phone": "+18175345000",
     "website": "https://www.catholiccharitiesfortworth.org",
     "description": "Diocesan immigration legal program serving Tarrant County families.",
     "intakeStatus": "OPEN",
@@ -507,7 +488,6 @@
       "DACA"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80",
-    "phone": "+17132395000",
     "website": "https://www.houstonimmigration.org",
     "description": "Coalition coordinating pro bono immigration legal services across Greater Houston.",
     "intakeStatus": "LIMITED",
@@ -533,7 +513,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366412874-3415097a27e7?auto=format&fit=crop&w=900&q=80",
-    "phone": "+17133319500",
     "website": "https://www.ymcahouston.org",
     "description": "Refugee resettlement and immigration legal services for Houston's newcomer communities.",
     "intakeStatus": "WAITLISTED",
@@ -559,7 +538,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19565445000",
     "website": "https://www.probar.org",
     "description": "American Bar Association-affiliated legal aid serving detained immigrants in South Texas.",
     "intakeStatus": "OPEN",
@@ -586,7 +564,6 @@
       "TPS"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12148215000",
     "website": "https://www.jfonntx.org",
     "description": "UMC-affiliated low-cost immigration legal services clinic in North Texas.",
     "intakeStatus": "LIMITED",
@@ -612,7 +589,6 @@
       "Asylum"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12146315000",
     "website": "https://www.ccdallas.org",
     "description": "Diocesan immigration program offering family petitions, DACA, and citizenship support.",
     "intakeStatus": "WAITLISTED",
@@ -638,7 +614,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
-    "phone": "+15122595000",
     "website": "https://www.rstx.org",
     "description": "Refugee resettlement agency with immigration legal navigation and case support.",
     "intakeStatus": "OPEN",
@@ -663,7 +638,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
-    "phone": "+15124747400",
     "website": "https://www.equaljusticecenter.org",
     "description": "Workers' rights nonprofit representing low-wage immigrant workers in legal matters.",
     "intakeStatus": "LIMITED",
@@ -689,7 +663,6 @@
       "Humanitarian Relief"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19567230000",
     "website": "https://www.laredoimmigrantrights.org",
     "description": "Border community legal clinic serving asylum seekers and mixed-status families.",
     "intakeStatus": "WAITLISTED",
@@ -715,7 +688,6 @@
       "DACA"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12102122000",
     "website": "https://www.trla.org",
     "description": "Regional legal aid provider with immigration services for low-income South Texas residents.",
     "intakeStatus": "OPEN",
@@ -741,7 +713,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366412874-3415097a27e7?auto=format&fit=crop&w=900&q=80",
-    "phone": "+15124770000",
     "website": "https://www.workersdefense.org",
     "description": "Immigrant worker advocacy organization with legal support and community organizing.",
     "intakeStatus": "LIMITED",
@@ -767,7 +738,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
-    "phone": "+13618842000",
     "website": "https://www.cccct.org",
     "description": "Coastal Texas diocesan immigration services for families and asylum seekers.",
     "intakeStatus": "WAITLISTED",
@@ -794,7 +764,6 @@
       "TPS"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19155665000",
     "website": "https://www.ccep.org",
     "description": "Border diocese immigration services including humanitarian parole and family reunification.",
     "intakeStatus": "OPEN",
@@ -820,7 +789,6 @@
       "Employment"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    "phone": "+17135550100",
     "website": "https://www.lonestarimmigrationlaw.com",
     "description": "Houston-based immigration practice for employment, family, and removal defense cases.",
     "intakeStatus": "LIMITED",
@@ -846,7 +814,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19547640000",
     "website": "https://www.legalaid.org",
     "description": "Civil legal aid provider with immigration units serving low-income Broward residents.",
     "intakeStatus": "WAITLISTED",
@@ -871,7 +838,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
-    "phone": "+13052015000",
     "website": "https://www.floridaimmigrant.org",
     "description": "Statewide immigrant rights coalition offering legal navigation and advocacy.",
     "intakeStatus": "OPEN",
@@ -897,7 +863,6 @@
       "Humanitarian Relief"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=80",
-    "phone": "+18138712000",
     "website": "https://www.lsfnet.org",
     "description": "Refugee and immigrant services including legal screenings and case assistance.",
     "intakeStatus": "LIMITED",
@@ -923,7 +888,6 @@
       "DACA"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80",
-    "phone": "+14076580000",
     "website": "https://www.cflcc.org",
     "description": "Central Florida diocesan immigration program for families and DACA recipients.",
     "intakeStatus": "WAITLISTED",
@@ -949,7 +913,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366412874-3415097a27e7?auto=format&fit=crop&w=900&q=80",
-    "phone": "+18503852000",
     "website": "https://www.lsnf.org",
     "description": "Regional legal aid with immigration services for low-income North Florida residents.",
     "intakeStatus": "OPEN",
@@ -975,7 +938,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19047215000",
     "website": "https://www.jfonflorida.org",
     "description": "Low-cost immigration legal clinic serving Northeast Florida immigrant families.",
     "intakeStatus": "LIMITED",
@@ -1002,7 +964,6 @@
       "TPS"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19549660000",
     "website": "https://www.hispanicunity.org",
     "description": "South Florida immigrant services organization with legal navigation and citizenship programs.",
     "intakeStatus": "WAITLISTED",
@@ -1028,7 +989,6 @@
       "Asylum"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    "phone": "+14078867000",
     "website": "https://www.floridafarmworkers.org",
     "description": "Farmworker advocacy organization with immigration legal support and worker rights education.",
     "intakeStatus": "OPEN",
@@ -1054,7 +1014,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
-    "phone": "+17274800000",
     "website": "https://www.gulfcoastjfcs.org",
     "description": "Refugee and immigrant services including legal screenings and resettlement support.",
     "intakeStatus": "LIMITED",
@@ -1079,7 +1038,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
-    "phone": "+18132510000",
     "website": "https://www.bridgeoflovehope.org",
     "description": "Community nonprofit providing immigration legal navigation for Tampa Bay families.",
     "intakeStatus": "WAITLISTED",
@@ -1105,7 +1063,6 @@
       "Humanitarian Relief"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=80",
-    "phone": "+13052842000",
     "website": "https://www.law.miami.edu",
     "description": "Law school clinic representing immigrants in asylum, TPS, and humanitarian cases.",
     "intakeStatus": "OPEN",
@@ -1131,7 +1088,6 @@
       "DACA"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80",
-    "phone": "+13054746000",
     "website": "https://www.stu.edu",
     "description": "Law school immigration clinic serving low-income clients in South Florida.",
     "intakeStatus": "LIMITED",
@@ -1157,7 +1113,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366412874-3415097a27e7?auto=format&fit=crop&w=900&q=80",
-    "phone": "+15646850000",
     "website": "https://www.legalaidpbc.org",
     "description": "Civil legal aid with immigration services for eligible Palm Beach County residents.",
     "intakeStatus": "WAITLISTED",
@@ -1183,7 +1138,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
-    "phone": "+13053715000",
     "website": "https://www.ccadm.org",
     "description": "Archdiocesan outreach providing immigration screenings and referral services.",
     "intakeStatus": "OPEN",
@@ -1199,7 +1153,7 @@
     "name": "WeCount Immigrant Rights Center",
     "type": "NGO",
     "state": "FL",
-    "address": "404 N Krome Ave, Homestead, FL 33030",
+    "address": "201 N Krome Ave #240, Homestead, FL 33030",
     "latitude": 25.4712,
     "longitude": -80.4776,
     "pricing": "Pro bono",
@@ -1210,8 +1164,7 @@
       "TPS"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
-    "phone": "+13052470000",
-    "website": "https://www.wecount.org",
+    "website": "https://www.we-count.org",
     "description": "South Dade immigrant worker center with legal support and community organizing.",
     "intakeStatus": "LIMITED",
     "languages": [
@@ -1237,7 +1190,6 @@
       "Removal Defense"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    "phone": "+13053715099",
     "website": "https://www.sunshineimmigrationlaw.com",
     "description": "Miami immigration firm handling family, employment, and investor visa matters.",
     "intakeStatus": "WAITLISTED",
@@ -1263,7 +1215,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12122226000",
     "website": "https://www.africanservices.org",
     "description": "Harlem-based nonprofit serving African and Caribbean immigrants with legal and health services.",
     "intakeStatus": "OPEN",
@@ -1288,7 +1239,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12133498500",
     "website": "https://www.sanctuaryforfamilies.org",
     "description": "Legal services for immigrant survivors of gender-based violence.",
     "intakeStatus": "LIMITED",
@@ -1314,7 +1264,6 @@
       "Humanitarian Relief"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12123715000",
     "website": "https://www.catholiccharitiesny.org",
     "description": "Archdiocesan immigration program offering screenings, applications, and referrals.",
     "intakeStatus": "WAITLISTED",
@@ -1340,7 +1289,6 @@
       "DACA"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80",
-    "phone": "+17184770000",
     "website": "https://www.unlocal.org",
     "description": "Immigrant legal services nonprofit serving NYC communities with direct representation.",
     "intakeStatus": "OPEN",
@@ -1366,7 +1314,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366412874-3415097a27e7?auto=format&fit=crop&w=900&q=80",
-    "phone": "+17182460000",
     "website": "https://www.cala-ny.org",
     "description": "Brooklyn nonprofit specializing in Central American asylum and family cases.",
     "intakeStatus": "LIMITED",
@@ -1392,7 +1339,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12129660000",
     "website": "https://www.safepassageproject.org",
     "description": "Legal services for unaccompanied immigrant children in New York.",
     "intakeStatus": "WAITLISTED",
@@ -1419,7 +1365,6 @@
       "TPS"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12123820000",
     "website": "https://www.citybarjusticecenter.org",
     "description": "Pro bono legal services connecting immigrant clients with volunteer attorneys.",
     "intakeStatus": "OPEN",
@@ -1445,7 +1390,6 @@
       "Asylum"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    "phone": "+17189930000",
     "website": "https://www.legalaidnyc.org",
     "description": "Neighborhood legal aid office with immigration services for Bronx residents.",
     "intakeStatus": "LIMITED",
@@ -1471,7 +1415,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
-    "phone": "+17182540000",
     "website": "https://www.bds.org",
     "description": "Public defender organization with immigration defense for Brooklyn clients.",
     "intakeStatus": "WAITLISTED",
@@ -1496,7 +1439,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12129210000",
     "website": "https://www.cirrny.org",
     "description": "Washington Heights immigrant rights organization with legal services and advocacy.",
     "intakeStatus": "OPEN",
@@ -1522,7 +1464,6 @@
       "Humanitarian Relief"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19142410000",
     "website": "https://www.neighborslink.org",
     "description": "Westchester nonprofit integrating immigrant families with legal and social services.",
     "intakeStatus": "LIMITED",
@@ -1548,7 +1489,6 @@
       "DACA"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80",
-    "phone": "+15853250000",
     "website": "https://www.wjcny.org",
     "description": "Upstate legal advocacy for farmworkers and low-wage immigrant workers.",
     "intakeStatus": "WAITLISTED",
@@ -1574,7 +1514,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366412874-3415097a27e7?auto=format&fit=crop&w=900&q=80",
-    "phone": "+17188810000",
     "website": "https://www.flushingworkers.org",
     "description": "Queens worker center providing immigration legal navigation for Asian immigrant communities.",
     "intakeStatus": "OPEN",
@@ -1600,7 +1539,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
-    "phone": "+15184340000",
     "website": "https://www.empirejustice.org",
     "description": "Statewide legal advocacy organization with immigration policy and direct services.",
     "intakeStatus": "LIMITED",
@@ -1627,7 +1565,6 @@
       "TPS"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
-    "phone": "+13154730000",
     "website": "https://www.lscny.org",
     "description": "Regional legal aid provider with immigration services for Central New York.",
     "intakeStatus": "WAITLISTED",
@@ -1653,7 +1590,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19142880000",
     "website": "https://www.hudsonvalleyimmigrationlaw.com",
     "description": "Westchester immigration practice for family, employment, and naturalization cases.",
     "intakeStatus": "OPEN",
@@ -1679,7 +1615,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
-    "phone": "+18563420000",
     "website": "https://www.catholiccharitiescamden.org",
     "description": "South Jersey diocesan immigration services for families and DACA recipients.",
     "intakeStatus": "LIMITED",
@@ -1704,7 +1639,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
-    "phone": "+16093942000",
     "website": "https://www.catholiccharitiestrenton.org",
     "description": "Central Jersey diocesan immigration program offering screenings and applications.",
     "intakeStatus": "WAITLISTED",
@@ -1730,7 +1664,6 @@
       "Humanitarian Relief"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19732670000",
     "website": "https://www.windofthespirit.org",
     "description": "Morris County immigrant resource center with legal navigation and community support.",
     "intakeStatus": "OPEN",
@@ -1756,7 +1689,6 @@
       "DACA"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12019660000",
     "website": "https://www.firstfriendsnjny.org",
     "description": "Volunteer organization supporting detained immigrants with legal referral services.",
     "intakeStatus": "LIMITED",
@@ -1782,7 +1714,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366412874-3415097a27e7?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19736430000",
     "website": "https://www.vljnj.org",
     "description": "Pro bono legal services connecting low-income NJ residents with volunteer attorneys.",
     "intakeStatus": "WAITLISTED",
@@ -1808,7 +1739,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12019670000",
     "website": "https://www.northeastnjlegalservices.org",
     "description": "Regional legal aid with immigration services for Bergen, Hudson, and Passaic counties.",
     "intakeStatus": "OPEN",
@@ -1835,7 +1765,6 @@
       "TPS"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19087250000",
     "website": "https://www.immigrationservicessomerset.org",
     "description": "County-based nonprofit providing immigration legal screenings and citizenship classes.",
     "intakeStatus": "LIMITED",
@@ -1861,7 +1790,6 @@
       "Asylum"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19737330000",
     "website": "https://www.projectrainnj.org",
     "description": "Newark immigrant advocacy organization with legal support and community education.",
     "intakeStatus": "WAITLISTED",
@@ -1887,7 +1815,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
-    "phone": "+17322460000",
     "website": "https://www.lanfoundation.org",
     "description": "Latino civil rights organization with immigration legal navigation in Central Jersey.",
     "intakeStatus": "OPEN",
@@ -1912,7 +1839,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12017950000",
     "website": "https://www.hudsoncountylegalservices.org",
     "description": "County legal aid office serving low-income Hudson County immigrants.",
     "intakeStatus": "LIMITED",
@@ -1938,7 +1864,6 @@
       "Humanitarian Relief"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=80",
-    "phone": "+12018660000",
     "website": "https://www.elcentronj.org",
     "description": "Hudson County Latino community center with immigration legal navigation.",
     "intakeStatus": "WAITLISTED",
@@ -1964,7 +1889,6 @@
       "DACA"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80",
-    "phone": "+16093480000",
     "website": "https://www.aclegalservices.org",
     "description": "South Jersey legal aid with immigration services for Atlantic County residents.",
     "intakeStatus": "OPEN",
@@ -1990,7 +1914,6 @@
       "Family"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366412874-3415097a27e7?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19733450000",
     "website": "https://www.patersonimmigrantcenter.org",
     "description": "Passaic County immigrant resource hub with legal screenings and referrals.",
     "intakeStatus": "LIMITED",
@@ -2016,7 +1939,6 @@
       "Citizenship"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
-    "phone": "+18566210000",
     "website": "https://www.camdenimmigrationcenter.org",
     "description": "South Jersey nonprofit providing immigration legal aid and community workshops.",
     "intakeStatus": "WAITLISTED",
@@ -2043,7 +1965,6 @@
       "TPS"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
-    "phone": "+16099210000",
     "website": "https://www.princetonimmigrationclinic.org",
     "description": "Community legal clinic serving low-income immigrants in Mercer County.",
     "intakeStatus": "OPEN",
@@ -2069,7 +1990,6 @@
       "Employment"
     ],
     "thumbnail_image_url": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    "phone": "+19736220000",
     "website": "https://www.gardenstateimmigrationlaw.com",
     "description": "Newark immigration firm handling family, employment, and removal proceedings.",
     "intakeStatus": "LIMITED",

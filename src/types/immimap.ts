@@ -72,7 +72,6 @@ export type ServiceOffering =
 
 export type ContactInfo = {
   address: string;
-  phone: string;
   website: string;
 };
 
@@ -93,8 +92,12 @@ export type ImmigrationService = {
   pricing: PricingLabel;
   services_offered: ServiceOffering[];
   thumbnail_image_url: string;
-  phone?: string;
   website?: string;
+  /**
+   * Whether the website link is known to work.
+   * false = hide link / show unavailable message; undefined/true = treat as usable.
+   */
+  isWebsiteActive?: boolean;
   description?: string;
   /** Intake availability signal. Drives the real-time status indicator. */
   intakeStatus?: IntakeStatus;

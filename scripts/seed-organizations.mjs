@@ -109,7 +109,6 @@ async function seed() {
           name: entry.name,
           description: entry.description ?? null,
           website_url: entry.website ?? null,
-          phone: entry.phone ?? null,
           address: entry.address,
           city: cityFromAddress(entry.address),
           state: entry.state,

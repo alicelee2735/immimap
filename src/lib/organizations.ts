@@ -10,13 +10,16 @@ import {
   getSupabaseClient,
   isSupabaseConfigured,
 } from "@/lib/supabaseClient";
+import { canonicalizeWebsiteUrl } from "@/lib/website-corrections";
 
 type OrgRow = {
   id: string;
   name: string;
   description: string | null;
   website_url: string | null;
-  phone: string | null;
+  is_website_active?: boolean | null;
+  website_checked_at?: string | null;
+  website_check_error?: string | null;
   address: string | null;
   city: string | null;
   state: string | null;
@@ -34,12 +37,11 @@ type OrgRow = {
   }>;
 };
 
-const ORG_FIELDS = `
+const CORE_ORG_FIELDS = `
   id,
   name,
   description,
   website_url,
-  phone,
   address,
   city,
   state,
@@ -54,12 +56,35 @@ const ORG_FIELDS = `
   catchment_note
 `;
 
-function buildOrgSelect(category?: string) {
+const LINK_STATUS_FIELDS = `
+  is_website_active,
+  website_checked_at,
+  website_check_error
+`;
+
+const ORG_FIELDS = `${CORE_ORG_FIELDS},
+  ${LINK_STATUS_FIELDS}
+`;
+
+function buildOrgSelect(category?: string, includeLinkStatus = true) {
+  const fields = includeLinkStatus ? ORG_FIELDS : CORE_ORG_FIELDS;
   const orgServices = category
     ? "org_services!inner ( services!inner ( id, name ) )"
     : "org_services ( services ( id, name ) )";
 
-  return `${ORG_FIELDS}, ${orgServices}`;
+  return `${fields}, ${orgServices}`;
+}
+
+function isMissingLinkStatusColumnError(error: { message?: string; code?: string } | null): boolean {
+  if (!error) return false;
+  const message = error.message ?? "";
+  return (
+    message.includes("is_website_active") ||
+    message.includes("website_checked_at") ||
+    message.includes("website_check_error") ||
+    error.code === "42703" ||
+    error.code === "PGRST204"
+  );
 }
 
 function mapRow(row: OrgRow): OrganizationWithServices | null {
@@ -80,8 +105,10 @@ function mapRow(row: OrgRow): OrganizationWithServices | null {
     id: row.id,
     name: row.name,
     description: row.description ?? undefined,
-    website_url: row.website_url ?? undefined,
-    phone: row.phone ?? undefined,
+    website_url: canonicalizeWebsiteUrl(row.website_url ?? undefined),
+    is_website_active: row.is_website_active ?? true,
+    website_checked_at: row.website_checked_at ?? null,
+    website_check_error: row.website_check_error ?? null,
     address: row.address ?? undefined,
     city: row.city,
     state: row.state,
@@ -128,8 +155,8 @@ export function organizationToImmigrationService(
     pricing: (org.pricing as ImmigrationService["pricing"]) ?? "Low-cost",
     services_offered: servicesOffered,
     thumbnail_image_url: org.thumbnail_image_url ?? "",
-    phone: org.phone,
-    website: org.website_url,
+    website: canonicalizeWebsiteUrl(org.website_url),
+    isWebsiteActive: org.is_website_active ?? true,
     description: org.description,
     intakeStatus: org.intake_status,
     languages: org.languages,
@@ -210,7 +237,7 @@ export async function fetchOrganizations(
 
   let query = supabase
     .from("organizations")
-    .select(buildOrgSelect(filters.category))
+    .select(buildOrgSelect(filters.category, true))
     .order("name");
 
   if (filters.name) {
@@ -231,7 +258,34 @@ export async function fetchOrganizations(
     query = query.eq("org_services.services.name", filters.category);
   }
 
-  const { data, error } = await query;
+  let { data, error } = await query;
+
+  // Pre-migration environments: fall back without link-status columns.
+  if (isMissingLinkStatusColumnError(error)) {
+    let fallback = supabase
+      .from("organizations")
+      .select(buildOrgSelect(filters.category, false))
+      .order("name");
+
+    if (filters.name) {
+      fallback = fallback.ilike("name", `%${filters.name}%`);
+    }
+    if (filters.city) {
+      fallback = fallback.ilike("city", `%${filters.city}%`);
+    }
+    if (states.length === 1) {
+      fallback = fallback.eq("state", states[0]);
+    } else if (states.length > 1) {
+      fallback = fallback.in("state", states);
+    }
+    if (filters.category) {
+      fallback = fallback.eq("org_services.services.name", filters.category);
+    }
+
+    const retry = await fallback;
+    data = retry.data;
+    error = retry.error;
+  }
 
   if (error) {
     throw error;
@@ -248,10 +302,11 @@ export async function createOrganization(
   const supabase = getSupabaseAdminClient();
   const { service_names = [], ...orgFields } = input;
 
+  // Select without link-status columns so create works before and after migration 006.
   const { data, error } = await supabase
     .from("organizations")
     .insert(orgFields)
-    .select(buildOrgSelect())
+    .select(buildOrgSelect(undefined, false))
     .single();
 
   if (error || !data) {
@@ -285,11 +340,21 @@ export async function fetchOrganizationById(
   }
 
   const supabase = getSupabaseClient();
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from("organizations")
-    .select(buildOrgSelect())
+    .select(buildOrgSelect(undefined, true))
     .eq("id", id)
     .maybeSingle();
+
+  if (isMissingLinkStatusColumnError(error)) {
+    const retry = await supabase
+      .from("organizations")
+      .select(buildOrgSelect(undefined, false))
+      .eq("id", id)
+      .maybeSingle();
+    data = retry.data;
+    error = retry.error;
+  }
 
   if (error) {
     throw error;

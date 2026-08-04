@@ -3,7 +3,10 @@ export type Organization = {
   name: string;
   description?: string;
   website_url?: string;
-  phone?: string;
+  /** Whether website_url currently responds. Defaults true until an audit says otherwise. */
+  is_website_active?: boolean | null;
+  website_checked_at?: string | null;
+  website_check_error?: string | null;
   address?: string;
   city: string;
   state: string;
@@ -38,7 +41,6 @@ export type CreateOrganizationInput = {
   name: string;
   description?: string;
   website_url?: string;
-  phone?: string;
   address?: string;
   city: string;
   state: string;

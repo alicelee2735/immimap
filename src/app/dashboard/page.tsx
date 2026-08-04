@@ -23,7 +23,6 @@ const EMPTY_FORM: CreateOrganizationInput = {
   name: "",
   description: "",
   website_url: "",
-  phone: "",
   address: "",
   city: "",
   state: "",

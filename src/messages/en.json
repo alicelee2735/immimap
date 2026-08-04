@@ -74,7 +74,7 @@
         },
         "contactInfo": {
           "title": "Confirmable contact details",
-          "description": "Public contact information — including address, phone number, and website — is current and matches what appears on the organization's official channels or government registries."
+          "description": "Public contact information — including address and website — is current and matches what appears on the organization's official channels or government registries."
         },
         "publicRecord": {
           "title": "Alignment with public records",
@@ -227,10 +227,11 @@
   },
   "ServiceDetail": {
     "noDescription": "Immigration legal or social services for the community.",
-    "clickToCallHint": "Tap to call on supported devices",
     "close": "Close",
-    "call": "Call",
     "visitWebsite": "Website",
+    "websiteUnavailable": "Website temporarily unavailable",
+    "websiteUnavailableHint": "Use the address below, or report a correction.",
+    "reportCorrection": "Report a correction",
     "languagesLabel": "Languages",
     "servicesLabel": "Services offered",
     "provenanceLabel": "Registry synchronized:",
@@ -321,7 +322,7 @@
         },
         "connect": {
           "title": "Connect with help",
-          "description": "Call directly, visit the organization website, or share a verified listing with someone who needs support."
+          "description": "Visit the organization website, use the listed address, or share a verified listing with someone who needs support."
         }
       }
     },

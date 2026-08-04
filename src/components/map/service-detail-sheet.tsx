@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import { ExternalLink, Globe, Info, MapPin, Phone, X } from "lucide-react";
+import { ExternalLink, Globe, Info, MapPin, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { VerifiedBadge } from "@/components/verification/verified-badge";
-import { formatDisplayPhone } from "@/lib/phone";
 import { cn } from "@/lib/utils";
 import { useMapFiltersStore } from "@/stores/map-filters";
 import type {
@@ -15,6 +14,9 @@ import type {
   IntakeStatus,
   PricingLabel,
 } from "@/types/immimap";
+
+/** Shared Google Form used for listing corrections (same as About page). */
+const DATA_CORRECTION_FORM_URL = "https://forms.gle/SZryGqpSC6N3RV6F6";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -100,6 +102,11 @@ export function ServiceDetailSheet({ services }: Props) {
     return null;
   }
 
+  const websiteActive =
+    Boolean(service.website) && service.isWebsiteActive !== false;
+  const websiteUnavailable =
+    Boolean(service.website) && service.isWebsiteActive === false;
+
   return (
     <div
       role="dialog"
@@ -111,42 +118,51 @@ export function ServiceDetailSheet({ services }: Props) {
         "animate-in slide-in-from-right duration-300",
       )}
     >
-      <div className="sticky top-0 z-10 flex shrink-0 flex-wrap items-center gap-2 border-b border-slate-200 bg-white p-4">
-        <button
-          type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full p-2 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label={t("close")}
-          onClick={() => selectService(null)}
-        >
-          <X className="h-5 w-5" aria-hidden />
-        </button>
-        {service.website ? (
-          <a
-            href={service.website}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={buttonVariants({
-              size: "lg",
-              className: "h-10 rounded-full px-4",
-            })}
+      <div className="sticky top-0 z-10 shrink-0 border-b border-slate-200 bg-white p-4">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full p-2 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label={t("close")}
+            onClick={() => selectService(null)}
           >
-            <ExternalLink className="h-4 w-4" aria-hidden />
-            {t("visitWebsite")}
-          </a>
-        ) : null}
-        {service.phone ? (
-          <a
-            className={buttonVariants({
-              variant: "secondary",
-              size: "lg",
-              className: "h-10 rounded-full px-4",
-            })}
-            href={`tel:${service.phone}`}
-            aria-label={`${t("call")} ${formatDisplayPhone(service.phone)}`}
+            <X className="h-5 w-5" aria-hidden />
+          </button>
+          {websiteActive ? (
+            <a
+              href={service.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={buttonVariants({
+                size: "lg",
+                className: "h-10 rounded-full px-4",
+              })}
+            >
+              <ExternalLink className="h-4 w-4" aria-hidden />
+              {t("visitWebsite")}
+            </a>
+          ) : null}
+        </div>
+        {websiteUnavailable ? (
+          <div
+            className="mt-3 rounded-md bg-slate-50 px-3 py-2 text-left"
+            role="status"
           >
-            <Phone className="h-4 w-4" aria-hidden />
-            {t("call")}
-          </a>
+            <span className="block text-sm font-medium text-slate-600">
+              {t("websiteUnavailable")}
+            </span>
+            <span className="mt-0.5 block text-xs leading-snug text-slate-500">
+              {t("websiteUnavailableHint")}{" "}
+              <a
+                href={DATA_CORRECTION_FORM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-slate-300 underline-offset-2 transition-colors hover:text-slate-800 hover:decoration-slate-500"
+              >
+                {t("reportCorrection")}
+              </a>
+            </span>
+          </div>
         ) : null}
       </div>
 

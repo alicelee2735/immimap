@@ -74,7 +74,7 @@
         },
         "contactInfo": {
           "title": "可核实的联系方式",
-          "description": "公开的联系信息——包括地址、电话和网站——为最新状态，且与机构官方渠道或政府登记记录一致。"
+          "description": "公开的联系信息——包括地址和网站——为最新状态，且与机构官方渠道或政府登记记录一致。"
         },
         "publicRecord": {
           "title": "与公开记录一致",
@@ -227,10 +227,11 @@
   },
   "ServiceDetail": {
     "noDescription": "面向社区的移民法律或社会服务。",
-    "clickToCallHint": "在支持的设备上点击即可拨号",
     "close": "关闭",
-    "call": "拨打电话",
     "visitWebsite": "官方网站",
+    "websiteUnavailable": "网站暂时不可用",
+    "websiteUnavailableHint": "请使用下方地址，或提交更正反馈。",
+    "reportCorrection": "反馈错误信息",
     "languagesLabel": "服务语言",
     "servicesLabel": "服务项目",
     "provenanceLabel": "数据库同步于：",
@@ -321,7 +322,7 @@
         },
         "connect": {
           "title": "联系援助",
-          "description": "直接拨号、访问机构网站，或把已核验的机构信息分享给需要帮助的人。"
+          "description": "访问机构网站、使用所列地址，或把已核验的机构信息分享给需要帮助的人。"
         }
       }
     },
