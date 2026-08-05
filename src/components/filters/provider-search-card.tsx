@@ -60,7 +60,7 @@ export function ProviderSearchCard({
   return (
     <div
       className={cn(
-        "relative overflow-visible rounded-xl border border-slate-200 bg-white p-2",
+        "relative overflow-visible rounded-xl border border-slate-200 bg-white p-2 shadow-sm",
         className,
       )}
     >

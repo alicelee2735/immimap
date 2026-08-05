@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { setRequestLocale } from "next-intl/server";
 import { getTranslations } from "next-intl/server";
 
@@ -22,7 +23,15 @@ export default async function MapPage({ params }: Props) {
 
   return (
     <main className="relative flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden">
-      <MapDashboard />
+      <Suspense
+        fallback={
+          <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
+            Loading map…
+          </div>
+        }
+      >
+        <MapDashboard />
+      </Suspense>
     </main>
   );
 }

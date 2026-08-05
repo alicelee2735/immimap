@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { OrganizationWithServices } from "@/types/database.types";
 import type { ImmigrationService } from "@/types/immimap";
 import { getCatalogServices } from "@/lib/catalog-data";
-import { canonicalizeWebsiteUrl } from "@/lib/website-corrections";
+import { canonicalizeWebsiteUrl, wasWebsiteHostCorrected } from "@/lib/website-corrections";
 
 function jsonFallbackServices(): ImmigrationService[] {
   return getCatalogServices();
@@ -110,7 +110,9 @@ function organizationWithServicesToImmigrationService(
     ) as ImmigrationService["services_offered"],
     thumbnail_image_url: org.thumbnail_image_url ?? "",
     website: canonicalizeWebsiteUrl(org.website_url),
-    isWebsiteActive: org.is_website_active ?? true,
+    isWebsiteActive: wasWebsiteHostCorrected(org.website_url)
+      ? true
+      : (org.is_website_active ?? true),
     description: org.description,
     intakeStatus: org.intake_status,
     languages: org.languages,

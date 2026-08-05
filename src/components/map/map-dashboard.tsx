@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Languages, Loader2, MapPin } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,7 +22,6 @@ import { filterServices, useMapFiltersStore } from "@/stores/map-filters";
 import type {
   ImmigrationService,
   PricingLabel,
-  ServiceOffering,
 } from "@/types/immimap";
 
 function pricingVariant(
@@ -32,24 +32,17 @@ function pricingVariant(
   return "outline";
 }
 
-function offeringTone(offering: ServiceOffering) {
-  if (offering === "Asylum" || offering === "Removal Defense") {
-    return "border-blue-200 bg-blue-50 text-blue-700";
-  }
-  if (offering === "Family" || offering === "Citizenship") {
-    return "border-emerald-200 bg-emerald-50 text-emerald-700";
-  }
-  if (offering === "DACA" || offering === "TPS") {
-    return "border-violet-200 bg-violet-50 text-violet-700";
-  }
-  return "border-amber-200 bg-amber-50 text-amber-700";
-}
-
 const PRICING_LABEL_TO_KEY: Record<PricingLabel, "pro_bono" | "low_cost" | "paid"> = {
   "Pro bono": "pro_bono",
   "Low-cost": "low_cost",
   Paid: "paid",
 };
+
+function searchFromQueryParam(q: string | null): OrganizationSearchValues {
+  const query = q?.trim() ?? "";
+  if (!query) return DEFAULT_SEARCH_VALUES;
+  return { ...DEFAULT_SEARCH_VALUES, query };
+}
 
 type ServiceResultCardProps = {
   service: ImmigrationService;
@@ -113,10 +106,7 @@ function ServiceResultCard({
         <div className="flex flex-wrap gap-1.5">
           <Badge
             variant="outline"
-            className={cn(
-              "border font-medium",
-              offeringTone(service.services_offered[0]),
-            )}
+            className="border border-blue-200 bg-blue-50 font-medium text-blue-700"
           >
             {service.services_offered[0]}
           </Badge>
@@ -167,8 +157,8 @@ function SidebarSkeleton() {
       {Array.from({ length: 4 }).map((_, index) => (
         <div key={index} className="animate-pulse space-y-2.5 px-4 py-3.5 sm:px-5">
           <div className="flex gap-2">
-            <div className="h-5 w-16 rounded-full bg-slate-200" />
-            <div className="h-5 w-20 rounded-full bg-slate-200" />
+            <div className="h-5 w-16 rounded-sm bg-slate-200" />
+            <div className="h-5 w-20 rounded-sm bg-slate-200" />
           </div>
           <div className="h-5 w-3/4 rounded bg-slate-200" />
           <div className="h-3 w-1/2 rounded bg-slate-100" />
@@ -181,8 +171,9 @@ function SidebarSkeleton() {
 export function MapDashboard() {
   const t = useTranslations("Map");
   const locale = useLocale();
-  const [search, setSearch] = useState<OrganizationSearchValues>(
-    DEFAULT_SEARCH_VALUES,
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState<OrganizationSearchValues>(() =>
+    searchFromQueryParam(searchParams.get("q")),
   );
   const { services, loading, error, usingFallback } = useOrganizations();
   const states = useMapFiltersStore((s) => s.states);

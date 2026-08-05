@@ -13,6 +13,12 @@ const HOST_CORRECTIONS: Record<string, string> = {
   // ABA ProBAR
   "probar.org": "https://abaprobar.org",
   "www.probar.org": "https://abaprobar.org",
+  // Catholic Charities of Corpus Christi — wrong hosts (missing hyphen / retired)
+  // Official site: https://catholiccharities-cc.org/immigration
+  "catholiccharitiescc.org": "https://catholiccharities-cc.org/immigration",
+  "www.catholiccharitiescc.org": "https://catholiccharities-cc.org/immigration",
+  "cccct.org": "https://catholiccharities-cc.org/immigration",
+  "www.cccct.org": "https://catholiccharities-cc.org/immigration",
 };
 
 /** Hosts / URL markers that indicate a domain sale or parking page. */
@@ -44,6 +50,25 @@ export function canonicalizeWebsiteUrl(
     return parsed.toString();
   } catch {
     return trimmed;
+  }
+}
+
+/** True when the stored host is remapped to a known-good official URL. */
+export function wasWebsiteHostCorrected(
+  raw: string | null | undefined,
+): boolean {
+  if (!raw) return false;
+  const trimmed = raw.trim();
+  if (!trimmed) return false;
+
+  try {
+    const withProtocol = /^https?:\/\//i.test(trimmed)
+      ? trimmed
+      : `https://${trimmed}`;
+    const host = new URL(withProtocol).hostname.toLowerCase();
+    return Object.prototype.hasOwnProperty.call(HOST_CORRECTIONS, host);
+  } catch {
+    return false;
   }
 }
 

@@ -21,8 +21,12 @@
     "legalDescription": "Important legal notices about ImmiMap: informational use only, no attorney-client relationship, credential verification, and unauthorized practice of law warnings."
   },
   "Footer": {
-    "shortDisclaimer": "ImmiMap is for informational purposes only and does not provide legal advice.",
-    "legalLink": "Legal disclaimer"
+    "shortDisclaimer": "ImmiMap is for informational purposes only and does not provide legal advice. Independently verify credentials before relying on any listed provider.",
+    "legalLink": "Legal disclaimer",
+    "verifyLink": "How we verify",
+    "exploreHeading": "Explore",
+    "aboutHeading": "About",
+    "copyright": "© ImmiMap. A public directory of immigration legal and social services."
   },
   "Legal": {
     "eyebrow": "Legal",
@@ -124,7 +128,7 @@
     "serviceUnavailable": "Service temporarily unavailable.",
     "serviceUnavailableHint": "We couldn't load provider data. Please try again in a few minutes.",
     "showingCachedData": "Showing cached provider data.",
-    "resultsEyebrow": "Provider marketplace",
+    "resultsEyebrow": "Provider Directory",
     "resultsTitle": "Immigration providers",
     "resultsCount": "{count, plural, =0 {No providers} one {# provider} other {# providers}} found",
     "liveResults": "Live filters",
@@ -298,6 +302,11 @@
     "heroSubtitle": "A visual directory of NGOs and legal aid across the US. Designed for accessibility, powered by open data.",
     "heroBody": "ImmiMap helps families, advocates, and community organizations find credible immigration support faster — without the noise of scattered directories or outdated contact lists.",
     "exploreMap": "Explore the Map ➔",
+    "heroSearchPlaceholder": "Search by city, state, or organization…",
+    "heroSearchButton": "Search directory",
+    "featuresEyebrow": "What we offer",
+    "featuresTitle": "Built for families and advocates",
+    "featuresLead": "ImmiMap is a public directory — practical, bilingual, and grounded in verified nonprofit listings rather than paywalled search products.",
     "search": {
       "allStates": "All states",
       "allServices": "All service types",

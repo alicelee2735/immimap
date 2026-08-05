@@ -10,7 +10,7 @@ import {
   getSupabaseClient,
   isSupabaseConfigured,
 } from "@/lib/supabaseClient";
-import { canonicalizeWebsiteUrl } from "@/lib/website-corrections";
+import { canonicalizeWebsiteUrl, wasWebsiteHostCorrected } from "@/lib/website-corrections";
 
 type OrgRow = {
   id: string;
@@ -156,7 +156,9 @@ export function organizationToImmigrationService(
     services_offered: servicesOffered,
     thumbnail_image_url: org.thumbnail_image_url ?? "",
     website: canonicalizeWebsiteUrl(org.website_url),
-    isWebsiteActive: org.is_website_active ?? true,
+    isWebsiteActive: wasWebsiteHostCorrected(org.website_url)
+      ? true
+      : (org.is_website_active ?? true),
     description: org.description,
     intakeStatus: org.intake_status,
     languages: org.languages,

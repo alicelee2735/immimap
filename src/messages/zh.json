@@ -21,8 +21,12 @@
     "legalDescription": "关于 ImmiMap 的重要法律提示：仅供信息参考、不构成律师与客户关系、请自行核实资质，以及未经授权执业（UPL）警示。"
   },
   "Footer": {
-    "shortDisclaimer": "ImmiMap 仅供一般信息参考，不提供法律意见。",
-    "legalLink": "法律声明"
+    "shortDisclaimer": "ImmiMap 仅供一般信息参考，不提供法律意见。依赖任何所列机构前，请自行核实其资质。",
+    "legalLink": "法律声明",
+    "verifyLink": "核验标准",
+    "exploreHeading": "浏览",
+    "aboutHeading": "关于",
+    "copyright": "© ImmiMap。移民法律与社会服务公开目录。"
   },
   "Legal": {
     "eyebrow": "法律",
@@ -298,6 +302,11 @@
     "heroSubtitle": "覆盖全美 NGO 与法律援助的可视化目录。为无障碍而设计，由开放数据驱动。",
     "heroBody": "ImmiMap 帮助家庭、倡导者和社区组织更快找到可信赖的移民支持资源——告别零散名单与过时联系方式。",
     "exploreMap": "探索地图 ➔",
+    "heroSearchPlaceholder": "按城市、州或机构名称搜索…",
+    "heroSearchButton": "搜索目录",
+    "featuresEyebrow": "我们提供什么",
+    "featuresTitle": "为家庭与倡导者而建",
+    "featuresLead": "ImmiMap 是一份公开目录——实用、双语，并以已核验的非营利机构信息为基础，而非付费搜索产品。",
     "search": {
       "allStates": "所有州",
       "allServices": "所有服务类型",
