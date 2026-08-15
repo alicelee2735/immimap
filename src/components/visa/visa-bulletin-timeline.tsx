@@ -37,9 +37,9 @@ function dateToPct(date: Date): number {
   );
 }
 
-function formatDate(iso: string, locale: string): string {
+function formatDate(iso: string, _locale: string): string {
   const d = new Date(`${iso}T00:00:00Z`);
-  return d.toLocaleDateString(locale === "zh" ? "zh-CN" : "en-US", {
+  return d.toLocaleDateString("en-US", {
     month: "short",
     year: "numeric",
     day: "numeric",

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { ExternalLink, Globe, Info, MapPin, X } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -78,7 +78,6 @@ type Props = {
 export function ServiceDetailSheet({ services }: Props) {
   const t = useTranslations("ServiceDetail");
   const tPrice = useTranslations("Pricing");
-  const locale = useLocale();
   const selectedServiceId = useMapFiltersStore((s) => s.selectedServiceId);
   const selectService = useMapFiltersStore((s) => s.selectService);
 
@@ -248,7 +247,7 @@ export function ServiceDetailSheet({ services }: Props) {
             {t("provenanceLabel")}{" "}
             <time className="tabular-nums">
               {new Date().toLocaleDateString(
-                locale === "zh" ? "zh-CN" : "en-US",
+                "en-US",
                 {
                   month: "short",
                   day: "numeric",

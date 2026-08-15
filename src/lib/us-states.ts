@@ -135,41 +135,56 @@ export function collectStateSuggestions(
   const normalized = query.trim().toLowerCase();
   if (!normalized) return [];
 
-  const matches: StateSuggestion[] = [];
+  type Ranked = StateSuggestion & { rank: number };
+  const matches: Ranked[] = [];
 
   for (const code of Object.keys(US_STATE_NAMES) as USState[]) {
     const name = US_STATE_NAMES[code];
     const codeLower = code.toLowerCase();
     const nameLower = name.toLowerCase();
 
-    if (
-      codeLower === normalized ||
-      nameLower.startsWith(normalized) ||
-      nameLower.includes(normalized) ||
-      (normalized.length === 2 && codeLower === normalized)
-    ) {
+    // Abbreviations: exact match only (never mid-string / fuzzy).
+    if (normalized.length === 2 && codeLower === normalized) {
       matches.push({
         code,
         name,
         label: `${name} (${code})`,
+        rank: 0,
       });
+      continue;
+    }
+
+    if (nameLower.startsWith(normalized)) {
+      matches.push({
+        code,
+        name,
+        label: `${name} (${code})`,
+        rank: 1,
+      });
+      continue;
+    }
+
+    // Strict substring only for longer queries, and only on word prefixes
+    // (e.g. "york" → New York), never mid-token ("san" ↛ Arkansas).
+    if (normalized.length >= 3) {
+      const tokens = nameLower.split(/[\s-]+/).filter(Boolean);
+      if (tokens.some((token) => token.startsWith(normalized))) {
+        matches.push({
+          code,
+          name,
+          label: `${name} (${code})`,
+          rank: 2,
+        });
+      }
     }
   }
 
   return matches
-    .sort((a, b) => {
-      const aExact =
-        a.code.toLowerCase() === normalized ||
-        a.name.toLowerCase() === normalized
-          ? 0
-          : 1;
-      const bExact =
-        b.code.toLowerCase() === normalized ||
-        b.name.toLowerCase() === normalized
-          ? 0
-          : 1;
-      if (aExact !== bExact) return aExact - bExact;
-      return a.name.localeCompare(b.name);
-    })
-    .slice(0, limit);
+    .sort((a, b) => a.rank - b.rank || a.name.localeCompare(b.name))
+    .slice(0, limit)
+    .map((entry) => ({
+      code: entry.code,
+      name: entry.name,
+      label: entry.label,
+    }));
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Languages, Loader2, MapPin } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +18,7 @@ import { useOrganizations } from "@/hooks/use-organizations";
 import { filterServicesByQuery, filterServicesByCity, getServiceCity } from "@/lib/search-services";
 import { STATE_BOUNDING_BOXES } from "@/lib/us-states";
 import { cn } from "@/lib/utils";
-import { filterServices, useMapFiltersStore } from "@/stores/map-filters";
+import { filterServices, useMapFiltersStore, ALL_STATES } from "@/stores/map-filters";
 import type {
   ImmigrationService,
   PricingLabel,
@@ -170,7 +170,6 @@ function SidebarSkeleton() {
 
 export function MapDashboard() {
   const t = useTranslations("Map");
-  const locale = useLocale();
   const searchParams = useSearchParams();
   const [search, setSearch] = useState<OrganizationSearchValues>(() =>
     searchFromQueryParam(searchParams.get("q")),
@@ -179,17 +178,20 @@ export function MapDashboard() {
   const states = useMapFiltersStore((s) => s.states);
   const categories = useMapFiltersStore((s) => s.categories);
   const pricingTiers = useMapFiltersStore((s) => s.pricingTiers);
+  const languages = useMapFiltersStore((s) => s.languages);
   const selectedServiceId = useMapFiltersStore((s) => s.selectedServiceId);
   const hoveredProviderId = useMapFiltersStore((s) => s.hoveredProviderId);
   const selectService = useMapFiltersStore((s) => s.selectService);
   const setHoveredId = useMapFiltersStore((s) => s.setHoveredProviderId);
   const setStates = useMapFiltersStore((s) => s.setStates);
   const requestFocusBounds = useMapFiltersStore((s) => s.requestFocusBounds);
+  const requestNationalFrame = useMapFiltersStore((s) => s.requestNationalFrame);
   const clearFocusBounds = useMapFiltersStore((s) => s.clearFocusBounds);
 
   const storeFiltered = useMemo(
-    () => filterServices(services, { states, categories, pricingTiers }),
-    [services, states, categories, pricingTiers],
+    () =>
+      filterServices(services, { states, categories, pricingTiers, languages }),
+    [services, states, categories, pricingTiers, languages],
   );
 
   const visible = useMemo(() => {
@@ -251,7 +253,8 @@ export function MapDashboard() {
             }}
             onClear={() => {
               selectService(null);
-              clearFocusBounds();
+              setStates([...ALL_STATES]);
+              requestNationalFrame();
             }}
           />
           <div className="absolute inset-0 z-0 h-full w-full overflow-hidden">
@@ -365,7 +368,7 @@ export function MapDashboard() {
               {t("provenanceTimestamp")}{" "}
               <time className="tabular-nums text-slate-500">
                 {new Date().toLocaleDateString(
-                  locale === "zh" ? "zh-CN" : "en-US",
+                  "en-US",
                   {
                     month: "short",
                     day: "numeric",

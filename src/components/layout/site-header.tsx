@@ -2,13 +2,12 @@
 
 import { useState } from "react";
 import { Menu } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { TrackedNavLink } from "@/components/analytics/tracked-nav-link";
 import { PageContainer } from "@/components/layout/page-container";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Link, usePathname } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
 import { isNavItemActive } from "@/lib/nav-pathname";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +17,6 @@ type Props = {
 
 export function SiteHeader({ pathname: serverPathname }: Props) {
   const t = useTranslations("Nav");
-  const locale = useLocale();
   const clientPathname = usePathname();
   const pathname = clientPathname ?? serverPathname;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -69,33 +67,7 @@ export function SiteHeader({ pathname: serverPathname }: Props) {
           })}
         </nav>
 
-        <div className="flex shrink-0 items-center justify-end gap-x-8">
-          <div
-            className="hidden items-center gap-x-2 lg:flex"
-            role="group"
-            aria-label={t("language")}
-          >
-            {routing.locales.map((loc, index) => (
-              <span key={loc} className="flex items-center gap-x-2">
-                {index > 0 ? (
-                  <span className="text-slate-300" aria-hidden>
-                    |
-                  </span>
-                ) : null}
-                <Link
-                  href={pathname}
-                  locale={loc}
-                  className={cn(
-                    "text-sm font-medium text-slate-500 transition-colors duration-150 hover:text-slate-950",
-                    loc === locale && "pointer-events-none text-[#2563eb]",
-                  )}
-                  aria-current={loc === locale ? "page" : undefined}
-                >
-                  {loc === "zh" ? "中文" : "EN"}
-                </Link>
-              </span>
-            ))}
-          </div>
+        <div className="flex shrink-0 items-center justify-end">
           <button
             type="button"
             className="inline-flex h-10 w-10 items-center justify-center text-slate-950 transition-colors duration-150 hover:text-[#2563eb] md:hidden"
@@ -142,36 +114,6 @@ export function SiteHeader({ pathname: serverPathname }: Props) {
               );
             })}
           </nav>
-
-          <div className="mt-10 flex flex-col items-start gap-5 pt-6">
-            <div
-              className="flex items-center gap-4"
-              role="group"
-              aria-label={t("language")}
-            >
-              {routing.locales.map((loc, index) => (
-                <span key={loc} className="flex items-center gap-4">
-                  {index > 0 ? (
-                    <span className="text-slate-300" aria-hidden>
-                      |
-                    </span>
-                  ) : null}
-                  <Link
-                    href={pathname}
-                    locale={loc}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={cn(
-                      "text-sm font-medium text-slate-500 transition-colors duration-150 hover:text-slate-950",
-                      loc === locale && "pointer-events-none text-[#2563eb]",
-                    )}
-                    aria-current={loc === locale ? "page" : undefined}
-                  >
-                    {loc === "zh" ? "中文" : "EN"}
-                  </Link>
-                </span>
-              ))}
-            </div>
-          </div>
         </SheetContent>
       </Sheet>
     </header>

@@ -13,12 +13,12 @@ type Props = {
   stale?: boolean;
 };
 
-function formatUpdatedAt(updatedAt: string | null, locale: string) {
+function formatUpdatedAt(updatedAt: string | null, _locale: string) {
   if (!updatedAt) {
     return null;
   }
 
-  return new Date(updatedAt).toLocaleString(locale === "zh" ? "zh-CN" : "en-US", {
+  return new Date(updatedAt).toLocaleString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",

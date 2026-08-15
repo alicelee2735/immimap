@@ -150,21 +150,24 @@ function FitVisibleServices({ services }: { services: ImmigrationService[] }) {
   const states = useMapFiltersStore((s) => s.states);
   const lastNationalToken = useRef(0);
   const lastFocusToken = useRef(0);
+  /** After a national reset, ignore follow-up service-list fits until focus changes. */
+  const nationalLockToken = useRef(0);
 
   useEffect(() => {
-    if (selectedServiceId) return;
-
-    // Reset all → always lock to geographic center of contiguous US.
-    // Do this before focusBounds handling so a stale frame cannot win.
+    // National reset always wins — even if a provider is still selected for a tick.
     if (nationalFrameToken > lastNationalToken.current) {
       lastNationalToken.current = nationalFrameToken;
       lastFocusToken.current = focusBoundsToken;
-      setContinentalUsView(map, 0.8);
+      nationalLockToken.current = nationalFrameToken;
+      setContinentalUsView(map, 0.85);
       return;
     }
 
+    if (selectedServiceId) return;
+
     if (focusBounds && focusBoundsToken > lastFocusToken.current) {
       lastFocusToken.current = focusBoundsToken;
+      nationalLockToken.current = 0;
       flyToCorners(map, focusBounds, 1.2);
       return;
     }
@@ -174,11 +177,11 @@ function FitVisibleServices({ services }: { services: ImmigrationService[] }) {
       return;
     }
 
-    // After Reset all, ignore service-list refits that re-include AK pins
-    // (that race is the historic Ellesmere Island teleport).
+    // After Reset all, ignore service-list refits that would yank the camera
+    // back to provider bounds (or race an in-flight fitBounds animation).
     if (
-      nationalFrameToken > 0 &&
-      nationalFrameToken === lastNationalToken.current &&
+      nationalLockToken.current > 0 &&
+      nationalLockToken.current === nationalFrameToken &&
       states.length === ALL_STATES.length
     ) {
       return;

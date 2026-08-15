@@ -186,8 +186,10 @@ export function OrganizationSearch({
         values.query.trim() || values.city || values.selectedState,
       )}
       onResetSearch={() => {
+        // Only clear the search field here. Filter bar calls `resetAll()`, which
+        // owns filter + national map viewport reset — avoid an intermediate
+        // clearFocusBounds()/fitBounds race that leaves the camera zoomed in.
         onChange(DEFAULT_SEARCH_VALUES);
-        onClear?.();
       }}
       searchSlot={
         <div

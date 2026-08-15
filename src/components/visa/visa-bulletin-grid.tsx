@@ -25,11 +25,13 @@ type Props = {
   bulletinMonthLabel: string;
 };
 
-function formatBulletinDate(value: string, locale: string): string {
-  return new Date(`${value}T00:00:00Z`).toLocaleDateString(
-    locale === "zh" ? "zh-CN" : "en-US",
-    { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" },
-  );
+function formatBulletinDate(value: string, _locale: string): string {
+  return new Date(`${value}T00:00:00Z`).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
 }
 
 export function VisaBulletinGrid({

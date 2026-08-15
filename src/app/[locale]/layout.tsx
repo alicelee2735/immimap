@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Inter, Noto_Sans_SC } from "next/font/google";
+import { Inter } from "next/font/google";
 import { clsx } from "clsx";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -14,12 +14,6 @@ import { routing } from "@/i18n/routing";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
-});
-
-const notoSansSC = Noto_Sans_SC({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
-  variable: "--font-noto-sc",
 });
 
 export function generateStaticParams() {
@@ -40,9 +34,7 @@ export async function generateMetadata({
   return {
     title: t("title"),
     description:
-      locale === "zh"
-        ? "在全美查找移民法律与社会服务机构。"
-        : "Find immigration legal and social services across the United States.",
+      "Find immigration legal and social services across the United States.",
   };
 }
 
@@ -70,14 +62,14 @@ export default async function LocaleLayout({
 
   return (
     <html
-      className={clsx("min-h-full", inter.variable, notoSansSC.variable)}
+      className={clsx("min-h-full", inter.variable)}
       lang={locale}
       suppressHydrationWarning
     >
       <body
         className={clsx(
           "flex min-h-dvh flex-col bg-background text-foreground antialiased",
-          locale === "zh" ? notoSansSC.className : inter.className,
+          inter.className,
         )}
         suppressHydrationWarning
       >

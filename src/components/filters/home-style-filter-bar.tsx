@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -8,43 +9,46 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import {
+  ALL_CATEGORIES,
+  ALL_LANGUAGES,
+  ALL_PRICING,
   ALL_STATES,
   areFiltersAtDefaults,
   useMapFiltersStore,
+  type FilterLanguage,
 } from "@/stores/map-filters";
-import type { PricingTier, ServiceCategory } from "@/types/immimap";
 
-const CATEGORIES: ServiceCategory[] = [
-  "asylum",
-  "family",
-  "daca",
-  "employment",
-];
-const PRICING: PricingTier[] = ["pro_bono", "low_cost", "paid"];
+type MenuKey = "state" | "service" | "price" | "language";
 
 type SegmentOption<T extends string> = {
   value: T;
   label: string;
 };
 
-type SearchSegmentProps<T extends string> = {
+type MultiSelectSegmentProps<T extends string> = {
+  menuKey: MenuKey;
+  openMenu: MenuKey | null;
+  onOpenChange: (key: MenuKey, open: boolean) => void;
   title: string;
   value: string;
   options: SegmentOption<T>[];
   selected: T[];
   onToggle: (value: T) => void;
-  /** Label for the top “All” option that clears this dropdown’s filter only. */
-  allOptionLabel?: string;
-  onSelectAll?: () => void;
+  allOptionLabel: string;
+  onSelectAll: () => void;
   isLast?: boolean;
   compact?: boolean;
 };
 
-function SearchSegment<T extends string>({
+function MultiSelectSegment<T extends string>({
+  menuKey,
+  openMenu,
+  onOpenChange,
   title,
   value,
   options,
@@ -54,14 +58,18 @@ function SearchSegment<T extends string>({
   onSelectAll,
   isLast,
   compact = false,
-}: SearchSegmentProps<T>) {
+}: MultiSelectSegmentProps<T>) {
   const allSelected =
     options.length > 0 &&
     selected.length === options.length &&
     options.every((option) => selected.includes(option.value));
 
   return (
-    <DropdownMenu>
+    <DropdownMenu
+      modal={false}
+      open={openMenu === menuKey}
+      onOpenChange={(open) => onOpenChange(menuKey, open)}
+    >
       <DropdownMenuTrigger
         className={cn(
           "group flex items-center justify-between gap-2 bg-transparent text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -96,27 +104,30 @@ function SearchSegment<T extends string>({
         positionerClassName="z-[9999]"
         align="start"
       >
-        {allOptionLabel && onSelectAll ? (
-          <DropdownMenuCheckboxItem
-            checked={allSelected}
-            onClick={onSelectAll}
-            className={cn(
-              "px-3 py-2 text-sm font-medium",
-              allSelected
-                ? "text-primary"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            {allOptionLabel}
-          </DropdownMenuCheckboxItem>
-        ) : null}
+        <DropdownMenuCheckboxItem
+          checked={allSelected}
+          closeOnClick={false}
+          onCheckedChange={(checked) => {
+            if (checked) onSelectAll();
+          }}
+          className={cn(
+            "px-3 py-2 text-sm font-medium",
+            allSelected
+              ? "text-primary"
+              : "text-muted-foreground hover:text-foreground",
+          )}
+        >
+          {allOptionLabel}
+        </DropdownMenuCheckboxItem>
+        <DropdownMenuSeparator />
         {options.map((option) => {
           const active = selected.includes(option.value);
           return (
             <DropdownMenuCheckboxItem
               key={option.value}
               checked={active}
-              onClick={() => onToggle(option.value)}
+              closeOnClick={false}
+              onCheckedChange={() => onToggle(option.value)}
               className={cn(
                 "px-3 py-2 text-sm font-medium",
                 active
@@ -133,6 +144,122 @@ function SearchSegment<T extends string>({
   );
 }
 
+type LanguageSegmentProps = {
+  openMenu: MenuKey | null;
+  onOpenChange: (key: MenuKey, open: boolean) => void;
+  title: string;
+  value: string;
+  options: SegmentOption<FilterLanguage>[];
+  selected: FilterLanguage[];
+  allLabel: string;
+  onToggle: (language: FilterLanguage) => void;
+  onSelectAll: () => void;
+  compact?: boolean;
+};
+
+function LanguageSegment({
+  openMenu,
+  onOpenChange,
+  title,
+  value,
+  options,
+  selected,
+  allLabel,
+  onToggle,
+  onSelectAll,
+  compact = false,
+}: LanguageSegmentProps) {
+  const isAllSelected = selected.length === 0;
+
+  return (
+    <DropdownMenu
+      modal={false}
+      open={openMenu === "language"}
+      onOpenChange={(open) => onOpenChange("language", open)}
+    >
+      <DropdownMenuTrigger
+        className={cn(
+          "group flex items-center justify-between gap-2 bg-transparent text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          compact
+            ? "h-9 min-w-0 shrink-0 rounded-lg px-2.5 py-1.5 pr-3.5 hover:bg-slate-100/80"
+            : "min-h-16 flex-1 gap-4 px-5 py-2.5 hover:bg-primary/5",
+        )}
+      >
+        <span className="min-w-0">
+          <span
+            className={cn(
+              "block font-semibold uppercase tracking-[0.18em] text-muted-foreground",
+              compact ? "text-[10px]" : "text-xs",
+            )}
+          >
+            {title}
+          </span>
+          <span
+            className={cn(
+              "mt-0.5 block truncate font-semibold text-foreground",
+              compact ? "max-w-[6rem] text-sm sm:max-w-[7rem]" : "text-sm sm:text-base",
+            )}
+          >
+            {value}
+          </span>
+        </span>
+        <ChevronDown className="ml-1 h-3.5 w-3.5 shrink-0 text-primary transition group-data-[popup-open]:rotate-180" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        className="z-[9999] max-h-72 w-64 rounded-2xl bg-white p-2"
+        positionerClassName="z-[9999]"
+        align="start"
+      >
+        <DropdownMenuCheckboxItem
+          checked={isAllSelected}
+          closeOnClick={false}
+          onCheckedChange={(checked) => {
+            if (checked || !isAllSelected) onSelectAll();
+          }}
+          className={cn(
+            "px-3 py-2 text-sm font-medium",
+            isAllSelected
+              ? "text-primary"
+              : "text-muted-foreground hover:text-foreground",
+          )}
+        >
+          {allLabel}
+        </DropdownMenuCheckboxItem>
+        <DropdownMenuSeparator />
+        {options.map((option) => {
+          const active = selected.includes(option.value);
+          return (
+            <DropdownMenuCheckboxItem
+              key={option.value}
+              checked={active}
+              closeOnClick={false}
+              onCheckedChange={() => onToggle(option.value)}
+              className={cn(
+                "px-3 py-2 text-sm font-medium",
+                active
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {option.label}
+            </DropdownMenuCheckboxItem>
+          );
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+function languageSelectionLabel(
+  allLabel: string,
+  selected: FilterLanguage[],
+  selectedCountLabel: string,
+): string {
+  if (selected.length === 0) return allLabel;
+  if (selected.length === 1) return selected[0] ?? allLabel;
+  return selectedCountLabel;
+}
+
 function selectionLabel(
   allLabel: string,
   labels: string[],
@@ -140,9 +267,8 @@ function selectionLabel(
   totalCount: number,
   selectedLabel: string,
 ) {
-  if (selectedCount === totalCount) return allLabel;
-  if (selectedCount === 0) return allLabel;
-  if (selectedCount === 1) return labels[0];
+  if (selectedCount === 0 || selectedCount === totalCount) return allLabel;
+  if (selectedCount === 1) return labels[0] ?? allLabel;
   return selectedLabel;
 }
 
@@ -167,21 +293,35 @@ export function HomeStyleFilterBar({
 }: HomeStyleFilterBarProps) {
   const tHome = useTranslations("Home");
   const tFilters = useTranslations("Filters");
+  const [openMenu, setOpenMenu] = useState<MenuKey | null>(null);
+
   const states = useMapFiltersStore((s) => s.states);
   const categories = useMapFiltersStore((s) => s.categories);
   const pricingTiers = useMapFiltersStore((s) => s.pricingTiers);
+  const languages = useMapFiltersStore((s) => s.languages);
   const selectedServiceId = useMapFiltersStore((s) => s.selectedServiceId);
   const toggleState = useMapFiltersStore((s) => s.toggleState);
   const toggleCategory = useMapFiltersStore((s) => s.toggleCategory);
   const togglePricingTier = useMapFiltersStore((s) => s.togglePricingTier);
+  const toggleLanguage = useMapFiltersStore((s) => s.toggleLanguage);
+  const setStates = useMapFiltersStore((s) => s.setStates);
   const setCategories = useMapFiltersStore((s) => s.setCategories);
   const setPricingTiers = useMapFiltersStore((s) => s.setPricingTiers);
+  const clearLanguages = useMapFiltersStore((s) => s.clearLanguages);
   const resetAll = useMapFiltersStore((s) => s.resetAll);
+
+  const handleOpenChange = useCallback((key: MenuKey, open: boolean) => {
+    setOpenMenu((current) => {
+      if (open) return key;
+      return current === key ? null : current;
+    });
+  }, []);
 
   const filtersDefault = areFiltersAtDefaults({
     states,
     categories,
     pricingTiers,
+    languages,
   });
   const showResetAll =
     searchActive || !filtersDefault || selectedServiceId !== null;
@@ -198,6 +338,10 @@ export function HomeStyleFilterBar({
     labelNamespace === "home"
       ? tHome("search.allPrices")
       : tFilters("allPrices");
+  const allLanguagesLabel =
+    labelNamespace === "home"
+      ? tHome("search.allLanguages")
+      : tFilters("allLanguages");
   const selectedCountLabel = (count: number) =>
     labelNamespace === "home"
       ? tHome("search.selectedCount", { count })
@@ -209,23 +353,29 @@ export function HomeStyleFilterBar({
       ? tFilters(`states.${state}`)
       : state,
   }));
-  const serviceOptions = CATEGORIES.map((category) => ({
+  const serviceOptions = ALL_CATEGORIES.map((category) => ({
     value: category,
     label: tFilters(`services.${category}`),
   }));
-  const pricingOptions = PRICING.map((tier) => ({
+  const pricingOptions = ALL_PRICING.map((tier) => ({
     value: tier,
     label: tFilters(`pricing.${tier}`),
   }));
+  const languageOptions = ALL_LANGUAGES.map((item) => ({
+    value: item,
+    label: item,
+  }));
 
   const handleResetAll = () => {
+    setOpenMenu(null);
     onResetSearch?.();
+    // Bumps nationalFrameToken so the map flies back to the continental US view.
     resetAll();
   };
 
   const gridCols = hideStateFilter
-    ? "md:grid-cols-[1fr_1fr_auto]"
-    : "md:grid-cols-[1fr_1fr_1fr_auto]";
+    ? "md:grid-cols-[1fr_1fr_1fr_auto]"
+    : "md:grid-cols-[1fr_1fr_1fr_1fr_auto]";
 
   return (
     <div className={cn("relative overflow-visible", compact ? "z-[1000]" : "z-50")}>
@@ -239,7 +389,10 @@ export function HomeStyleFilterBar({
       >
         {hideStateFilter ? null : (
           <>
-            <SearchSegment
+            <MultiSelectSegment
+              menuKey="state"
+              openMenu={openMenu}
+              onOpenChange={handleOpenChange}
               title={tFilters("stateLabel")}
               value={selectionLabel(
                 allStatesLabel,
@@ -253,6 +406,8 @@ export function HomeStyleFilterBar({
               options={stateOptions}
               selected={states}
               onToggle={toggleState}
+              allOptionLabel={allStatesLabel}
+              onSelectAll={() => setStates([...ALL_STATES])}
               compact={compact}
             />
             {compact ? (
@@ -263,7 +418,10 @@ export function HomeStyleFilterBar({
             ) : null}
           </>
         )}
-        <SearchSegment
+        <MultiSelectSegment
+          menuKey="service"
+          openMenu={openMenu}
+          onOpenChange={handleOpenChange}
           title={tFilters("serviceLabel")}
           value={selectionLabel(
             allServicesLabel,
@@ -278,7 +436,7 @@ export function HomeStyleFilterBar({
           selected={categories}
           onToggle={toggleCategory}
           allOptionLabel={allServicesLabel}
-          onSelectAll={() => setCategories([...CATEGORIES])}
+          onSelectAll={() => setCategories([...ALL_CATEGORIES])}
           compact={compact}
         />
         {compact ? (
@@ -287,7 +445,10 @@ export function HomeStyleFilterBar({
             aria-hidden
           />
         ) : null}
-        <SearchSegment
+        <MultiSelectSegment
+          menuKey="price"
+          openMenu={openMenu}
+          onOpenChange={handleOpenChange}
           title={tFilters("priceLabel")}
           value={selectionLabel(
             allPricesLabel,
@@ -302,7 +463,29 @@ export function HomeStyleFilterBar({
           selected={pricingTiers}
           onToggle={togglePricingTier}
           allOptionLabel={allPricesLabel}
-          onSelectAll={() => setPricingTiers([...PRICING])}
+          onSelectAll={() => setPricingTiers([...ALL_PRICING])}
+          compact={compact}
+        />
+        {compact ? (
+          <div
+            className="mx-0.5 hidden h-6 w-px shrink-0 bg-slate-200 sm:block"
+            aria-hidden
+          />
+        ) : null}
+        <LanguageSegment
+          openMenu={openMenu}
+          onOpenChange={handleOpenChange}
+          title={tFilters("languageLabel")}
+          value={languageSelectionLabel(
+            allLanguagesLabel,
+            languages,
+            selectedCountLabel(languages.length),
+          )}
+          options={languageOptions}
+          selected={languages}
+          allLabel={allLanguagesLabel}
+          onToggle={toggleLanguage}
+          onSelectAll={clearLanguages}
           compact={compact}
         />
         {showResetAll ? (

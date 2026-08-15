@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { ExternalLink } from "lucide-react";
 
 import { PageContainer } from "@/components/layout/page-container";
 import { Link } from "@/i18n/navigation";
@@ -6,6 +7,33 @@ import { Link } from "@/i18n/navigation";
 type Props = {
   params: Promise<{ locale: string }>;
 };
+
+const RIGHTS_RESOURCES = [
+  {
+    key: "aclu" as const,
+    href: "https://www.aclu.org/know-your-rights/immigrants-rights",
+  },
+  {
+    key: "nilc" as const,
+    href: "https://www.nilc.org/resources/everyone-has-certain-basic-rights/",
+  },
+  {
+    key: "ilrc" as const,
+    href: "https://www.ilrc.org/know-your-rights",
+  },
+  {
+    key: "uscis" as const,
+    href: "https://www.uscis.gov/avoid-scams/find-legal-services",
+  },
+  {
+    key: "eoir" as const,
+    href: "https://www.justice.gov/eoir/list-pro-bono-legal-service-providers",
+  },
+  {
+    key: "immigrationAdvocates" as const,
+    href: "https://www.immigrationadvocates.org/legaldirectory/",
+  },
+];
 
 export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
@@ -74,6 +102,41 @@ export default async function KnowYourRightsPage({ params }: Props) {
             </article>
           ))}
         </div>
+
+        <section className="mt-12">
+          <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
+            {t("resourcesTitle")}
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base">
+            {t("resourcesLead")}
+          </p>
+          <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+            {RIGHTS_RESOURCES.map((resource) => (
+              <li key={resource.key}>
+                <a
+                  href={resource.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex h-full flex-col rounded-2xl border border-slate-200/70 bg-white p-5 transition-colors hover:border-[#2563eb]/40 hover:bg-sky-50/40 sm:p-6"
+                >
+                  <span className="flex items-start justify-between gap-3">
+                    <span className="text-base font-semibold tracking-tight text-slate-950 group-hover:text-[#2563eb]">
+                      {t(`resources.${resource.key}.title`)}
+                    </span>
+                    <ExternalLink
+                      className="mt-0.5 h-4 w-4 shrink-0 text-slate-400 transition-colors group-hover:text-[#2563eb]"
+                      aria-hidden
+                    />
+                  </span>
+                  <span className="mt-2 text-sm leading-6 text-slate-600">
+                    {t(`resources.${resource.key}.description`)}
+                  </span>
+                  <span className="sr-only">{t("resourceExternal")}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
 
         <section className="mt-12 rounded-2xl bg-slate-950 px-6 py-8 text-white sm:px-10 sm:py-10">
           <h2 className="text-2xl font-semibold tracking-tight">

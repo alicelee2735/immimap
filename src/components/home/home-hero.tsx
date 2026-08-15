@@ -1,6 +1,6 @@
 "use client";
 
-import { Database, Globe2, HeartHandshake, MapPin } from "lucide-react";
+import { Database, HeartHandshake, MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { buttonVariants } from "@/components/ui/button";
@@ -99,11 +99,6 @@ export function HomeHero() {
       description: t("features.openData.description"),
     },
     {
-      icon: Globe2,
-      title: t("features.multilingual.title"),
-      description: t("features.multilingual.description"),
-    },
-    {
       icon: HeartHandshake,
       title: t("features.socialImpact.title"),
       description: t("features.socialImpact.description"),
@@ -161,7 +156,7 @@ export function HomeHero() {
           <HeroMapPreview />
         </div>
 
-        <div className="mt-16 grid gap-5 md:grid-cols-3">
+        <div className="mt-16 grid gap-5 md:grid-cols-2">
           {features.map((feature) => {
             const Icon = feature.icon;
             return (

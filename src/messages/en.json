@@ -160,9 +160,12 @@
     "stateLabel": "State",
     "serviceLabel": "Service type",
     "priceLabel": "Price category",
+    "languageLabel": "Languages",
     "allStates": "All states",
     "allServices": "All service types",
     "allPrices": "All price categories",
+    "allLanguages": "All languages",
+    "anyLanguage": "All languages",
     "selectedCount": "{count} selected",
     "states": {
       "AL": "Alabama",
@@ -306,11 +309,13 @@
     "heroSearchButton": "Search directory",
     "featuresEyebrow": "What we offer",
     "featuresTitle": "Built for families and advocates",
-    "featuresLead": "ImmiMap is a public directory — practical, bilingual, and grounded in verified nonprofit listings rather than paywalled search products.",
+    "featuresLead": "ImmiMap is a public directory — practical and grounded in verified nonprofit listings rather than paywalled search products.",
     "search": {
       "allStates": "All states",
       "allServices": "All service types",
       "allPrices": "All price categories",
+      "allLanguages": "All languages",
+      "anyLanguage": "All languages",
       "helper": "Choose filters here, then open the map to explore matching providers.",
       "clear": "Clear",
       "selectedCount": "{count} selected"
@@ -339,10 +344,6 @@
       "openData": {
         "title": "Open Data",
         "description": "Listings drawn from public registries and refreshed regularly so contact details stay trustworthy."
-      },
-      "multilingual": {
-        "title": "Multilingual",
-        "description": "Fully accessible in English and Chinese — built for the communities who use it."
       },
       "socialImpact": {
         "title": "Social Impact",
@@ -386,6 +387,35 @@
         "description": "In immigration proceedings you have the right to hire a lawyer or accredited representative — at your own expense. Ask for a list of free or low-cost legal services."
       }
     },
+    "resourcesTitle": "Trusted legal help & rights guides",
+    "resourcesLead": "These organizations publish Know Your Rights materials and directories for finding qualified legal help. Open the links below for detailed guidance.",
+    "resources": {
+      "aclu": {
+        "title": "ACLU — Immigrants' Rights",
+        "description": "Know Your Rights guides for encounters with immigration officers, at home, and in public."
+      },
+      "nilc": {
+        "title": "National Immigration Law Center",
+        "description": "Know Your Rights resources, community education materials, and policy guidance for immigrant communities."
+      },
+      "ilrc": {
+        "title": "Immigrant Legal Resource Center",
+        "description": "Practical Know Your Rights materials and community resources used by advocates nationwide."
+      },
+      "uscis": {
+        "title": "USCIS — Find Legal Services",
+        "description": "Official guidance on finding accredited representatives and avoiding immigration scams."
+      },
+      "eoir": {
+        "title": "DOJ EOIR — Free Legal Service Providers",
+        "description": "U.S. Department of Justice list of free or low-cost legal service providers by immigration court."
+      },
+      "immigrationAdvocates": {
+        "title": "Immigration Advocates Network Directory",
+        "description": "Searchable national directory of nonprofit immigration legal services."
+      }
+    },
+    "resourceExternal": "Opens in a new tab",
     "ctaTitle": "Need help finding legal aid?",
     "ctaDescription": "Explore verified nonprofits and legal aid providers near you on the ImmiMap directory.",
     "ctaButton": "Explore the Map ➔"
