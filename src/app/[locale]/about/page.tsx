@@ -2,6 +2,7 @@ import { ExternalLink } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { PageContainer } from "@/components/layout/page-container";
+import { Link } from "@/i18n/navigation";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -74,6 +75,15 @@ export default async function AboutPage({ params }: Props) {
             <ExternalLink className="h-4 w-4" aria-hidden />
             {t("dataCorrection.openForm")}
           </a>
+          <p className="mt-5 max-w-3xl text-sm leading-7 text-slate-500">
+            {t("dataCorrection.generalQuestions.prompt")}{" "}
+            <Link
+              href="/contact"
+              className="font-medium text-slate-700 underline-offset-4 transition-colors hover:text-[#2563eb] hover:underline"
+            >
+              {t("dataCorrection.generalQuestions.link")}
+            </Link>
+          </p>
         </section>
       </PageContainer>
     </main>

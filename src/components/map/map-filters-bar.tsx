@@ -13,14 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { ALL_STATES, useMapFiltersStore } from "@/stores/map-filters";
-import type { PricingTier, ServiceCategory } from "@/types/immimap";
-
-const CATEGORIES: ServiceCategory[] = [
-  "asylum",
-  "family",
-  "daca",
-  "employment",
-];
+import type { PricingTier } from "@/types/immimap";
 const PRICING: PricingTier[] = ["pro_bono", "low_cost", "paid"];
 
 type FilterSegmentProps<T extends string> = {
@@ -136,6 +129,7 @@ export function MapFiltersBar({ pricingOnly = false }: MapFiltersBarProps) {
   const t = useTranslations("Filters");
   const states = useMapFiltersStore((s) => s.states);
   const categories = useMapFiltersStore((s) => s.categories);
+  const availableServiceTypes = useMapFiltersStore((s) => s.availableServiceTypes);
   const pricingTiers = useMapFiltersStore((s) => s.pricingTiers);
   const toggleState = useMapFiltersStore((s) => s.toggleState);
   const toggleCategory = useMapFiltersStore((s) => s.toggleCategory);
@@ -148,9 +142,9 @@ export function MapFiltersBar({ pricingOnly = false }: MapFiltersBarProps) {
     value: state,
     label: t.has(`states.${state}`) ? t(`states.${state}`) : state,
   }));
-  const serviceOptions = CATEGORIES.map((category) => ({
+  const serviceOptions = availableServiceTypes.map((category) => ({
     value: category,
-    label: t(`services.${category}`),
+    label: category,
   }));
   const pricingOptions = PRICING.map((tier) => ({
     value: tier,
@@ -222,7 +216,7 @@ export function MapFiltersBar({ pricingOnly = false }: MapFiltersBarProps) {
             selected={categories}
             onToggle={toggleCategory}
             allOptionLabel={t("allServices")}
-            onSelectAll={() => setCategories([...CATEGORIES])}
+            onSelectAll={() => setCategories([...availableServiceTypes])}
           />
           <FilterSegment
             title={t("priceLabel")}

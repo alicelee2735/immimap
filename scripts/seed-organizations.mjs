@@ -120,6 +120,7 @@ async function seed() {
           intake_status: entry.intakeStatus ?? null,
           languages: entry.languages ?? null,
           catchment_note: entry.catchmentNote ?? null,
+          verified: entry.type === "NGO",
         },
         { onConflict: "legacy_id" },
       )

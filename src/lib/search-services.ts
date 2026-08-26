@@ -27,6 +27,34 @@ export function getServiceCity(service: ImmigrationService): string {
   return extractCityFromAddress(service.address);
 }
 
+/**
+ * The street-line portion of a full address, with the trailing city/state/ZIP
+ * stripped. Distinct offices of the same organization in the same city share
+ * a name and a city — the street is what actually tells them apart, so list
+ * views show it alongside the city rather than repeating the full address.
+ */
+export function extractStreetFromAddress(
+  address: string,
+  city?: string | null,
+): string {
+  const trimmed = address.trim();
+  if (!trimmed) return "";
+
+  if (city?.trim()) {
+    const marker = `, ${city.trim()},`;
+    const idx = trimmed.toLowerCase().indexOf(marker.toLowerCase());
+    if (idx !== -1) return trimmed.slice(0, idx).trim();
+  }
+
+  const parts = trimmed.split(",");
+  if (parts.length <= 2) return parts[0]?.trim() ?? "";
+  return parts.slice(0, -2).join(",").trim();
+}
+
+export function getServiceStreet(service: ImmigrationService): string {
+  return extractStreetFromAddress(service.address, getServiceCity(service));
+}
+
 function tokenize(value: string): string[] {
   return value
     .toLowerCase()

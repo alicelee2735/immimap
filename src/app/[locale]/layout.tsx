@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Inter } from "next/font/google";
+import { Inter, Source_Serif_4 } from "next/font/google";
 import { clsx } from "clsx";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -14,6 +14,14 @@ import { routing } from "@/i18n/routing";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
+});
+
+// Display serif for the ImmiMap visual identity refresh — formal, document-like
+// register for headlines. Only the homepage hero opts into `font-serif` today.
+const sourceSerif4 = Source_Serif_4({
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  variable: "--font-serif",
 });
 
 export function generateStaticParams() {
@@ -62,7 +70,7 @@ export default async function LocaleLayout({
 
   return (
     <html
-      className={clsx("min-h-full", inter.variable)}
+      className={clsx("min-h-full", inter.variable, sourceSerif4.variable)}
       lang={locale}
       suppressHydrationWarning
     >

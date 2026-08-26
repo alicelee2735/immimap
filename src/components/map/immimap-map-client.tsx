@@ -41,6 +41,11 @@ const DRAWER_TRANSITION_MS = 300;
 const FOCUS_SETTLE_MS = 60;
 const FRAME_PADDING: [number, number] = [50, 50];
 const FRAME_MAX_ZOOM = 12;
+/** Cluster bubble diameter (see .immimap-cluster-icon) plus a small gap. */
+const CLUSTER_MIN_GAP_PX = 48;
+/** A couple of relaxation passes settle simple overlap chains (A–B–C). */
+const CLUSTER_DECLUTTER_PASSES = 3;
+const CLUSTER_DECLUTTER_DEBOUNCE_MS = 60;
 
 type MarkerRegistry = Map<string, L.Marker>;
 
@@ -340,6 +345,164 @@ function MapZoomControls() {
   );
 }
 
+/** Recalculate Leaflet's own viewport whenever its container element resizes. */
+function MapContainerResizeSync() {
+  const map = useMap();
+
+  useEffect(() => {
+    const container = map.getContainer();
+    let frame = 0;
+
+    const observer = new ResizeObserver(() => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        map.invalidateSize({ animate: false });
+      });
+    });
+    observer.observe(container);
+
+    return () => {
+      observer.disconnect();
+      window.cancelAnimationFrame(frame);
+    };
+  }, [map]);
+
+  return null;
+}
+
+/**
+ * Nudges cluster bubbles apart in screen space when their centers land
+ * closer than the bubble diameter. leaflet.markercluster builds clusters
+ * bottom-up per zoom level and recenters each one on the weighted centroid
+ * of its children as they're added — two clusters that were far enough
+ * apart when first formed can still end up with centroids this close after
+ * later children shift them, so overlap has to be resolved after the fact,
+ * on the rendered bubbles, not by tuning maxClusterRadius.
+ *
+ * This only offsets the bubble's on-screen position via the CSS `translate`
+ * property (which composes independently of Leaflet's own positioning
+ * `transform`, so it survives Leaflet repositioning the icon on every pan
+ * frame). It never touches the underlying cluster's real lat/lng — clicking
+ * a nudged bubble still zooms/spiderfies around its true geographic center.
+ */
+function declutterOverlappingClusters(map: L.Map) {
+  const container = map.getContainer();
+  const icons = Array.from(
+    container.querySelectorAll<HTMLElement>(".immimap-cluster-icon"),
+  );
+
+  if (icons.length === 0) return;
+
+  // Measure geographic (Leaflet) positions, not any prior collision offset —
+  // otherwise a second pass would treat the nudge as real and keep pushing.
+  for (const icon of icons) {
+    icon.style.translate = "";
+  }
+
+  if (icons.length === 1) return;
+
+  const containerRect = container.getBoundingClientRect();
+  const nodes = icons.map((icon) => {
+    const rect = icon.getBoundingClientRect();
+    return {
+      icon,
+      count: Number.parseInt(icon.textContent ?? "0", 10) || 0,
+      x: rect.left + rect.width / 2 - containerRect.left,
+      y: rect.top + rect.height / 2 - containerRect.top,
+      dx: 0,
+      dy: 0,
+    };
+  });
+
+  for (let pass = 0; pass < CLUSTER_DECLUTTER_PASSES; pass += 1) {
+    let moved = false;
+
+    for (let i = 0; i < nodes.length; i += 1) {
+      for (let j = i + 1; j < nodes.length; j += 1) {
+        const a = nodes[i];
+        const b = nodes[j];
+        let vx = b.x + b.dx - (a.x + a.dx);
+        let vy = b.y + b.dy - (a.y + a.dy);
+        let distance = Math.hypot(vx, vy);
+        if (distance >= CLUSTER_MIN_GAP_PX) continue;
+
+        if (distance < 0.5) {
+          // Identical centers: push along a fixed diagonal so bubbles don't
+          // stack invisibly on top of one another.
+          vx = 1;
+          vy = 1;
+          distance = Math.SQRT2;
+        }
+
+        const overlap = CLUSTER_MIN_GAP_PX - distance;
+        const ux = vx / distance;
+        const uy = vy / distance;
+        // The smaller cluster yields; a tie yields `a` so the result is
+        // deterministic instead of jittering between passes.
+        const mover = a.count <= b.count ? a : b;
+        const sign = mover === a ? -1 : 1;
+
+        mover.dx += ux * overlap * sign;
+        mover.dy += uy * overlap * sign;
+        moved = true;
+      }
+    }
+
+    if (!moved) break;
+  }
+
+  for (const node of nodes) {
+    node.icon.style.translate =
+      Math.abs(node.dx) > 0.1 || Math.abs(node.dy) > 0.1
+        ? `${node.dx.toFixed(1)}px ${node.dy.toFixed(1)}px`
+        : "";
+  }
+}
+
+function ClusterDeclutter() {
+  const map = useMap();
+
+  useEffect(() => {
+    let frame = 0;
+    let timer = 0;
+
+    const runNow = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() =>
+        declutterOverlappingClusters(map),
+      );
+    };
+
+    const schedule = () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(runNow, CLUSTER_DECLUTTER_DEBOUNCE_MS);
+    };
+
+    map.on("moveend zoomend resize", schedule);
+
+    // Cluster icons are (re)created on pan/zoom and as chunkedLoading adds
+    // markers — observe the pane directly rather than relying on any one
+    // plugin event name to catch every case that changes bubble positions.
+    const pane = map.getPane("markerPane");
+    const observer = pane ? new MutationObserver(schedule) : null;
+    observer?.observe(pane as HTMLElement, {
+      childList: true,
+      subtree: true,
+    });
+
+    schedule();
+
+    return () => {
+      map.off("moveend zoomend resize", schedule);
+      observer?.disconnect();
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(timer);
+    };
+  }, [map]);
+
+  return null;
+}
+
 function hasValidCoordinates(service: ImmigrationService): boolean {
   const lat = Number(service.latitude);
   const lng = Number(service.longitude);
@@ -523,6 +686,8 @@ export function ImmimapMapClient({ services, ariaLabel }: Props) {
           <FitVisibleServices services={mappableServices} />
           <MapSelectionController selected={selected} />
           <MapInvalidateOnDrawer />
+          <MapContainerResizeSync />
+          <ClusterDeclutter />
           <MarkerClusterGroup
             ref={
               clusterGroupRef as MutableRefObject<L.MarkerClusterGroup | null>

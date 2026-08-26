@@ -178,7 +178,7 @@ export function ServiceDetailSheet({ services }: Props) {
               {tPrice(PRICING_LABEL_TO_KEY[service.pricing])}
             </Badge>
           </div>
-          <VerifiedBadge type={service.type} />
+          <VerifiedBadge type={service.type} verified={service.verified} />
           {service.intakeStatus ? (
             <IntakeStatusBlock status={service.intakeStatus} />
           ) : null}
@@ -210,36 +210,77 @@ export function ServiceDetailSheet({ services }: Props) {
           </p>
 
           {service.languages && service.languages.length > 0 ? (
-            <div>
-              <p className="mb-2 text-xs font-medium uppercase tracking-widest text-slate-400">
-                {t("languagesLabel")}
-              </p>
-              <div className="flex items-start gap-2">
-                <Globe
-                  className="mt-0.5 h-4 w-4 shrink-0 text-primary"
-                  aria-hidden
-                />
-                <p className="leading-relaxed text-slate-700">
-                  {service.languages.join(" · ")}
+            service.languagesConfirmed === false ? (
+              <div
+                className="rounded-md border border-dashed border-amber-300 bg-amber-50/70 px-3 py-2.5"
+                role="status"
+              >
+                <p className="mb-2 text-xs font-medium uppercase tracking-widest text-amber-700">
+                  {t("languagesAssumedLabel")}
+                </p>
+                <div className="flex items-start gap-2">
+                  <Globe
+                    className="mt-0.5 h-4 w-4 shrink-0 text-amber-600"
+                    aria-hidden
+                  />
+                  <p className="leading-relaxed text-amber-900">
+                    {t("languagesAssumedValue", {
+                      languages: service.languages.join(" · "),
+                    })}
+                  </p>
+                </div>
+                <p className="mt-2 text-xs leading-snug text-amber-700/80">
+                  {t("languagesAssumedHint")}{" "}
+                  <a
+                    href={DATA_CORRECTION_FORM_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline decoration-amber-400 underline-offset-2 transition-colors hover:text-amber-900"
+                  >
+                    {t("reportCorrection")}
+                  </a>
                 </p>
               </div>
-            </div>
+            ) : (
+              <div>
+                <p className="mb-2 text-xs font-medium uppercase tracking-widest text-slate-400">
+                  {t("languagesLabel")}
+                </p>
+                <div className="flex items-start gap-2">
+                  <Globe
+                    className="mt-0.5 h-4 w-4 shrink-0 text-primary"
+                    aria-hidden
+                  />
+                  <p className="leading-relaxed text-slate-700">
+                    {service.languages.join(" · ")}
+                  </p>
+                </div>
+              </div>
+            )
           ) : null}
 
-          <div>
-            <p className="mb-2 text-xs font-medium uppercase tracking-widest text-slate-400">
-              {t("servicesLabel")}
+          {service.eoirSourced ? (
+            <p className="text-sm leading-relaxed text-slate-500">
+              {t("eoirRecognitionNote")}
             </p>
-            <ul className="flex flex-wrap gap-2">
-              {service.services_offered.map((offering) => (
-                <li key={offering}>
-                  <Badge variant="outline" className="font-normal">
-                    {offering}
-                  </Badge>
-                </li>
-              ))}
-            </ul>
-          </div>
+          ) : null}
+
+          {service.services_offered.length > 0 ? (
+            <div>
+              <p className="mb-2 text-xs font-medium uppercase tracking-widest text-slate-400">
+                {t("servicesLabel")}
+              </p>
+              <ul className="flex flex-wrap gap-2">
+                {service.services_offered.map((offering) => (
+                  <li key={offering}>
+                    <Badge variant="outline" className="font-normal">
+                      {offering}
+                    </Badge>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </div>
 
         <div className="border-t border-slate-100 px-4 py-3 sm:px-5">

@@ -25,6 +25,7 @@ export function SiteHeader({ pathname: serverPathname }: Props) {
     { href: "/map", label: t("map") },
     { href: "/know-your-rights", label: t("knowYourRights") },
     { href: "/about", label: t("about") },
+    { href: "/contact", label: t("contact") },
   ];
 
   return (

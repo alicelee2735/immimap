@@ -14,6 +14,8 @@ const SIDE_OFFSET = 8;
 
 type Props = {
   type: ImmigrationService["type"];
+  /** Manual ImmiMap review. Law firms are never eligible. */
+  verified?: boolean;
   className?: string;
 };
 
@@ -22,7 +24,7 @@ type TooltipCoords = {
   left: number;
 };
 
-export function VerifiedBadge({ type, className }: Props) {
+export function VerifiedBadge({ type, verified = false, className }: Props) {
   const t = useTranslations("Verify");
   const tooltipId = useId();
   const [open, setOpen] = useState(false);
@@ -84,7 +86,7 @@ export function VerifiedBadge({ type, className }: Props) {
     };
   }, [open, updatePosition]);
 
-  if (type !== "NGO") return null;
+  if (type !== "NGO" || !verified) return null;
 
   const tooltip =
     mounted && open && coords

@@ -10,6 +10,15 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
+
+  /* ImmiMap visual identity tokens (2026 refresh). Scoped preview: only the
+     homepage hero consumes these for now — see AGENTS.md task history. */
+  --color-ink-navy: var(--ink-navy);
+  --color-route-blue: var(--route-blue);
+  --color-signal-amber: var(--signal-amber);
+  --color-paper: var(--paper);
+  --color-charcoal: var(--charcoal);
+  --font-serif: var(--font-serif);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -81,6 +90,13 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* ImmiMap visual identity — brand tokens (not yet applied app-wide). */
+  --ink-navy: #1b2a4a;
+  --route-blue: #3e6fa8;
+  --signal-amber: #e8a33d;
+  --paper: #f7f5f0;
+  --charcoal: #2b2b28;
 }
 
 .dark {
@@ -215,6 +231,11 @@
   height: 44px;
   justify-content: center;
   width: 44px;
+  /* Collision-avoidance offset (see declutterOverlappingClusters) — a
+     separate property from Leaflet's own positioning `transform`, so it
+     composes instead of getting overwritten on every pan/zoom frame. */
+  translate: 0 0;
+  transition: translate 0.15s ease-out;
 }
 
 .immimap-cluster-icon span {

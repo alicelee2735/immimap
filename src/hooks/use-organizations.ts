@@ -6,6 +6,7 @@ import type { OrganizationWithServices } from "@/types/database.types";
 import type { ImmigrationService } from "@/types/immimap";
 import { getCatalogServices } from "@/lib/catalog-data";
 import { canonicalizeWebsiteUrl, wasWebsiteHostCorrected } from "@/lib/website-corrections";
+import { isEoirLegacyId } from "@/lib/ingestion/eoir/constants";
 
 function jsonFallbackServices(): ImmigrationService[] {
   return getCatalogServices();
@@ -116,6 +117,9 @@ function organizationWithServicesToImmigrationService(
     description: org.description,
     intakeStatus: org.intake_status,
     languages: org.languages,
+    languagesConfirmed: org.languages_confirmed ?? true,
     catchmentNote: org.catchment_note,
+    verified: org.verified === true,
+    eoirSourced: isEoirLegacyId(org.legacy_id),
   };
 }

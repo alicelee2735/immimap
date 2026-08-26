@@ -131,3 +131,18 @@ create index if not exists organizations_is_website_active_idx
 -- Phone numbers are no longer shown or collected
 alter table organizations drop column if exists phone;
 
+-- Verified badge is ImmiMap manual review, not NGO type and not EOIR ingest.
+alter table organizations
+  add column if not exists verified boolean not null default false;
+
+comment on column organizations.verified is
+  'True only after ImmiMap manual review. Drives the Verified badge on NGO listings. Automated EOIR ingest always inserts false.';
+
+-- Distinguishes an inferred baseline language (e.g. the EOIR English
+-- baseline) from a human-confirmed language list.
+alter table organizations
+  add column if not exists languages_confirmed boolean not null default true;
+
+comment on column organizations.languages_confirmed is
+  'False means languages[] is an unconfirmed inference, not curated/human-confirmed data. Drives the "assumed" treatment in the detail panel. Defaults true because pre-existing languages data is curated.';
+

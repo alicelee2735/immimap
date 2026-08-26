@@ -51,12 +51,6 @@ export type USState =
   | "WI"
   | "WY";
 
-export type ServiceCategory =
-  | "asylum"
-  | "family"
-  | "daca"
-  | "employment";
-
 export type PricingTier = "pro_bono" | "low_cost" | "paid";
 export type ProviderType = "NGO" | "Law Firm";
 export type PricingLabel = "Pro bono" | "Low-cost" | "Paid";
@@ -69,6 +63,11 @@ export type ServiceOffering =
   | "Removal Defense"
   | "Humanitarian Relief"
   | "TPS";
+/**
+ * Service-type filter value. Same string as `services.name` /
+ * `ImmigrationService.services_offered` — not a separate slug list.
+ */
+export type ServiceCategory = ServiceOffering;
 
 export type ContactInfo = {
   address: string;
@@ -103,8 +102,24 @@ export type ImmigrationService = {
   intakeStatus?: IntakeStatus;
   /** Languages in which staff can provide direct assistance. */
   languages?: string[];
+  /**
+   * False means `languages` is an unconfirmed inference (e.g. the EOIR
+   * English baseline), not a curated/human-confirmed list. Undefined is
+   * treated as confirmed (true) for older, pre-migration rows.
+   */
+  languagesConfirmed?: boolean;
   /** Catchment note shown if user falls outside service region. */
   catchmentNote?: string;
+  /**
+   * True only after ImmiMap manual review. Drives the Verified badge on NGOs.
+   * Absent on older JSON catalog rows, which are treated as reviewed.
+   */
+  verified?: boolean;
+  /**
+   * Synced from the EOIR R&A roster, which does not publish practice areas.
+   * Drives the plain-text recognition note instead of synthetic service tags.
+   */
+  eoirSourced?: boolean;
 };
 
 export type UscisProcessingRow = {

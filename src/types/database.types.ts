@@ -27,7 +27,11 @@ export type OrganizationWithServices = Organization & {
   thumbnail_image_url?: string;
   intake_status?: "OPEN" | "LIMITED" | "WAITLISTED";
   languages?: string[];
+  /** False when languages[] is an unconfirmed inference (e.g. EOIR's English baseline), not curated data. */
+  languages_confirmed?: boolean;
   catchment_note?: string;
+  /** True after ImmiMap manual review. Drives the Verified badge for NGOs. */
+  verified?: boolean;
 };
 
 export type OrganizationFilters = {

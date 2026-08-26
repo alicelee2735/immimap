@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type RefObject } from "react";
 import { Building2, Landmark, MapPin, Search, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -12,7 +12,6 @@ import { PageContainer } from "@/components/layout/page-container";
 import type { OrganizationFilters } from "@/types/database.types";
 import type {
   ImmigrationService,
-  ServiceCategory,
   USState,
 } from "@/types/immimap";
 import { cn } from "@/lib/utils";
@@ -25,20 +24,6 @@ import {
   collectStateSuggestions,
   type StateSuggestion,
 } from "@/lib/us-states";
-
-const CATEGORY_TO_SERVICE: Record<ServiceCategory, string> = {
-  asylum: "Asylum",
-  family: "Family",
-  daca: "DACA",
-  employment: "Employment",
-};
-
-const SERVICE_TO_CATEGORY = Object.fromEntries(
-  Object.entries(CATEGORY_TO_SERVICE).map(([category, service]) => [
-    service,
-    category,
-  ]),
-) as Record<string, ServiceCategory>;
 
 export type OrganizationSearchValues = {
   query: string;
@@ -60,6 +45,12 @@ type Props = {
   onClear?: () => void;
   /** Floating glass overlay inside the map canvas (default: full-width bar). */
   variant?: "bar" | "floating";
+  /**
+   * Attached to the floating panel's outer box so callers can measure its
+   * rendered height (e.g. to keep map content from rendering underneath it).
+   * Only meaningful when `variant="floating"`.
+   */
+  panelRef?: RefObject<HTMLDivElement | null>;
 };
 
 export function organizationSearchToFilters(
@@ -116,6 +107,7 @@ export function OrganizationSearch({
   onSelectState,
   onClear,
   variant = "bar",
+  panelRef,
 }: Props) {
   const t = useTranslations("Search");
   const tFilters = useTranslations("Filters");
@@ -186,9 +178,9 @@ export function OrganizationSearch({
         values.query.trim() || values.city || values.selectedState,
       )}
       onResetSearch={() => {
-        // Only clear the search field here. Filter bar calls `resetAll()`, which
-        // owns filter + national map viewport reset — avoid an intermediate
-        // clearFocusBounds()/fitBounds race that leaves the camera zoomed in.
+        // Only clear the search field here. Filter bar calls `resetFilters()` and
+        // `requestNationalFrame()`, which own filter + viewport reset — avoid an
+        // intermediate clearFocusBounds()/fitBounds race that leaves the camera zoomed in.
         onChange(DEFAULT_SEARCH_VALUES);
       }}
       searchSlot={
@@ -425,6 +417,7 @@ export function OrganizationSearch({
   if (isFloating) {
     return (
       <div
+        ref={panelRef}
         className="pointer-events-none absolute left-4 top-4 z-[1000] right-4 max-w-4xl"
         onDoubleClick={(event) => event.stopPropagation()}
         onMouseDown={(event) => event.stopPropagation()}
@@ -442,5 +435,4 @@ export function OrganizationSearch({
   );
 }
 
-export { SERVICE_TO_CATEGORY };
 export type { LocationSuggestion, StateSuggestion };

@@ -62,14 +62,20 @@ export const ALL_STATES: USState[] = [
   "WY",
 ];
 
-export const ALL_CATEGORIES: ServiceCategory[] = [
-  "asylum",
-  "family",
-  "daca",
-  "employment",
-];
-
 export const ALL_PRICING: PricingTier[] = ["pro_bono", "low_cost", "paid"];
+
+/** Distinct service tags from loaded org rows, sorted for the filter dropdown. */
+export function collectServiceTypes(
+  services: readonly Pick<ImmigrationService, "services_offered">[],
+): ServiceOffering[] {
+  const names = new Set<ServiceOffering>();
+  for (const service of services) {
+    for (const name of service.services_offered) {
+      if (name) names.add(name);
+    }
+  }
+  return [...names].sort((a, b) => a.localeCompare(b));
+}
 
 /** Canonical languages used by the map language filter dropdown. */
 export const ALL_LANGUAGES = [
@@ -93,13 +99,6 @@ export const ALL_LANGUAGES = [
 
 export type FilterLanguage = (typeof ALL_LANGUAGES)[number];
 
-const CATEGORY_TO_OFFERING: Record<ServiceCategory, ServiceOffering> = {
-  asylum: "Asylum",
-  family: "Family",
-  daca: "DACA",
-  employment: "Employment",
-};
-
 const PRICING_TO_LABEL: Record<PricingTier, PricingLabel> = {
   pro_bono: "Pro bono",
   low_cost: "Low-cost",
@@ -111,9 +110,18 @@ function normalizeMultiSelect<T>(next: T[], all: readonly T[]): T[] {
   return next;
 }
 
+function isFullSelection<T>(selected: readonly T[], all: readonly T[]): boolean {
+  return (
+    selected.length === all.length && all.every((item) => selected.includes(item))
+  );
+}
+
 export type MapFiltersState = {
   states: USState[];
+  /** Selected service tags. Empty or equal to `availableServiceTypes` means all. */
   categories: ServiceCategory[];
+  /** Distinct tags currently present on loaded organizations. */
+  availableServiceTypes: ServiceCategory[];
   pricingTiers: PricingTier[];
   /**
    * Smart multi-select language filter.
@@ -130,6 +138,7 @@ export type MapFiltersState = {
   focusBoundsToken: number;
   setStates: (states: USState[]) => void;
   setCategories: (categories: ServiceCategory[]) => void;
+  setAvailableServiceTypes: (types: ServiceCategory[]) => void;
   setPricingTiers: (pricingTiers: PricingTier[]) => void;
   setLanguages: (languages: FilterLanguage[]) => void;
   clearLanguages: () => void;
@@ -137,6 +146,7 @@ export type MapFiltersState = {
   toggleState: (state: USState) => void;
   toggleCategory: (category: ServiceCategory) => void;
   togglePricingTier: (tier: PricingTier) => void;
+  /** Resets dropdown filters only; keeps provider selection and hover state. */
   resetFilters: () => void;
   /** Full marketplace reset: filters + selection + national map frame. */
   resetAll: () => void;
@@ -149,15 +159,37 @@ export type MapFiltersState = {
   setHoveredProviderId: (id: string | null) => void;
 };
 
-function defaultFilterSlice() {
+function defaultFilterFields(availableServiceTypes: readonly ServiceCategory[] = []) {
   return {
     states: [...ALL_STATES] as USState[],
-    categories: [...ALL_CATEGORIES] as ServiceCategory[],
+    categories: [...availableServiceTypes] as ServiceCategory[],
     pricingTiers: [...ALL_PRICING] as PricingTier[],
     languages: [] as FilterLanguage[],
+  };
+}
+
+function defaultFilterSlice() {
+  return {
+    ...defaultFilterFields(),
+    availableServiceTypes: [] as ServiceCategory[],
     selectedServiceId: null as string | null,
     hoveredProviderId: null as string | null,
   };
+}
+
+function sameServiceTypes(
+  a: readonly ServiceCategory[],
+  b: readonly ServiceCategory[],
+): boolean {
+  return a.length === b.length && a.every((item, index) => item === b[index]);
+}
+
+function areCategoriesAtDefault(
+  selected: readonly ServiceCategory[],
+  available: readonly ServiceCategory[],
+): boolean {
+  if (available.length === 0) return selected.length === 0;
+  return selected.length === 0 || isFullSelection(selected, available);
 }
 
 export const useMapFiltersStore = create<MapFiltersState>((set) => ({
@@ -169,7 +201,23 @@ export const useMapFiltersStore = create<MapFiltersState>((set) => ({
   setStates: (states) =>
     set({ states: normalizeMultiSelect(states, ALL_STATES) }),
   setCategories: (categories) =>
-    set({ categories: normalizeMultiSelect(categories, ALL_CATEGORIES) }),
+    set((s) => ({
+      categories: normalizeMultiSelect(categories, s.availableServiceTypes),
+    })),
+  setAvailableServiceTypes: (types) =>
+    set((s) => {
+      if (sameServiceTypes(s.availableServiceTypes, types)) return s;
+      const keepSelection = !areCategoriesAtDefault(
+        s.categories,
+        s.availableServiceTypes,
+      );
+      return {
+        availableServiceTypes: types,
+        categories: keepSelection
+          ? s.categories.filter((category) => types.includes(category))
+          : [...types],
+      };
+    }),
   setPricingTiers: (pricingTiers) =>
     set({ pricingTiers: normalizeMultiSelect(pricingTiers, ALL_PRICING) }),
   setLanguages: (languages) => set({ languages }),
@@ -185,10 +233,16 @@ export const useMapFiltersStore = create<MapFiltersState>((set) => ({
 
   toggleCategory: (category) =>
     set((s) => {
-      const next = s.categories.includes(category)
-        ? s.categories.filter((x) => x !== category)
-        : [...s.categories, category];
-      return { categories: normalizeMultiSelect(next, ALL_CATEGORIES) };
+      const current = areCategoriesAtDefault(
+        s.categories,
+        s.availableServiceTypes,
+      )
+        ? s.availableServiceTypes
+        : s.categories;
+      const next = current.includes(category)
+        ? current.filter((item) => item !== category)
+        : [...current, category];
+      return { categories: normalizeMultiSelect(next, s.availableServiceTypes) };
     }),
 
   togglePricingTier: (tier) =>
@@ -215,11 +269,16 @@ export const useMapFiltersStore = create<MapFiltersState>((set) => ({
       return { languages: [...s.languages, language] };
     }),
 
-  resetFilters: () => set({ ...defaultFilterSlice() }),
+  /** Resets dropdown filters only; keeps provider selection and hover state. */
+  resetFilters: () =>
+    set((s) => defaultFilterFields(s.availableServiceTypes)),
 
+  /** Full marketplace reset: filters + selection + national map frame. */
   resetAll: () =>
     set((s) => ({
-      ...defaultFilterSlice(),
+      ...defaultFilterFields(s.availableServiceTypes),
+      selectedServiceId: null,
+      hoveredProviderId: null,
       focusBounds: null,
       nationalFrameToken: s.nationalFrameToken + 1,
     })),
@@ -246,12 +305,6 @@ export const useMapFiltersStore = create<MapFiltersState>((set) => ({
     ),
 }));
 
-function isFullSelection<T>(selected: readonly T[], all: readonly T[]): boolean {
-  return (
-    selected.length === all.length && all.every((item) => selected.includes(item))
-  );
-}
-
 export function areLanguagesAtDefault(languages: readonly FilterLanguage[]): boolean {
   return languages.length === 0;
 }
@@ -259,12 +312,12 @@ export function areLanguagesAtDefault(languages: readonly FilterLanguage[]): boo
 export function areFiltersAtDefaults(
   filters: Pick<
     MapFiltersState,
-    "states" | "categories" | "pricingTiers" | "languages"
+    "states" | "categories" | "availableServiceTypes" | "pricingTiers" | "languages"
   >,
 ): boolean {
   return (
     isFullSelection(filters.states, ALL_STATES) &&
-    isFullSelection(filters.categories, ALL_CATEGORIES) &&
+    areCategoriesAtDefault(filters.categories, filters.availableServiceTypes) &&
     isFullSelection(filters.pricingTiers, ALL_PRICING) &&
     areLanguagesAtDefault(filters.languages)
   );
@@ -287,10 +340,14 @@ export function filterServices(
   services: ImmigrationService[],
   filters: Pick<
     MapFiltersState,
-    "states" | "categories" | "pricingTiers" | "languages"
+    "states" | "categories" | "availableServiceTypes" | "pricingTiers" | "languages"
   >,
 ): ImmigrationService[] {
-  const categoriesActive = !isFullSelection(filters.categories, ALL_CATEGORIES);
+  const allTypes =
+    filters.availableServiceTypes.length > 0
+      ? filters.availableServiceTypes
+      : collectServiceTypes(services);
+  const categoriesActive = !areCategoriesAtDefault(filters.categories, allTypes);
   const pricingActive = !isFullSelection(filters.pricingTiers, ALL_PRICING);
   const statesActive = !isFullSelection(filters.states, ALL_STATES);
 
@@ -300,7 +357,7 @@ export function filterServices(
     if (
       categoriesActive &&
       !filters.categories.some((category) =>
-        s.services_offered.includes(CATEGORY_TO_OFFERING[category]),
+        s.services_offered.includes(category),
       )
     ) {
       return false;

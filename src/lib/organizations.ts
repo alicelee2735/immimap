@@ -11,6 +11,7 @@ import {
   isSupabaseConfigured,
 } from "@/lib/supabaseClient";
 import { canonicalizeWebsiteUrl, wasWebsiteHostCorrected } from "@/lib/website-corrections";
+import { isEoirLegacyId } from "@/lib/ingestion/eoir/constants";
 
 type OrgRow = {
   id: string;
@@ -31,7 +32,9 @@ type OrgRow = {
   thumbnail_image_url: string | null;
   intake_status: "OPEN" | "LIMITED" | "WAITLISTED" | null;
   languages: string[] | null;
+  languages_confirmed?: boolean | null;
   catchment_note: string | null;
+  verified?: boolean | null;
   org_services: Array<{
     services: { id: string; name: string } | null;
   }>;
@@ -53,7 +56,9 @@ const CORE_ORG_FIELDS = `
   thumbnail_image_url,
   intake_status,
   languages,
-  catchment_note
+  languages_confirmed,
+  catchment_note,
+  verified
 `;
 
 const LINK_STATUS_FIELDS = `
@@ -121,7 +126,9 @@ function mapRow(row: OrgRow): OrganizationWithServices | null {
     thumbnail_image_url: row.thumbnail_image_url ?? undefined,
     intake_status: row.intake_status ?? undefined,
     languages: row.languages ?? undefined,
+    languages_confirmed: row.languages_confirmed ?? undefined,
     catchment_note: row.catchment_note ?? undefined,
+    verified: row.verified === true,
   };
 }
 
@@ -162,7 +169,10 @@ export function organizationToImmigrationService(
     description: org.description,
     intakeStatus: org.intake_status,
     languages: org.languages,
+    languagesConfirmed: org.languages_confirmed ?? true,
     catchmentNote: org.catchment_note,
+    verified: org.verified === true,
+    eoirSourced: isEoirLegacyId(org.legacy_id),
   };
 }
 
@@ -406,6 +416,31 @@ export async function deleteOrganization(id: string): Promise<void> {
   if (error) {
     throw error;
   }
+}
+
+export type ServiceCategoryCount = {
+  name: string;
+  count: number;
+};
+
+/**
+ * Live provider counts per service category, derived from the same
+ * organization rows shown on the map (valid lat/lng + city/state). Used by
+ * the homepage "wayfinding board" hero — never hardcode these numbers.
+ */
+export async function fetchServiceCategoryCounts(): Promise<ServiceCategoryCount[]> {
+  const organizations = await fetchOrganizations();
+  const counts = new Map<string, number>();
+
+  for (const org of organizations) {
+    for (const service of org.services) {
+      counts.set(service.name, (counts.get(service.name) ?? 0) + 1);
+    }
+  }
+
+  return Array.from(counts.entries())
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 }
 
 export function parseOrganizationFilters(

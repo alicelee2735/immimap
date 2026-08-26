@@ -1,105 +1,116 @@
 "use client";
 
-import { Database, HeartHandshake, MapPin } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { buttonVariants } from "@/components/ui/button";
 import { PageContainer } from "@/components/layout/page-container";
 import { Link } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
+import type { ServiceCategoryCount } from "@/lib/organizations";
 
-function HeroMapPreview() {
+type WayfindingBoardProps = {
+  categories: ServiceCategoryCount[];
+};
+
+/**
+ * Signature hero visual for the ImmiMap identity refresh — a highway/transit
+ * "wayfinding board" listing real service categories with live provider
+ * counts pulled from the database (see `getServiceCategoryCounts`). Route-line
+ * connectors mirror the map's role: helping people find a way to services.
+ */
+function WayfindingBoard({ categories }: WayfindingBoardProps) {
   const t = useTranslations("Home");
+  const board = categories.slice(0, 8);
 
   return (
-    <div className="group relative mx-auto w-full max-w-lg cursor-pointer lg:max-w-none">
+    <div className="group relative mx-auto w-full max-w-lg lg:max-w-none">
       <Link
         href="/map"
-        className="absolute inset-0 z-30 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] focus-visible:ring-offset-2"
-        aria-label={t("preview.cta")}
+        className="absolute inset-0 z-30 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal-amber focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+        aria-label={t("wayfinding.cta")}
       />
       <div
-        className="pointer-events-none absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-sky-100/80 via-slate-100/40 to-emerald-50/60 blur-2xl"
+        className="pointer-events-none absolute -inset-3 rounded-xl bg-ink-navy/10 blur-2xl"
         aria-hidden="true"
       />
-      <div className="relative rotate-[2.5deg] overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_24px_60px_-20px_rgba(15,23,42,0.28)] transition-all duration-300 group-hover:scale-[1.02] group-hover:border-slate-300 group-hover:shadow-lg group-hover:rotate-[1deg]">
-        <div className="relative aspect-[4/3] overflow-hidden bg-[linear-gradient(145deg,#e8eef5_0%,#dbe7f2_40%,#c8d9ea_100%)]">
-          <svg
-            className="absolute inset-0 h-full w-full opacity-40"
-            viewBox="0 0 400 300"
-            fill="none"
-            aria-hidden="true"
-          >
-            <path
-              d="M20 80 C80 40, 140 100, 200 70 S 320 30, 380 90"
-              stroke="#94a3b8"
-              strokeWidth="1.5"
+      <div className="relative overflow-hidden rounded-lg border-4 border-signal-amber bg-ink-navy shadow-[0_24px_60px_-20px_rgba(27,42,74,0.55)] transition-transform duration-300 group-hover:scale-[1.015]">
+        {/* Corner bolts — reads as mounted signage, not a floating card. */}
+        {["top-2 left-2", "top-2 right-2", "bottom-2 left-2", "bottom-2 right-2"].map(
+          (position) => (
+            <span
+              key={position}
+              className={`absolute ${position} h-1.5 w-1.5 rounded-full bg-signal-amber/70`}
+              aria-hidden="true"
             />
-            <path
-              d="M10 160 C90 130, 150 200, 230 150 S 330 120, 390 180"
-              stroke="#94a3b8"
-              strokeWidth="1.5"
-            />
-            <path
-              d="M40 240 C110 200, 180 260, 260 220 S 340 200, 380 250"
-              stroke="#94a3b8"
-              strokeWidth="1.5"
-            />
-            <circle cx="120" cy="110" r="28" fill="#cbd5e1" opacity="0.5" />
-            <circle cx="280" cy="160" r="40" fill="#cbd5e1" opacity="0.35" />
-          </svg>
+          ),
+        )}
 
-          <span
-            className="absolute left-[22%] top-[28%] flex h-9 w-9 -translate-x-1/2 -translate-y-full items-center justify-center text-[#2563eb] drop-shadow-[0_6px_12px_rgba(37,99,235,0.45)]"
-            aria-hidden="true"
-          >
-            <MapPin className="h-9 w-9 fill-current" strokeWidth={1.5} />
+        <div className="flex items-center justify-between gap-4 border-b-2 border-signal-amber/30 px-6 py-3.5 sm:px-8">
+          <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-signal-amber">
+            {t("wayfinding.eyebrow")}
           </span>
           <span
-            className="absolute left-[58%] top-[48%] flex h-7 w-7 -translate-x-1/2 -translate-y-full items-center justify-center text-slate-500 drop-shadow-md"
+            className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-signal-amber"
             aria-hidden="true"
-          >
-            <MapPin className="h-7 w-7 fill-current" strokeWidth={1.5} />
-          </span>
-          <span
-            className="absolute left-[72%] top-[32%] flex h-7 w-7 -translate-x-1/2 -translate-y-full items-center justify-center text-slate-500 drop-shadow-md"
-            aria-hidden="true"
-          >
-            <MapPin className="h-7 w-7 fill-current" strokeWidth={1.5} />
-          </span>
+          />
+        </div>
 
-          <div className="absolute bottom-4 left-4 right-4 -rotate-[1.5deg] rounded-xl border border-white/80 bg-white/95 p-4 shadow-lg backdrop-blur-sm sm:left-6 sm:right-auto sm:w-[260px]">
-            <div className="flex flex-wrap gap-1.5">
-              <span className="rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700">
-                {t("preview.pricing")}
-              </span>
-              <span className="rounded-md bg-blue-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-blue-700">
-                {t("preview.service")}
-              </span>
-            </div>
-            <p className="mt-2 text-sm font-semibold tracking-tight text-slate-950">
-              {t("preview.providerName")}
-            </p>
-            <p className="mt-1 text-xs text-slate-500">{t("preview.location")}</p>
-            <p className="mt-3 inline-flex items-center text-xs font-semibold text-[#2563eb] transition-transform group-hover:translate-x-0.5 group-hover:underline">
-              {t("preview.cta")}
-            </p>
-          </div>
+        <ul className="px-6 py-5 sm:px-8">
+          {board.map((category, index) => {
+            const isLast = index === board.length - 1;
+            return (
+              <li key={category.name} className="flex gap-4">
+                <div className="flex flex-col items-center">
+                  <span className="h-3 w-3 shrink-0 rounded-full border-2 border-signal-amber bg-ink-navy" />
+                  {!isLast && (
+                    <span
+                      className="w-px flex-1 bg-signal-amber/50"
+                      aria-hidden="true"
+                    />
+                  )}
+                </div>
+                <div
+                  className={`flex flex-1 items-baseline justify-between gap-3 ${isLast ? "pb-0" : "pb-6"}`}
+                >
+                  <span className="truncate font-serif text-base font-semibold uppercase tracking-wide text-paper sm:text-lg">
+                    {category.name}
+                  </span>
+                  <span className="shrink-0 text-right text-xs font-bold tabular-nums text-signal-amber sm:text-sm">
+                    {t("wayfinding.count", { count: category.count })}
+                  </span>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+
+        <div className="flex items-center justify-between gap-3 border-t-2 border-signal-amber/30 px-6 py-3.5 sm:px-8">
+          <p className="text-[11px] text-paper/60">{t("wayfinding.footer")}</p>
+          <p className="inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-paper transition-transform group-hover:translate-x-0.5">
+            {t("wayfinding.cta")}
+            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </p>
         </div>
       </div>
     </div>
   );
 }
 
-export function HomeHero() {
+export function HomeHero({
+  categoryCounts,
+}: {
+  categoryCounts: ServiceCategoryCount[];
+}) {
   const t = useTranslations("Home");
   const features = [
     {
-      icon: Database,
+      accent: "border-l-route-blue",
       title: t("features.openData.title"),
       description: t("features.openData.description"),
     },
     {
-      icon: HeartHandshake,
+      accent: "border-l-signal-amber",
       title: t("features.socialImpact.title"),
       description: t("features.socialImpact.description"),
     },
@@ -123,90 +134,137 @@ export function HomeHero() {
   ];
 
   return (
-    <section className="relative overflow-x-clip bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_45%,#f1f5f9_100%)] pb-16 pt-12 sm:pt-16">
-      <PageContainer className="relative">
-        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16">
-          <div className="max-w-xl">
-            <p className="text-sm font-medium uppercase tracking-widest text-slate-500">
-              {t("heroEyebrow")}
-            </p>
-            <h1 className="mt-5 text-4xl font-bold tracking-[-0.03em] text-slate-950 sm:text-5xl lg:text-[3.25rem] lg:leading-[1.08]">
-              {t("heroTitle")}
-            </h1>
-            <p className="mt-5 text-base leading-8 text-slate-600 sm:text-lg">
-              {t("heroSubtitle")}
-            </p>
-            <p className="mt-3 text-sm leading-7 text-slate-500 sm:text-base">
-              {t("heroBody")}
-            </p>
-            <div className="mt-8">
-              <Link
-                href="/map"
-                className={buttonVariants({
-                  size: "lg",
-                  className:
-                    "rounded-lg bg-slate-950 px-7 text-base hover:bg-slate-800",
-                })}
-              >
-                {t("exploreMap")}
-              </Link>
+    <section className="relative overflow-x-clip bg-paper pb-16 pt-12 sm:pt-16">
+      {/*
+        ImmiMap visual identity — now applied across the full homepage
+        (hero, features, how-it-works). /map, /about, /contact and
+        /know-your-rights are unchanged for this pass.
+      */}
+      <div className="py-14 sm:py-20">
+        <PageContainer>
+          <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16">
+            <div className="max-w-xl">
+              <p className="text-sm font-medium uppercase tracking-widest text-route-blue">
+                {t("heroEyebrow")}
+              </p>
+              <h1 className="mt-5 font-serif text-4xl font-semibold tracking-[-0.01em] text-ink-navy sm:text-5xl lg:text-[3.25rem] lg:leading-[1.1]">
+                {t("heroTitle")}
+              </h1>
+              <p className="mt-5 text-base leading-8 text-charcoal sm:text-lg">
+                {t("heroSubtitle")}
+              </p>
+              <p className="mt-3 text-sm leading-7 text-charcoal/75 sm:text-base">
+                {t("heroBody")}
+              </p>
+              <div className="mt-8">
+                <Link
+                  href="/map"
+                  className={cn(
+                    buttonVariants({ size: "lg" }),
+                    "rounded-sm border border-ink-navy bg-signal-amber px-7 text-base font-semibold text-ink-navy hover:bg-signal-amber/90",
+                  )}
+                >
+                  {t("exploreMap")}
+                </Link>
+              </div>
             </div>
+
+            <WayfindingBoard categories={categoryCounts} />
           </div>
+        </PageContainer>
+      </div>
 
-          <HeroMapPreview />
-        </div>
-
+      <PageContainer className="relative">
         <div className="mt-16 grid gap-5 md:grid-cols-2">
-          {features.map((feature) => {
-            const Icon = feature.icon;
-            return (
-              <article
-                key={feature.title}
-                className="rounded-2xl border border-slate-200/60 bg-gradient-to-br from-white via-white to-slate-50/90 p-6 shadow-[0_8px_30px_-12px_rgba(15,23,42,0.12)] sm:p-8"
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-50 text-[#2563eb]">
-                  <Icon className="h-6 w-6" aria-hidden />
-                </div>
-                <h2 className="mt-5 text-lg font-semibold tracking-tight text-slate-950">
-                  {feature.title}
-                </h2>
-                <p className="mt-2 text-sm leading-6 text-slate-500">
-                  {feature.description}
-                </p>
-              </article>
-            );
-          })}
+          {features.map((feature) => (
+            <article
+              key={feature.title}
+              className={cn(
+                "border-l-4 bg-paper p-6 shadow-[0_8px_30px_-12px_rgba(27,42,74,0.12)] sm:p-8",
+                feature.accent,
+              )}
+            >
+              <h2 className="font-serif text-lg font-semibold tracking-tight text-ink-navy">
+                {feature.title}
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-charcoal">
+                {feature.description}
+              </p>
+            </article>
+          ))}
         </div>
 
         <section className="mt-16">
           <div className="max-w-3xl">
-            <p className="text-sm font-medium uppercase tracking-widest text-slate-500">
+            <p className="text-sm font-medium uppercase tracking-widest text-route-blue">
               {t("howItWorks.eyebrow")}
             </p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">
+            <h2 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-ink-navy">
               {t("howItWorks.title")}
             </h2>
-            <p className="mt-3 text-base leading-7 text-slate-500">
+            <p className="mt-3 text-base leading-7 text-charcoal">
               {t("howItWorks.description")}
             </p>
           </div>
-          <div className="mt-8 grid gap-5 md:grid-cols-3">
-            {steps.map((step) => (
-              <article
-                key={step.number}
-                className="rounded-2xl border border-slate-200/50 bg-white/80 p-6 shadow-sm sm:p-8"
-              >
-                <span className="text-2xl font-bold tabular-nums tracking-tight text-[#2563eb]">
-                  {step.number}
-                </span>
-                <h3 className="mt-4 text-lg font-semibold tracking-tight text-slate-950">
-                  {step.title}
-                </h3>
-                <p className="mt-2 text-sm leading-6 text-slate-500">
-                  {step.description}
-                </p>
-              </article>
-            ))}
+          {/*
+            Route-line numbering — same hollow amber marker + connector as
+            the hero wayfinding board, laid out as a 3-stop sequence. Cards
+            below keep their existing title/body treatment.
+          */}
+          <ol className="mt-8 hidden md:grid md:grid-cols-3 md:gap-5">
+            {steps.map((step, index) => {
+              const isLast = index === steps.length - 1;
+              return (
+                <li key={step.number} className="flex items-center gap-3">
+                  <span
+                    className="h-3 w-3 shrink-0 rounded-full border-2 border-signal-amber bg-paper"
+                    aria-hidden="true"
+                  />
+                  <span className="font-serif text-2xl font-semibold tabular-nums tracking-wide text-ink-navy">
+                    {step.number}
+                  </span>
+                  {!isLast ? (
+                    <span
+                      className="-mr-5 h-px min-w-4 flex-1 bg-signal-amber/60"
+                      aria-hidden="true"
+                    />
+                  ) : null}
+                </li>
+              );
+            })}
+          </ol>
+          <div className="mt-8 grid gap-5 md:mt-5 md:grid-cols-3">
+            {steps.map((step, index) => {
+              const isLast = index === steps.length - 1;
+              return (
+                <article
+                  key={step.number}
+                  className="rounded-sm border border-ink-navy/15 bg-paper p-6 shadow-sm sm:p-8"
+                >
+                  <div className="mb-4 flex items-center gap-3 md:hidden">
+                    <span
+                      className="h-3 w-3 shrink-0 rounded-full border-2 border-signal-amber bg-paper"
+                      aria-hidden="true"
+                    />
+                    <span className="font-serif text-2xl font-semibold tabular-nums tracking-wide text-ink-navy">
+                      {step.number}
+                    </span>
+                    {!isLast ? (
+                      <span
+                        className="h-px min-w-4 flex-1 bg-signal-amber/60"
+                        aria-hidden="true"
+                      />
+                    ) : null}
+                  </div>
+                  <h3 className="text-lg font-semibold tracking-tight text-ink-navy">
+                    {step.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-charcoal">
+                    {step.description}
+                  </p>
+                </article>
+              );
+            })}
           </div>
         </section>
       </PageContainer>

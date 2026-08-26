@@ -15,10 +15,15 @@ import {
   type OrganizationSearchValues,
 } from "@/components/search/organization-search";
 import { useOrganizations } from "@/hooks/use-organizations";
-import { filterServicesByQuery, filterServicesByCity, getServiceCity } from "@/lib/search-services";
+import {
+  filterServicesByQuery,
+  filterServicesByCity,
+  getServiceCity,
+  getServiceStreet,
+} from "@/lib/search-services";
 import { STATE_BOUNDING_BOXES } from "@/lib/us-states";
 import { cn } from "@/lib/utils";
-import { filterServices, useMapFiltersStore, ALL_STATES } from "@/stores/map-filters";
+import { filterServices, useMapFiltersStore, ALL_STATES, collectServiceTypes } from "@/stores/map-filters";
 import type {
   ImmigrationService,
   PricingLabel,
@@ -44,6 +49,43 @@ function searchFromQueryParam(q: string | null): OrganizationSearchValues {
   return { ...DEFAULT_SEARCH_VALUES, query };
 }
 
+/** Matches the floating panel's own `top-4` offset in organization-search.tsx. */
+const FLOATING_PANEL_TOP_PX = 16;
+/** Breathing room below the panel before the map's usable area begins. */
+const FLOATING_PANEL_GAP_PX = 12;
+
+/**
+ * Measures the floating search/filter panel so the map layer underneath can
+ * be inset below it. The panel is an opaque overlay — a pin whose geographic
+ * position lands under it today is fully hidden and unclickable. Shrinking
+ * the map's own container (rather than just visually offsetting markers)
+ * means Leaflet never paints a tile, pin, or cluster in that region at all,
+ * for any pan/zoom state.
+ */
+function useFloatingPanelInset() {
+  const panelRef = useRef<HTMLDivElement | null>(null);
+  const [panelHeight, setPanelHeight] = useState(0);
+
+  useEffect(() => {
+    const el = panelRef.current;
+    if (!el) return;
+
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (!entry) return;
+      setPanelHeight(entry.target.getBoundingClientRect().height);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const topInsetPx = panelHeight > 0
+    ? FLOATING_PANEL_TOP_PX + panelHeight + FLOATING_PANEL_GAP_PX
+    : 0;
+
+  return { panelRef, topInsetPx };
+}
+
 type ServiceResultCardProps = {
   service: ImmigrationService;
   selected: boolean;
@@ -65,6 +107,7 @@ function ServiceResultCard({
   const cardRef = useRef<HTMLDivElement | null>(null);
   const city = getServiceCity(service);
   const locationLabel = city ? `${city}, ${service.state}` : service.state;
+  const street = getServiceStreet(service);
   const languages = service.languages?.filter(Boolean) ?? [];
   const languagePreview =
     languages.length > 2
@@ -104,12 +147,14 @@ function ServiceResultCard({
     >
       <div className="space-y-2.5 px-4 py-3.5 sm:px-5">
         <div className="flex flex-wrap gap-1.5">
+          {service.services_offered[0] ? (
           <Badge
             variant="outline"
             className="border border-blue-200 bg-blue-50 font-medium text-blue-700"
           >
             {service.services_offered[0]}
           </Badge>
+          ) : null}
           <Badge
             variant={pricingVariant(service.pricing)}
             className="uppercase tracking-wide"
@@ -122,10 +167,19 @@ function ServiceResultCard({
           {service.name}
         </h3>
 
-        <p className="flex items-center gap-1.5 text-sm text-slate-500">
-          <MapPin className="h-3.5 w-3.5 shrink-0 text-[#2563eb]" aria-hidden />
-          <span>{locationLabel}</span>
-        </p>
+        <div className="flex items-start gap-1.5 text-sm text-slate-500">
+          <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#2563eb]" aria-hidden />
+          <span className="leading-snug">
+            {street ? (
+              <>
+                <span className="block text-slate-500">{street}</span>
+                <span className="block text-xs text-slate-400">{locationLabel}</span>
+              </>
+            ) : (
+              locationLabel
+            )}
+          </span>
+        </div>
 
         {languagePreview ? (
           <p className="flex items-start gap-1.5 text-xs text-slate-500">
@@ -177,6 +231,7 @@ export function MapDashboard() {
   const { services, loading, error, usingFallback } = useOrganizations();
   const states = useMapFiltersStore((s) => s.states);
   const categories = useMapFiltersStore((s) => s.categories);
+  const availableServiceTypes = useMapFiltersStore((s) => s.availableServiceTypes);
   const pricingTiers = useMapFiltersStore((s) => s.pricingTiers);
   const languages = useMapFiltersStore((s) => s.languages);
   const selectedServiceId = useMapFiltersStore((s) => s.selectedServiceId);
@@ -184,14 +239,29 @@ export function MapDashboard() {
   const selectService = useMapFiltersStore((s) => s.selectService);
   const setHoveredId = useMapFiltersStore((s) => s.setHoveredProviderId);
   const setStates = useMapFiltersStore((s) => s.setStates);
+  const setAvailableServiceTypes = useMapFiltersStore(
+    (s) => s.setAvailableServiceTypes,
+  );
   const requestFocusBounds = useMapFiltersStore((s) => s.requestFocusBounds);
   const requestNationalFrame = useMapFiltersStore((s) => s.requestNationalFrame);
   const clearFocusBounds = useMapFiltersStore((s) => s.clearFocusBounds);
+  const { panelRef, topInsetPx } = useFloatingPanelInset();
+
+  useEffect(() => {
+    if (loading) return;
+    setAvailableServiceTypes(collectServiceTypes(services));
+  }, [loading, services, setAvailableServiceTypes]);
 
   const storeFiltered = useMemo(
     () =>
-      filterServices(services, { states, categories, pricingTiers, languages }),
-    [services, states, categories, pricingTiers, languages],
+      filterServices(services, {
+        states,
+        categories,
+        availableServiceTypes,
+        pricingTiers,
+        languages,
+      }),
+    [services, states, categories, availableServiceTypes, pricingTiers, languages],
   );
 
   const visible = useMemo(() => {
@@ -234,6 +304,7 @@ export function MapDashboard() {
         <section className="relative z-0 min-h-0 min-w-0 flex-1 overflow-hidden rounded-2xl border border-slate-200/70 bg-background shadow-md">
           <OrganizationSearch
             variant="floating"
+            panelRef={panelRef}
             values={search}
             onChange={setSearch}
             suggestions={storeFiltered}
@@ -257,7 +328,15 @@ export function MapDashboard() {
               requestNationalFrame();
             }}
           />
-          <div className="absolute inset-0 z-0 h-full w-full overflow-hidden">
+          {/*
+            Inset below the floating panel so Leaflet's own container excludes
+            that region — no pin/cluster can ever be painted underneath an
+            opaque overlay it can't be clicked through.
+          */}
+          <div
+            className="absolute inset-x-0 bottom-0 z-0 overflow-hidden"
+            style={{ top: topInsetPx }}
+          >
             <ImmimapMap services={loading ? [] : visible} />
           </div>
           {loading ? (

@@ -18,7 +18,9 @@
     "knowYourRightsTitle": "Know Your Rights | ImmiMap",
     "knowYourRightsDescription": "Clear, practical guidance on constitutional and immigration rights in the United States. Not legal advice — a starting point for informed action.",
     "legalTitle": "Legal disclaimer | ImmiMap",
-    "legalDescription": "Important legal notices about ImmiMap: informational use only, no attorney-client relationship, credential verification, and unauthorized practice of law warnings."
+    "legalDescription": "Important legal notices about ImmiMap: informational use only, no attorney-client relationship, credential verification, and unauthorized practice of law warnings.",
+    "contactTitle": "Contact | ImmiMap",
+    "contactDescription": "Reach ImmiMap for press, partnerships, technical issues, or feedback. Listing errors use the correction form on the About page."
   },
   "Footer": {
     "shortDisclaimer": "ImmiMap is for informational purposes only and does not provide legal advice. Independently verify credentials before relying on any listed provider.",
@@ -112,6 +114,7 @@
     "processing": "Processing times",
     "visaBulletin": "Visa Bulletin",
     "about": "About Us",
+    "contact": "Contact",
     "join": "Join Us",
     "joinTeam": "Volunteer / Join the Team",
     "joinShort": "Volunteer",
@@ -240,7 +243,11 @@
     "websiteUnavailableHint": "Use the address below, or report a correction.",
     "reportCorrection": "Report a correction",
     "languagesLabel": "Languages",
+    "languagesAssumedLabel": "Languages (assumed)",
+    "languagesAssumedValue": "{languages} (assumed — not yet confirmed)",
+    "languagesAssumedHint": "Based on DOJ recognition requirements, not a confirmed answer from this office.",
     "servicesLabel": "Services offered",
+    "eoirRecognitionNote": "DOJ-recognized for general immigration representation",
     "provenanceLabel": "Registry synchronized:",
     "syncCadence": "Auto-sync: Daily at 04:00 UTC",
     "intakeOpen": "Accepting new cases",
@@ -350,13 +357,11 @@
         "description": "Connecting families and advocates to verified nonprofit aid, not paywalled directories."
       }
     },
-    "preview": {
-      "badge": "Verified nonprofit",
-      "providerName": "Community Legal Aid",
-      "location": "Oakland, CA",
-      "pricing": "Pro bono",
-      "service": "Family",
-      "cta": "View on map"
+    "wayfinding": {
+      "eyebrow": "Live Service Directory",
+      "count": "{count, plural, one {# provider} other {# providers}}",
+      "cta": "View full map",
+      "footer": "Live counts from the ImmiMap directory."
     },
     "join": {
       "eyebrow": "Join the network",
@@ -439,7 +444,21 @@
     "dataCorrection": {
       "title": "Data correction & organization contact",
       "description": "Legal nonprofits and organization representatives can use this form to report errors in directory listings or request updates — such as contact details, service areas, languages, intake status, or verification status.",
-      "openForm": "Open form in a new tab"
+      "openForm": "Open form in a new tab",
+      "generalQuestions": {
+        "prompt": "General questions?",
+        "link": "Visit Contact"
+      }
+    }
+  },
+  "Contact": {
+    "eyebrow": "Contact",
+    "title": "Get in touch",
+    "lead": "For press, partnerships, technical issues, or feedback, email the ImmiMap team.",
+    "emailCta": "Email support@immimap.org",
+    "listingCorrection": {
+      "prompt": "Reporting an error in a listing?",
+      "link": "Use the correction form on the About page"
     }
   },
   "Join": {

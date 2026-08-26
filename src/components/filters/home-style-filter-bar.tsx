@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import {
-  ALL_CATEGORIES,
   ALL_LANGUAGES,
   ALL_PRICING,
   ALL_STATES,
@@ -297,9 +296,9 @@ export function HomeStyleFilterBar({
 
   const states = useMapFiltersStore((s) => s.states);
   const categories = useMapFiltersStore((s) => s.categories);
+  const availableServiceTypes = useMapFiltersStore((s) => s.availableServiceTypes);
   const pricingTiers = useMapFiltersStore((s) => s.pricingTiers);
   const languages = useMapFiltersStore((s) => s.languages);
-  const selectedServiceId = useMapFiltersStore((s) => s.selectedServiceId);
   const toggleState = useMapFiltersStore((s) => s.toggleState);
   const toggleCategory = useMapFiltersStore((s) => s.toggleCategory);
   const togglePricingTier = useMapFiltersStore((s) => s.togglePricingTier);
@@ -308,7 +307,8 @@ export function HomeStyleFilterBar({
   const setCategories = useMapFiltersStore((s) => s.setCategories);
   const setPricingTiers = useMapFiltersStore((s) => s.setPricingTiers);
   const clearLanguages = useMapFiltersStore((s) => s.clearLanguages);
-  const resetAll = useMapFiltersStore((s) => s.resetAll);
+  const resetFilters = useMapFiltersStore((s) => s.resetFilters);
+  const requestNationalFrame = useMapFiltersStore((s) => s.requestNationalFrame);
 
   const handleOpenChange = useCallback((key: MenuKey, open: boolean) => {
     setOpenMenu((current) => {
@@ -320,11 +320,11 @@ export function HomeStyleFilterBar({
   const filtersDefault = areFiltersAtDefaults({
     states,
     categories,
+    availableServiceTypes,
     pricingTiers,
     languages,
   });
-  const showResetAll =
-    searchActive || !filtersDefault || selectedServiceId !== null;
+  const showResetAll = searchActive || !filtersDefault;
 
   const allStatesLabel =
     labelNamespace === "home"
@@ -353,9 +353,9 @@ export function HomeStyleFilterBar({
       ? tFilters(`states.${state}`)
       : state,
   }));
-  const serviceOptions = ALL_CATEGORIES.map((category) => ({
+  const serviceOptions = availableServiceTypes.map((category) => ({
     value: category,
-    label: tFilters(`services.${category}`),
+    label: category,
   }));
   const pricingOptions = ALL_PRICING.map((tier) => ({
     value: tier,
@@ -366,11 +366,14 @@ export function HomeStyleFilterBar({
     label: item,
   }));
 
-  const handleResetAll = () => {
+  const handleResetFilters = () => {
     setOpenMenu(null);
     onResetSearch?.();
-    // Bumps nationalFrameToken so the map flies back to the continental US view.
-    resetAll();
+    resetFilters();
+    // Restore continental overview when search or state bounds were active.
+    if (searchActive || !filtersDefault) {
+      requestNationalFrame();
+    }
   };
 
   const gridCols = hideStateFilter
@@ -436,7 +439,7 @@ export function HomeStyleFilterBar({
           selected={categories}
           onToggle={toggleCategory}
           allOptionLabel={allServicesLabel}
-          onSelectAll={() => setCategories([...ALL_CATEGORIES])}
+          onSelectAll={() => setCategories([...availableServiceTypes])}
           compact={compact}
         />
         {compact ? (
@@ -513,7 +516,7 @@ export function HomeStyleFilterBar({
                     ? "h-8 shrink-0 rounded-lg px-2.5 py-1 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 hover:text-red-700"
                     : "h-9 rounded-full px-3 text-sm font-semibold text-red-600 hover:bg-red-50 hover:text-red-700"
                 }
-                onClick={handleResetAll}
+                onClick={handleResetFilters}
                 aria-label={tFilters("resetAll")}
               >
                 {tFilters("resetAll")}
