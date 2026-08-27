@@ -8,12 +8,16 @@ import { useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ImmimapMap } from "@/components/map/immimap-map";
+import { MobileFiltersControl } from "@/components/map/mobile-filters-control";
 import { ServiceDetailSheet } from "@/components/map/service-detail-sheet";
 import {
   DEFAULT_SEARCH_VALUES,
   OrganizationSearch,
+  type LocationSuggestion,
   type OrganizationSearchValues,
+  type StateSuggestion,
 } from "@/components/search/organization-search";
+import { useMobileSheetHeight } from "@/hooks/use-mobile-sheet-height";
 import { useOrganizations } from "@/hooks/use-organizations";
 import {
   filterServicesByQuery,
@@ -23,7 +27,7 @@ import {
 } from "@/lib/search-services";
 import { STATE_BOUNDING_BOXES } from "@/lib/us-states";
 import { cn } from "@/lib/utils";
-import { filterServices, useMapFiltersStore, ALL_STATES, collectServiceTypes } from "@/stores/map-filters";
+import { filterServices, useMapFiltersStore, ALL_STATES, areFiltersAtDefaults, collectServiceTypes } from "@/stores/map-filters";
 import type {
   ImmigrationService,
   PricingLabel,
@@ -246,6 +250,10 @@ export function MapDashboard() {
   const requestNationalFrame = useMapFiltersStore((s) => s.requestNationalFrame);
   const clearFocusBounds = useMapFiltersStore((s) => s.clearFocusBounds);
   const { panelRef, topInsetPx } = useFloatingPanelInset();
+  const shellRef = useRef<HTMLDivElement | null>(null);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const { height: mobileSheetHeight, dragging: sheetDragging, handleProps: sheetHandleProps } =
+    useMobileSheetHeight(shellRef, { selected: Boolean(selectedServiceId) });
 
   useEffect(() => {
     if (loading) return;
@@ -296,45 +304,83 @@ export function MapDashboard() {
 
   const empty = !loading && visible.length === 0;
   const fatalError = !loading && error && services.length === 0;
+  const searchActive = Boolean(
+    search.query.trim() || search.city || search.selectedState,
+  );
+  const filtersDefault = areFiltersAtDefaults({
+    states,
+    categories,
+    availableServiceTypes,
+    pricingTiers,
+    languages,
+  });
+  const filterCount = (searchActive ? 1 : 0) + (filtersDefault ? 0 : 1);
+
+  const onSelectSuggestion = (service: ImmigrationService) =>
+    selectService(service.id);
+  const onSelectLocation = (location: LocationSuggestion) => {
+    selectService(null);
+    clearFocusBounds();
+    setStates([location.state]);
+  };
+  const onSelectState = (state: StateSuggestion) => {
+    selectService(null);
+    setStates([state.code]);
+    const bounds = STATE_BOUNDING_BOXES[state.code];
+    if (bounds) {
+      requestFocusBounds(bounds);
+    }
+  };
+  const onClearSearch = () => {
+    selectService(null);
+    setStates([...ALL_STATES]);
+    requestNationalFrame();
+  };
 
   return (
-    <div className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden p-3 md:p-4">
+    <div
+      ref={shellRef}
+      className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden p-0 md:p-4"
+      style={{ ["--mobile-sheet-h" as string]: `${mobileSheetHeight}px` }}
+    >
       {/* Map + sidebar: height strictly the fixed shell; never grow with content. */}
-      <div className="relative flex min-h-0 flex-1 flex-col gap-3 overflow-hidden md:flex-row md:gap-4">
-        <section className="relative z-0 min-h-0 min-w-0 flex-1 overflow-hidden rounded-2xl border border-slate-200/70 bg-background shadow-md">
+      <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden md:flex-row md:gap-4">
+        <section className="relative z-0 min-h-0 min-w-0 flex-1 overflow-hidden bg-background max-md:absolute max-md:inset-0 md:rounded-2xl md:border md:border-slate-200/70 md:shadow-md">
+          <div className="pointer-events-none absolute inset-x-0 top-0 z-[1000] flex justify-start p-3 md:hidden">
+            <div className="pointer-events-auto">
+              <MobileFiltersControl
+                open={filtersOpen}
+                onOpenChange={setFiltersOpen}
+                filterCount={filterCount}
+                search={search}
+                onSearchChange={setSearch}
+                suggestions={storeFiltered}
+                onSelectSuggestion={onSelectSuggestion}
+                onSelectLocation={onSelectLocation}
+                onSelectState={onSelectState}
+                onClear={onClearSearch}
+              />
+            </div>
+          </div>
           <OrganizationSearch
             variant="floating"
             panelRef={panelRef}
             values={search}
             onChange={setSearch}
             suggestions={storeFiltered}
-            onSelectSuggestion={(service) => selectService(service.id)}
-            onSelectLocation={(location) => {
-              selectService(null);
-              clearFocusBounds();
-              setStates([location.state]);
-            }}
-            onSelectState={(state) => {
-              selectService(null);
-              setStates([state.code]);
-              const bounds = STATE_BOUNDING_BOXES[state.code];
-              if (bounds) {
-                requestFocusBounds(bounds);
-              }
-            }}
-            onClear={() => {
-              selectService(null);
-              setStates([...ALL_STATES]);
-              requestNationalFrame();
-            }}
+            onSelectSuggestion={onSelectSuggestion}
+            onSelectLocation={onSelectLocation}
+            onSelectState={onSelectState}
+            onClear={onClearSearch}
           />
           {/*
             Inset below the floating panel so Leaflet's own container excludes
             that region — no pin/cluster can ever be painted underneath an
-            opaque overlay it can't be clicked through.
+            opaque overlay it can't be clicked through. On mobile the panel is
+            hidden, so this inset collapses to 0 and the map fills the shell.
           */}
           <div
-            className="absolute inset-x-0 bottom-0 z-0 overflow-hidden"
+            className="absolute inset-x-0 bottom-0 z-0 overflow-hidden max-md:!top-0"
             style={{ top: topInsetPx }}
           >
             <ImmimapMap services={loading ? [] : visible} />
@@ -354,14 +400,14 @@ export function MapDashboard() {
             </div>
           ) : null}
           {error && usingFallback && services.length > 0 ? (
-            <div className="pointer-events-none absolute inset-x-0 top-[7.5rem] z-10 flex justify-center px-4 sm:top-4 sm:justify-end">
+            <div className="pointer-events-none absolute inset-x-0 top-16 z-10 flex justify-center px-4 md:top-4 md:justify-end">
               <p className="pointer-events-auto rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 shadow-sm">
                 {t("serviceUnavailable")} {t("showingCachedData")}
               </p>
             </div>
           ) : null}
           {empty ? (
-            <div className="pointer-events-none absolute inset-0 z-10 flex items-start justify-center px-4 pt-36 sm:pt-28">
+            <div className="pointer-events-none absolute inset-0 z-10 flex items-start justify-center px-4 pt-20 md:pt-28">
               <div
                 className="pointer-events-auto max-w-md rounded-xl border border-slate-200 bg-background/95 px-4 py-3 text-center shadow-sm backdrop-blur"
                 role="status"
@@ -377,17 +423,31 @@ export function MapDashboard() {
           ) : null}
         </section>
 
-        <aside className="relative z-10 flex min-h-0 w-full shrink-0 flex-col overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-sm max-md:h-[38%] max-md:max-h-[38%] md:h-full md:w-[400px]">
-          <div className="shrink-0 border-b border-slate-200 px-4 py-4 sm:px-5">
-            <p className="text-sm font-medium uppercase tracking-widest text-gray-500">
+        <aside
+          className={cn(
+            "relative z-10 flex min-h-0 w-full shrink-0 flex-col overflow-hidden border border-slate-200/70 bg-white shadow-sm",
+            "max-md:absolute max-md:inset-x-0 max-md:bottom-0 max-md:z-20 max-md:h-[var(--mobile-sheet-h)] max-md:rounded-t-2xl",
+            "md:h-full md:w-[400px] md:rounded-2xl",
+            !sheetDragging && "max-md:transition-[height] max-md:duration-200 max-md:ease-out",
+          )}
+        >
+          <div
+            className="relative z-30 flex cursor-grab touch-none flex-col items-center pt-2 active:cursor-grabbing md:hidden"
+            {...sheetHandleProps}
+          >
+            <div className="h-1.5 w-10 rounded-full bg-slate-300" aria-hidden />
+            <span className="sr-only">{t("sheetDragHint")}</span>
+          </div>
+          <div className="shrink-0 border-b border-slate-200 px-4 py-3 md:px-5 md:py-4">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-route-blue md:text-sm md:font-medium md:tracking-widest md:text-gray-500">
               {t("resultsEyebrow")}
             </p>
             <div className="mt-1 flex items-end justify-between gap-3">
               <div>
-                <h2 className="text-xl font-semibold tracking-tight text-gray-900">
+                <h2 className="hidden font-semibold tracking-tight text-gray-900 md:block md:text-xl">
                   {t("resultsTitle")}
                 </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p className="font-serif text-lg font-semibold tracking-[-0.01em] text-ink-navy md:mt-1 md:font-sans md:text-sm md:font-normal md:tracking-normal md:text-muted-foreground">
                   {loading
                     ? t("loadingResults")
                     : t("resultsCount", { count: visible.length })}
@@ -395,7 +455,7 @@ export function MapDashboard() {
               </div>
               <Badge
                 variant="outline"
-                className="hidden shrink-0 border-slate-200 sm:inline-flex"
+                className="hidden shrink-0 border-slate-200 sm:inline-flex max-md:hidden"
               >
                 {t("liveResults")}
               </Badge>
@@ -442,7 +502,7 @@ export function MapDashboard() {
             ) : null}
           </div>
 
-          <div className="shrink-0 border-t border-slate-100 px-4 py-2.5 sm:px-5">
+          <div className="hidden shrink-0 border-t border-slate-100 px-4 py-2.5 sm:px-5 md:block">
             <p className="text-xs text-slate-400">
               {t("provenanceTimestamp")}{" "}
               <time className="tabular-nums text-slate-500">

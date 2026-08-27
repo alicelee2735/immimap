@@ -163,6 +163,13 @@
   border-radius: 0.5rem 0 0 0;
 }
 
+@media (max-width: 767px) {
+  .immimap-leaflet .leaflet-bottom {
+    bottom: var(--mobile-sheet-h, 236px);
+    transition: bottom 0.2s ease-out;
+  }
+}
+
 .immimap-marker-icon {
   background: transparent !important;
   border: 0 !important;

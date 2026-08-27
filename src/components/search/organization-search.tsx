@@ -44,7 +44,7 @@ type Props = {
   onSelectState?: (state: StateSuggestion) => void;
   onClear?: () => void;
   /** Floating glass overlay inside the map canvas (default: full-width bar). */
-  variant?: "bar" | "floating";
+  variant?: "bar" | "floating" | "plain";
   /**
    * Attached to the floating panel's outer box so callers can measure its
    * rendered height (e.g. to keep map content from rendering underneath it).
@@ -115,6 +115,7 @@ export function OrganizationSearch({
   const containerRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const isFloating = variant === "floating";
+  const isPlain = variant === "plain";
 
   const trimmedQuery = values.query.trim();
   const hasQuery = trimmedQuery.length > 0;
@@ -414,11 +415,15 @@ export function OrganizationSearch({
     />
   );
 
+  if (isPlain) {
+    return searchCard;
+  }
+
   if (isFloating) {
     return (
       <div
         ref={panelRef}
-        className="pointer-events-none absolute left-4 top-4 z-[1000] right-4 max-w-4xl"
+        className="pointer-events-none absolute left-4 top-4 z-[1000] right-4 hidden max-w-4xl md:block"
         onDoubleClick={(event) => event.stopPropagation()}
         onMouseDown={(event) => event.stopPropagation()}
         onWheel={(event) => event.stopPropagation()}

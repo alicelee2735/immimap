@@ -38,9 +38,10 @@ function loadEnvFile(path: string) {
 loadEnvFile(join(root, ".env.local"));
 
 /**
- * Explicitly approved, one pair at a time. Do not add to this list without a
- * fresh human sign-off per pair — see scripts/audit-duplicate-organizations.ts
- * and the 0.48–0.72 confidence band, which is intentionally NOT in this list.
+ * Same-street cross-source pairs from the ≥0.84 audit band. CHIRLA / CARECEN
+ * LA were applied earlier (they sat in the 0.48–0.72 band). Different-street
+ * matches in the high-confidence band are intentionally omitted — they are
+ * other offices of the same org, not a second ingest of the same address.
  */
 const MERGES: Array<{
   label: string;
@@ -48,14 +49,94 @@ const MERGES: Array<{
   eoirId: string;
 }> = [
   {
-    label: "CHIRLA (Los Angeles)",
-    curatedId: "765fcdde-d279-487e-8923-43d8f70fb95d",
-    eoirId: "ea02ab44-8fa4-4ca2-a953-5a5ea1a4ba5f",
+    label: "Catholic Charities Corpus Christi Immigration",
+    curatedId: "06dabf65-0d74-49df-b908-559fd8dd672e",
+    eoirId: "844f3f07-fd08-44bb-a295-f4414e4dda31",
   },
   {
-    label: "CARECEN of Los Angeles",
-    curatedId: "6304caab-de68-4b0b-af51-b8644d197d81",
-    eoirId: "1fe1c278-440e-42dd-80b9-88285596082e",
+    label: "African Services Committee",
+    curatedId: "37ddba6c-2892-4edb-ab56-481d0758291f",
+    eoirId: "0877de2e-93e6-4674-a8eb-5838f4d89551",
+  },
+  {
+    label: "Journey's End Refugee Services (2495 Main St)",
+    curatedId: "ab4e8282-94b5-451d-9868-43264d1e92e3",
+    eoirId: "1307eb61-6398-4a60-8501-858af008be6d",
+  },
+  {
+    label: "American Friends Service Committee Immigrant Rights Program",
+    curatedId: "578248f2-0295-449d-8fcd-5512a966e284",
+    eoirId: "1ffb58a2-02c3-4b3f-a520-be9a409113f3",
+  },
+  {
+    label: "American Gateways",
+    curatedId: "e0642906-466e-4bf4-a0e6-6d14b453ff43",
+    eoirId: "3310c727-8868-4cb8-b536-bc4d43ade480",
+  },
+  {
+    label: "Hope CommUnity Center Immigration Program",
+    curatedId: "ae98cc00-b89a-4b0e-b021-9ccb1e42d3f4",
+    eoirId: "37d2e58e-ae4d-4b37-a177-88dd54141e78",
+  },
+  {
+    label: "Catholic Charities Dallas Immigration Services",
+    curatedId: "3fa398da-12b9-473b-bc24-9493d5957ef6",
+    eoirId: "cbba9831-5812-4bb4-968c-14e8b4627786",
+  },
+  {
+    label: "Catholic Legal Services Archdiocese of Miami",
+    curatedId: "572f5fed-8bf4-4447-b05c-eee271a8734e",
+    eoirId: "da7172e8-fb96-4017-864e-26028103eb32",
+  },
+  {
+    label: "Florida Immigrant Coalition",
+    curatedId: "907e96ef-3f31-4042-b926-6ae25b3af133",
+    eoirId: "600b6e1b-a2b1-4d55-b8d3-d7bf02242e4d",
+  },
+  {
+    label: "Catholic Charities of Santa Clara County",
+    curatedId: "dbc51db9-de14-46a0-a144-7fbb548b8ef6",
+    eoirId: "64378d04-6f68-4a83-b4e4-418fd215d945",
+  },
+  {
+    label: "Asian Americans Advancing Justice Southern California",
+    curatedId: "c6da669c-e98b-4ce2-a867-1ec7f83cbf6c",
+    eoirId: "6a746348-3b0a-453b-bbb1-0523d4c0e1c6",
+  },
+  {
+    label: "Hispanic Unity of Florida",
+    curatedId: "cf372e41-b9c0-4cf0-bb72-5c6869a1d1f0",
+    eoirId: "72fd57fa-4ad7-4d2b-bf05-a9b17949e99e",
+  },
+  {
+    label: "Bronx Legal Services",
+    curatedId: "7c984837-54d3-4237-b210-f0361aaabcda",
+    eoirId: "f1aad251-2efd-49d2-986f-a9313354df8e",
+  },
+  {
+    label: "Las Americas Immigrant Advocacy Center",
+    curatedId: "f51a3a01-e587-4805-a6e7-3c1bcbad0497",
+    eoirId: "8c5b252c-e7a1-4b38-8d88-087fddf29e3e",
+  },
+  {
+    label: "Americans for Immigrant Justice",
+    curatedId: "a425ccd3-6259-4a1f-9437-f43d3505f6a0",
+    eoirId: "a3e52673-d17a-49c0-a64a-3be09d465749",
+  },
+  {
+    label: "Lutheran Services Florida Immigration Services",
+    curatedId: "bf938987-4254-4388-b7c8-a7bbd669386b",
+    eoirId: "a83ed98d-6287-4208-8944-e2c0e3fe7b19",
+  },
+  {
+    label: "Northern Manhattan Coalition for Immigrant Rights",
+    curatedId: "bc6989d0-80ba-4bb0-a9af-fcfc5e6ec1d0",
+    eoirId: "b0a44d24-e906-43fd-9625-a3331b565d22",
+  },
+  {
+    label: "Catholic Charities Fort Worth (249 W Thornhill)",
+    curatedId: "f8b874bb-404d-44a7-a9bb-ec126ba812ba",
+    eoirId: "b611e6d4-f13e-408a-a2c8-32ef08d4a379",
   },
 ];
 

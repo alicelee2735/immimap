@@ -136,6 +136,10 @@
     "resultsCount": "{count, plural, =0 {No providers} one {# provider} other {# providers}} found",
     "liveResults": "Live filters",
     "viewDetails": "View details ➔",
+    "filtersPill": "Filters",
+    "filtersSheetTitle": "Search & filters",
+    "filtersSheetHint": "Search by name, city, or state, then narrow by service type, price, and language.",
+    "sheetDragHint": "Drag to expand or collapse the provider list",
     "provenanceTimestamp": "Registry synchronized:",
     "provenanceCadence": "Auto-sync: Daily at 04:00 UTC"
   },
