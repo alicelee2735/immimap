@@ -7,7 +7,6 @@ import {
   useEffect,
   useMemo,
   useRef,
-  type MouseEvent,
   type MutableRefObject,
 } from "react";
 import L from "leaflet";
@@ -22,6 +21,7 @@ import "leaflet/dist/leaflet.css";
 import "react-leaflet-cluster/dist/assets/MarkerCluster.css";
 import "react-leaflet-cluster/dist/assets/MarkerCluster.Default.css";
 
+import type { MapCommands } from "@/components/map/map-zoom-controls";
 import type { ImmigrationService } from "@/types/immimap";
 import { useMapFiltersStore, ALL_STATES } from "@/stores/map-filters";
 import { STATE_BOUNDING_BOXES } from "@/lib/us-states";
@@ -298,51 +298,28 @@ function MapInvalidateOnDrawer() {
   return null;
 }
 
-function MapZoomControls() {
+/** Exposes zoomIn/zoomOut to chrome that lives outside Leaflet's container. */
+function MapCommandsBridge({
+  onCommandsReady,
+}: {
+  onCommandsReady?: (commands: MapCommands | null) => void;
+}) {
   const map = useMap();
 
-  const handleZoomClick = (
-    event: MouseEvent<HTMLButtonElement>,
-    direction: "in" | "out",
-  ) => {
-    event.preventDefault();
-    event.stopPropagation();
+  useEffect(() => {
+    if (!onCommandsReady) return;
+    onCommandsReady({
+      zoomIn: () => {
+        map.zoomIn();
+      },
+      zoomOut: () => {
+        map.zoomOut();
+      },
+    });
+    return () => onCommandsReady(null);
+  }, [map, onCommandsReady]);
 
-    if (direction === "in") {
-      map.zoomIn();
-      return;
-    }
-
-    map.zoomOut();
-  };
-
-  return (
-    <div
-      className="leaflet-top leaflet-right !top-3 !right-3 sm:!top-4 sm:!right-4"
-      onDoubleClick={(event) => event.stopPropagation()}
-      onMouseDown={(event) => event.stopPropagation()}
-      onWheel={(event) => event.stopPropagation()}
-    >
-      <div className="leaflet-control leaflet-bar flex overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
-        <button
-          type="button"
-          className="flex h-9 w-9 items-center justify-center border-r border-slate-200 text-lg font-semibold leading-none text-slate-700 transition-colors hover:bg-slate-50 hover:text-[#2563eb]"
-          aria-label="Zoom in"
-          onClick={(event) => handleZoomClick(event, "in")}
-        >
-          +
-        </button>
-        <button
-          type="button"
-          className="flex h-9 w-9 items-center justify-center text-xl font-semibold leading-none text-slate-700 transition-colors hover:bg-slate-50 hover:text-[#2563eb]"
-          aria-label="Zoom out"
-          onClick={(event) => handleZoomClick(event, "out")}
-        >
-          -
-        </button>
-      </div>
-    </div>
-  );
+  return null;
 }
 
 /** Recalculate Leaflet's own viewport whenever its container element resizes. */
@@ -628,9 +605,14 @@ const MapMarker = memo(function MapMarker({ service }: MapMarkerProps) {
 type Props = {
   services: ImmigrationService[];
   ariaLabel: string;
+  onCommandsReady?: (commands: MapCommands | null) => void;
 };
 
-export function ImmimapMapClient({ services, ariaLabel }: Props) {
+export function ImmimapMapClient({
+  services,
+  ariaLabel,
+  onCommandsReady,
+}: Props) {
   const selectedServiceId = useMapFiltersStore((s) => s.selectedServiceId);
   const clusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
   const markerRegistryRef = useRef<MarkerRegistry>(new Map());
@@ -682,7 +664,7 @@ export function ImmimapMapClient({ services, ariaLabel }: Props) {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             url={OSM_TILE}
           />
-          <MapZoomControls />
+          <MapCommandsBridge onCommandsReady={onCommandsReady} />
           <FitVisibleServices services={mappableServices} />
           <MapSelectionController selected={selected} />
           <MapInvalidateOnDrawer />

@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import type { ImmigrationService } from "@/types/immimap";
+import type { MapCommands } from "@/components/map/map-zoom-controls";
 
 const ImmimapMapClient = dynamic(
   () =>
@@ -31,13 +32,18 @@ function MapLoadingFallback() {
 
 type Props = {
   services: ImmigrationService[];
+  onCommandsReady?: (commands: MapCommands | null) => void;
 };
 
-export function ImmimapMap({ services }: Props) {
+export function ImmimapMap({ services, onCommandsReady }: Props) {
   const t = useTranslations("Map");
   return (
     <div className="h-full w-full">
-      <ImmimapMapClient services={services} ariaLabel={t("mapAriaLabel")} />
+      <ImmimapMapClient
+        services={services}
+        ariaLabel={t("mapAriaLabel")}
+        onCommandsReady={onCommandsReady}
+      />
     </div>
   );
 }

@@ -16,8 +16,8 @@ const inter = Inter({
   variable: "--font-sans",
 });
 
-// Display serif for the ImmiMap visual identity refresh — formal, document-like
-// register for headlines. Only the homepage hero opts into `font-serif` today.
+// Display serif for the ImmiMap visual identity — formal, document-like
+// register for headlines on Home, About, and Know Your Rights.
 const sourceSerif4 = Source_Serif_4({
   subsets: ["latin"],
   weight: ["600", "700"],
@@ -70,20 +70,26 @@ export default async function LocaleLayout({
 
   return (
     <html
-      className={clsx("min-h-full", inter.variable, sourceSerif4.variable)}
+      className={clsx(
+        "min-h-full",
+        isMapRoute && "overflow-hidden overscroll-none",
+        inter.variable,
+        sourceSerif4.variable,
+      )}
       lang={locale}
       suppressHydrationWarning
     >
       <body
         className={clsx(
           "flex min-h-dvh flex-col bg-background text-foreground antialiased",
+          isMapRoute && "h-dvh overflow-hidden overscroll-none",
           inter.className,
         )}
         suppressHydrationWarning
       >
         <NextIntlClientProvider>
           <GoogleAnalytics />
-          <SiteHeader pathname={pathname} />
+          <SiteHeader pathname={pathname} pinned={isMapRoute} />
           <div className="flex min-h-0 flex-1 flex-col">{children}</div>
           {isMapRoute ? null : <SiteFooter />}
         </NextIntlClientProvider>

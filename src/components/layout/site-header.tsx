@@ -13,9 +13,11 @@ import { cn } from "@/lib/utils";
 
 type Props = {
   pathname: string;
+  /** Keep the header in the viewport on the map route (map shell is `position: fixed`). */
+  pinned?: boolean;
 };
 
-export function SiteHeader({ pathname: serverPathname }: Props) {
+export function SiteHeader({ pathname: serverPathname, pinned = false }: Props) {
   const t = useTranslations("Nav");
   const clientPathname = usePathname();
   const pathname = clientPathname ?? serverPathname;
@@ -29,7 +31,14 @@ export function SiteHeader({ pathname: serverPathname }: Props) {
   ];
 
   return (
-    <header className="z-40 shrink-0 border-b border-slate-200/70 bg-white/80 backdrop-blur-md">
+    <header
+      className={cn(
+        "z-50 shrink-0 border-b border-slate-200/70",
+        pinned
+          ? "fixed inset-x-0 top-0 bg-white [transform:translateZ(0)]"
+          : "bg-white/80 backdrop-blur-md",
+      )}
+    >
       <PageContainer className="grid h-20 grid-cols-[auto_1fr_auto] items-center gap-x-8">
         <Link
           href="/"

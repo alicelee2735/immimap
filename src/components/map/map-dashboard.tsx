@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Languages, Loader2, MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ImmimapMap } from "@/components/map/immimap-map";
+import { MapZoomControls, type MapCommands } from "@/components/map/map-zoom-controls";
 import { MobileFiltersControl } from "@/components/map/mobile-filters-control";
 import { ServiceDetailSheet } from "@/components/map/service-detail-sheet";
 import {
@@ -53,41 +54,65 @@ function searchFromQueryParam(q: string | null): OrganizationSearchValues {
   return { ...DEFAULT_SEARCH_VALUES, query };
 }
 
-/** Matches the floating panel's own `top-4` offset in organization-search.tsx. */
-const FLOATING_PANEL_TOP_PX = 16;
-/** Breathing room below the panel before the map's usable area begins. */
+/** Breathing room below overlay chrome before the map's usable area begins. */
 const FLOATING_PANEL_GAP_PX = 12;
 
+function overlayBottomInSection(
+  section: HTMLElement,
+  el: HTMLElement | null,
+): number {
+  if (!el) return 0;
+  const style = window.getComputedStyle(el);
+  if (style.display === "none" || style.visibility === "hidden") return 0;
+  const rect = el.getBoundingClientRect();
+  if (rect.width === 0 && rect.height === 0) return 0;
+  const sectionRect = section.getBoundingClientRect();
+  return Math.max(0, rect.bottom - sectionRect.top);
+}
+
 /**
- * Measures the floating search/filter panel so the map layer underneath can
- * be inset below it. The panel is an opaque overlay — a pin whose geographic
- * position lands under it today is fully hidden and unclickable. Shrinking
- * the map's own container (rather than just visually offsetting markers)
- * means Leaflet never paints a tile, pin, or cluster in that region at all,
- * for any pan/zoom state.
+ * Measures opaque overlay chrome (search panel, zoom control, filters pill)
+ * so the map layer underneath can be inset below it. Overlays hide pins
+ * whose geographic position lands under them. Shrinking Leaflet's own
+ * container (rather than just visually offsetting markers) means it never
+ * paints a tile, pin, or cluster in that region, for any pan/zoom state.
  */
-function useFloatingPanelInset() {
+function useMapChromeInset() {
+  const sectionRef = useRef<HTMLElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
-  const [panelHeight, setPanelHeight] = useState(0);
+  const zoomRef = useRef<HTMLDivElement | null>(null);
+  const filtersRef = useRef<HTMLDivElement | null>(null);
+  const [topInsetPx, setTopInsetPx] = useState(0);
 
-  useEffect(() => {
-    const el = panelRef.current;
-    if (!el) return;
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
 
-    const observer = new ResizeObserver((entries) => {
-      const entry = entries[0];
-      if (!entry) return;
-      setPanelHeight(entry.target.getBoundingClientRect().height);
-    });
-    observer.observe(el);
-    return () => observer.disconnect();
+    const update = () => {
+      const bottom = Math.max(
+        overlayBottomInSection(section, panelRef.current),
+        overlayBottomInSection(section, zoomRef.current),
+        overlayBottomInSection(section, filtersRef.current),
+      );
+      const next = bottom > 0 ? Math.ceil(bottom + FLOATING_PANEL_GAP_PX) : 0;
+      setTopInsetPx((prev) => (prev === next ? prev : next));
+    };
+
+    const observer = new ResizeObserver(update);
+    observer.observe(section);
+    const overlayEls = [panelRef.current, zoomRef.current, filtersRef.current];
+    for (const el of overlayEls) {
+      if (el) observer.observe(el);
+    }
+    update();
+    window.addEventListener("resize", update);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", update);
+    };
   }, []);
 
-  const topInsetPx = panelHeight > 0
-    ? FLOATING_PANEL_TOP_PX + panelHeight + FLOATING_PANEL_GAP_PX
-    : 0;
-
-  return { panelRef, topInsetPx };
+  return { sectionRef, panelRef, zoomRef, filtersRef, topInsetPx };
 }
 
 type ServiceResultCardProps = {
@@ -249,8 +274,13 @@ export function MapDashboard() {
   const requestFocusBounds = useMapFiltersStore((s) => s.requestFocusBounds);
   const requestNationalFrame = useMapFiltersStore((s) => s.requestNationalFrame);
   const clearFocusBounds = useMapFiltersStore((s) => s.clearFocusBounds);
-  const { panelRef, topInsetPx } = useFloatingPanelInset();
+  const { sectionRef, panelRef, zoomRef, filtersRef, topInsetPx } =
+    useMapChromeInset();
   const shellRef = useRef<HTMLDivElement | null>(null);
+  const mapCommandsRef = useRef<MapCommands | null>(null);
+  const onMapCommandsReady = useCallback((commands: MapCommands | null) => {
+    mapCommandsRef.current = commands;
+  }, []);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const { height: mobileSheetHeight, dragging: sheetDragging, handleProps: sheetHandleProps } =
     useMobileSheetHeight(shellRef, { selected: Boolean(selectedServiceId) });
@@ -345,8 +375,14 @@ export function MapDashboard() {
     >
       {/* Map + sidebar: height strictly the fixed shell; never grow with content. */}
       <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden md:flex-row md:gap-4">
-        <section className="relative z-0 min-h-0 min-w-0 flex-1 overflow-hidden bg-background max-md:absolute max-md:inset-0 md:rounded-2xl md:border md:border-slate-200/70 md:shadow-md">
-          <div className="pointer-events-none absolute inset-x-0 top-0 z-[1000] flex justify-start p-3 md:hidden">
+        <section
+          ref={sectionRef}
+          className="relative z-0 min-h-0 min-w-0 flex-1 overflow-hidden bg-background max-md:absolute max-md:inset-0 md:rounded-2xl md:border md:border-slate-200/70 md:shadow-md"
+        >
+          <div
+            ref={filtersRef}
+            className="pointer-events-none absolute inset-x-0 top-0 z-[1000] flex justify-start p-3 md:hidden"
+          >
             <div className="pointer-events-auto">
               <MobileFiltersControl
                 open={filtersOpen}
@@ -362,6 +398,17 @@ export function MapDashboard() {
               />
             </div>
           </div>
+          <div
+            ref={zoomRef}
+            className="pointer-events-none absolute top-3 right-3 z-[1001] sm:top-4 sm:right-4"
+          >
+            <div className="pointer-events-auto">
+              <MapZoomControls
+                onZoomIn={() => mapCommandsRef.current?.zoomIn()}
+                onZoomOut={() => mapCommandsRef.current?.zoomOut()}
+              />
+            </div>
+          </div>
           <OrganizationSearch
             variant="floating"
             panelRef={panelRef}
@@ -374,16 +421,19 @@ export function MapDashboard() {
             onClear={onClearSearch}
           />
           {/*
-            Inset below the floating panel so Leaflet's own container excludes
-            that region — no pin/cluster can ever be painted underneath an
-            opaque overlay it can't be clicked through. On mobile the panel is
-            hidden, so this inset collapses to 0 and the map fills the shell.
+            Inset below overlay chrome (search panel, zoom control, filters
+            pill) so Leaflet's own container excludes that region — no
+            pin/cluster can ever be painted underneath an opaque overlay it
+            can't be clicked through.
           */}
           <div
-            className="absolute inset-x-0 bottom-0 z-0 overflow-hidden max-md:!top-0"
+            className="absolute inset-x-0 bottom-0 z-0 overflow-hidden"
             style={{ top: topInsetPx }}
           >
-            <ImmimapMap services={loading ? [] : visible} />
+            <ImmimapMap
+              services={loading ? [] : visible}
+              onCommandsReady={onMapCommandsReady}
+            />
           </div>
           {loading ? (
             <div

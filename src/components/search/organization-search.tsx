@@ -423,7 +423,7 @@ export function OrganizationSearch({
     return (
       <div
         ref={panelRef}
-        className="pointer-events-none absolute left-4 top-4 z-[1000] right-4 hidden max-w-4xl md:block"
+        className="pointer-events-none absolute left-4 top-4 z-[1000] right-24 hidden max-w-4xl md:block"
         onDoubleClick={(event) => event.stopPropagation()}
         onMouseDown={(event) => event.stopPropagation()}
         onWheel={(event) => event.stopPropagation()}

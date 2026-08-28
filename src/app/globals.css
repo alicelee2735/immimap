@@ -11,8 +11,8 @@
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
 
-  /* ImmiMap visual identity tokens (2026 refresh). Scoped preview: only the
-     homepage hero consumes these for now — see AGENTS.md task history. */
+  /* ImmiMap visual identity tokens (2026 refresh). Used on Home, About,
+     and Know Your Rights. */
   --color-ink-navy: var(--ink-navy);
   --color-route-blue: var(--route-blue);
   --color-signal-amber: var(--signal-amber);
@@ -91,7 +91,7 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  /* ImmiMap visual identity — brand tokens (not yet applied app-wide). */
+  /* ImmiMap visual identity — brand tokens. */
   --ink-navy: #1b2a4a;
   --route-blue: #3e6fa8;
   --signal-amber: #e8a33d;
@@ -156,6 +156,8 @@
   height: 100% !important;
   width: 100% !important;
   overflow: hidden;
+  isolation: isolate;
+  clip-path: inset(0);
   border-radius: inherit;
 }
 

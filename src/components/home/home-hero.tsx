@@ -136,9 +136,8 @@ export function HomeHero({
   return (
     <section className="relative overflow-x-clip bg-paper pb-16 pt-12 sm:pt-16">
       {/*
-        ImmiMap visual identity — now applied across the full homepage
-        (hero, features, how-it-works). /map, /about, /contact and
-        /know-your-rights are unchanged for this pass.
+        ImmiMap visual identity — homepage (hero, features, how-it-works)
+        plus /about and /know-your-rights. /map and /contact are unchanged.
       */}
       <div className="py-14 sm:py-20">
         <PageContainer>
