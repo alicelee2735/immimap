@@ -16,6 +16,8 @@ type ProviderSearchCardProps = {
   hideStateFilter?: boolean;
   /** Tighter spacing for the floating map toolbar. */
   compact?: boolean;
+  menuSide?: "top" | "bottom";
+  hideReset?: boolean;
 };
 
 export function ProviderSearchCard({
@@ -27,12 +29,14 @@ export function ProviderSearchCard({
   onResetSearch,
   hideStateFilter = false,
   compact = false,
+  menuSide = "bottom",
+  hideReset = false,
 }: ProviderSearchCardProps) {
   if (compact) {
     return (
       <div
         className={cn(
-          "relative z-[1000] flex flex-wrap items-center gap-2 overflow-visible rounded-2xl border border-slate-200/80 bg-white/95 p-2.5 shadow-xl backdrop-blur-md sm:gap-3",
+          "relative z-[1000] flex flex-wrap items-center gap-2 overflow-visible rounded-sm border border-ink-navy/15 bg-paper p-2.5 shadow-[0_8px_30px_-12px_rgba(27,42,74,0.12)] sm:gap-3",
           className,
         )}
       >
@@ -51,6 +55,8 @@ export function ProviderSearchCard({
           onResetSearch={onResetSearch}
           hideStateFilter={hideStateFilter}
           compact
+          menuSide={menuSide}
+          hideReset={hideReset}
         />
         {footer}
       </div>
@@ -60,7 +66,7 @@ export function ProviderSearchCard({
   return (
     <div
       className={cn(
-        "relative overflow-visible rounded-xl border border-slate-200 bg-white p-2 shadow-sm",
+        "relative overflow-visible rounded-sm border border-ink-navy/15 bg-paper p-2 shadow-[0_8px_30px_-12px_rgba(27,42,74,0.12)]",
         className,
       )}
     >
@@ -76,6 +82,8 @@ export function ProviderSearchCard({
           onResetSearch={onResetSearch}
           hideStateFilter={hideStateFilter}
           compact={false}
+          menuSide={menuSide}
+          hideReset={hideReset}
         />
       </div>
       {footer ? <div className="overflow-visible">{footer}</div> : null}

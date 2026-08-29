@@ -33,6 +33,9 @@ export default async function AboutPage({ params }: Props) {
       number: "03",
       title: t("transparency.title"),
       description: t("transparency.description"),
+      href: "/how-we-verify" as const,
+      linkPrompt: t("transparency.verifyPrompt"),
+      linkLabel: t("transparency.verifyLink"),
     },
   ];
 
@@ -107,6 +110,17 @@ export default async function AboutPage({ params }: Props) {
                 <p className="mt-2 text-sm leading-6 text-charcoal">
                   {section.description}
                 </p>
+                {"href" in section && section.href ? (
+                  <p className="mt-4 text-sm leading-6 text-charcoal">
+                    {section.linkPrompt}{" "}
+                    <Link
+                      href={section.href}
+                      className="font-medium text-ink-navy underline-offset-4 transition-colors hover:text-route-blue hover:underline"
+                    >
+                      {section.linkLabel}
+                    </Link>
+                  </p>
+                ) : null}
               </article>
             );
           })}

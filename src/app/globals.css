@@ -12,7 +12,7 @@
   --font-heading: var(--font-sans);
 
   /* ImmiMap visual identity tokens (2026 refresh). Used on Home, About,
-     and Know Your Rights. */
+     Know Your Rights, and How We Verify. */
   --color-ink-navy: var(--ink-navy);
   --color-route-blue: var(--route-blue);
   --color-signal-amber: var(--signal-amber);
@@ -161,6 +161,10 @@
   border-radius: inherit;
 }
 
+.immimap-leaflet.leaflet-container {
+  background: transparent;
+}
+
 .immimap-leaflet .leaflet-control-attribution {
   border-radius: 0.5rem 0 0 0;
 }
@@ -226,6 +230,11 @@
 }
 
 .immimap-cluster-icon {
+  background: transparent;
+  border: none;
+}
+
+.immimap-cluster-bubble {
   align-items: center;
   aspect-ratio: 1 / 1;
   background: #ffffff;
@@ -239,23 +248,14 @@
   font-weight: 800;
   height: 44px;
   justify-content: center;
-  width: 44px;
-  /* Collision-avoidance offset (see declutterOverlappingClusters) — a
-     separate property from Leaflet's own positioning `transform`, so it
-     composes instead of getting overwritten on every pan/zoom frame. */
-  translate: 0 0;
-  transition: translate 0.15s ease-out;
-}
-
-.immimap-cluster-icon span {
-  align-items: center;
-  display: flex;
-  height: 100%;
-  justify-content: center;
   line-height: 1;
   padding-top: 1.5px;
   text-align: center;
-  width: 100%;
+  width: 44px;
+  /* Offset lives here so Leaflet's root `transform` (set every pan frame)
+     cannot clobber the collision nudge. */
+  transform: translate(0, 0);
+  transition: transform 0.15s ease-out;
 }
 
 .immimap-results-scroll::-webkit-scrollbar {

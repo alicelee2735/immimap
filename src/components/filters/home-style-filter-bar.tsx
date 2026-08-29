@@ -19,10 +19,13 @@ import {
   ALL_STATES,
   areFiltersAtDefaults,
   useMapFiltersStore,
-  type FilterLanguage,
 } from "@/stores/map-filters";
 
 type MenuKey = "state" | "service" | "price" | "language";
+
+/** Compact map toolbar: wide enough for "All price categories" so labels don't reflow. */
+const COMPACT_TRIGGER_CLASS =
+  "h-9 w-[13rem] shrink-0 rounded-sm px-2.5 py-1.5 pr-3.5 hover:bg-signal-amber/10";
 
 type SegmentOption<T extends string> = {
   value: T;
@@ -42,6 +45,7 @@ type MultiSelectSegmentProps<T extends string> = {
   onSelectAll: () => void;
   isLast?: boolean;
   compact?: boolean;
+  menuSide?: "top" | "bottom";
 };
 
 function MultiSelectSegment<T extends string>({
@@ -57,6 +61,7 @@ function MultiSelectSegment<T extends string>({
   onSelectAll,
   isLast,
   compact = false,
+  menuSide = "bottom",
 }: MultiSelectSegmentProps<T>) {
   const allSelected =
     options.length > 0 &&
@@ -71,17 +76,17 @@ function MultiSelectSegment<T extends string>({
     >
       <DropdownMenuTrigger
         className={cn(
-          "group flex items-center justify-between gap-2 bg-transparent text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          "group flex items-center justify-between gap-2 bg-transparent text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal-amber",
           compact
-            ? "h-9 min-w-0 shrink-0 rounded-lg px-2.5 py-1.5 pr-3.5 hover:bg-slate-100/80"
-            : "min-h-16 flex-1 gap-4 px-5 py-2.5 hover:bg-primary/5",
-          !compact && !isLast && "border-b border-slate-200 md:border-r md:border-b-0",
+            ? COMPACT_TRIGGER_CLASS
+            : "min-h-16 flex-1 gap-4 px-5 py-2.5 hover:bg-signal-amber/10",
+          !compact && !isLast && "border-b border-ink-navy/10 md:border-r md:border-b-0",
         )}
       >
         <span className="min-w-0">
           <span
             className={cn(
-              "block font-semibold uppercase tracking-[0.18em] text-muted-foreground",
+              "block font-semibold uppercase tracking-[0.18em] text-route-blue",
               compact ? "text-[10px]" : "text-xs",
             )}
           >
@@ -89,8 +94,8 @@ function MultiSelectSegment<T extends string>({
           </span>
           <span
             className={cn(
-              "mt-0.5 block truncate font-semibold text-foreground",
-              compact ? "max-w-[6rem] text-sm sm:max-w-[7rem]" : "text-sm sm:text-base",
+              "mt-0.5 block truncate font-semibold text-ink-navy",
+              compact ? "w-[9.75rem] max-w-none truncate text-sm" : "text-sm sm:text-base",
             )}
           >
             {value}
@@ -99,9 +104,11 @@ function MultiSelectSegment<T extends string>({
         <ChevronDown className="ml-1 h-3.5 w-3.5 shrink-0 text-primary transition group-data-[popup-open]:rotate-180" />
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="z-[9999] w-64 rounded-2xl bg-white p-2"
-        positionerClassName="z-[9999]"
+        className="z-[1200] max-h-[min(18rem,var(--available-height))] w-64 rounded-sm bg-paper p-2"
+        positionerClassName="z-[1200]"
         align="start"
+        side={menuSide}
+        collisionPadding={16}
       >
         <DropdownMenuCheckboxItem
           checked={allSelected}
@@ -143,20 +150,27 @@ function MultiSelectSegment<T extends string>({
   );
 }
 
-type LanguageSegmentProps = {
+type OptInMultiSelectSegmentProps<T extends string> = {
+  menuKey: MenuKey;
   openMenu: MenuKey | null;
   onOpenChange: (key: MenuKey, open: boolean) => void;
   title: string;
   value: string;
-  options: SegmentOption<FilterLanguage>[];
-  selected: FilterLanguage[];
+  options: SegmentOption<T>[];
+  selected: T[];
   allLabel: string;
-  onToggle: (language: FilterLanguage) => void;
+  onToggle: (value: T) => void;
   onSelectAll: () => void;
   compact?: boolean;
+  menuSide?: "top" | "bottom";
 };
 
-function LanguageSegment({
+/**
+ * Empty-selection = "All X" active. First specific click replaces All;
+ * further clicks add/remove. Shared by Languages and Service type.
+ */
+function OptInMultiSelectSegment<T extends string>({
+  menuKey,
   openMenu,
   onOpenChange,
   title,
@@ -167,27 +181,28 @@ function LanguageSegment({
   onToggle,
   onSelectAll,
   compact = false,
-}: LanguageSegmentProps) {
+  menuSide = "bottom",
+}: OptInMultiSelectSegmentProps<T>) {
   const isAllSelected = selected.length === 0;
 
   return (
     <DropdownMenu
       modal={false}
-      open={openMenu === "language"}
-      onOpenChange={(open) => onOpenChange("language", open)}
+      open={openMenu === menuKey}
+      onOpenChange={(open) => onOpenChange(menuKey, open)}
     >
       <DropdownMenuTrigger
         className={cn(
-          "group flex items-center justify-between gap-2 bg-transparent text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          "group flex items-center justify-between gap-2 bg-transparent text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal-amber",
           compact
-            ? "h-9 min-w-0 shrink-0 rounded-lg px-2.5 py-1.5 pr-3.5 hover:bg-slate-100/80"
-            : "min-h-16 flex-1 gap-4 px-5 py-2.5 hover:bg-primary/5",
+            ? COMPACT_TRIGGER_CLASS
+            : "min-h-16 flex-1 gap-4 px-5 py-2.5 hover:bg-signal-amber/10",
         )}
       >
         <span className="min-w-0">
           <span
             className={cn(
-              "block font-semibold uppercase tracking-[0.18em] text-muted-foreground",
+              "block font-semibold uppercase tracking-[0.18em] text-route-blue",
               compact ? "text-[10px]" : "text-xs",
             )}
           >
@@ -195,19 +210,21 @@ function LanguageSegment({
           </span>
           <span
             className={cn(
-              "mt-0.5 block truncate font-semibold text-foreground",
-              compact ? "max-w-[6rem] text-sm sm:max-w-[7rem]" : "text-sm sm:text-base",
+              "mt-0.5 block truncate font-semibold text-ink-navy",
+              compact ? "w-[9.75rem] max-w-none truncate text-sm" : "text-sm sm:text-base",
             )}
           >
             {value}
           </span>
         </span>
-        <ChevronDown className="ml-1 h-3.5 w-3.5 shrink-0 text-primary transition group-data-[popup-open]:rotate-180" />
+        <ChevronDown className="ml-1 h-3.5 w-3.5 shrink-0 text-route-blue transition group-data-[popup-open]:rotate-180" />
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="z-[9999] max-h-72 w-64 rounded-2xl bg-white p-2"
-        positionerClassName="z-[9999]"
+        className="z-[1200] max-h-[min(18rem,var(--available-height))] w-64 rounded-sm bg-paper p-2"
+        positionerClassName="z-[1200]"
         align="start"
+        side={menuSide}
+        collisionPadding={16}
       >
         <DropdownMenuCheckboxItem
           checked={isAllSelected}
@@ -216,10 +233,10 @@ function LanguageSegment({
             if (checked || !isAllSelected) onSelectAll();
           }}
           className={cn(
-            "px-3 py-2 text-sm font-medium",
+            "rounded-sm px-3 py-2 text-sm font-medium",
             isAllSelected
-              ? "text-primary"
-              : "text-muted-foreground hover:text-foreground",
+              ? "text-ink-navy"
+              : "text-charcoal/70 hover:text-ink-navy",
           )}
         >
           {allLabel}
@@ -249,9 +266,9 @@ function LanguageSegment({
   );
 }
 
-function languageSelectionLabel(
+function optInSelectionLabel(
   allLabel: string,
-  selected: FilterLanguage[],
+  selected: readonly string[],
   selectedCountLabel: string,
 ): string {
   if (selected.length === 0) return allLabel;
@@ -281,6 +298,9 @@ type HomeStyleFilterBarProps = {
   hideStateFilter?: boolean;
   /** Tighter row height for the floating map toolbar. */
   compact?: boolean;
+  /** Open menus above the trigger (mobile filter sheet). */
+  menuSide?: "top" | "bottom";
+  hideReset?: boolean;
 };
 
 export function HomeStyleFilterBar({
@@ -289,6 +309,8 @@ export function HomeStyleFilterBar({
   onResetSearch,
   hideStateFilter = false,
   compact = false,
+  menuSide = "bottom",
+  hideReset = false,
 }: HomeStyleFilterBarProps) {
   const tHome = useTranslations("Home");
   const tFilters = useTranslations("Filters");
@@ -304,9 +326,9 @@ export function HomeStyleFilterBar({
   const togglePricingTier = useMapFiltersStore((s) => s.togglePricingTier);
   const toggleLanguage = useMapFiltersStore((s) => s.toggleLanguage);
   const setStates = useMapFiltersStore((s) => s.setStates);
-  const setCategories = useMapFiltersStore((s) => s.setCategories);
   const setPricingTiers = useMapFiltersStore((s) => s.setPricingTiers);
   const clearLanguages = useMapFiltersStore((s) => s.clearLanguages);
+  const clearCategories = useMapFiltersStore((s) => s.clearCategories);
   const resetFilters = useMapFiltersStore((s) => s.resetFilters);
   const requestNationalFrame = useMapFiltersStore((s) => s.requestNationalFrame);
 
@@ -412,6 +434,7 @@ export function HomeStyleFilterBar({
               allOptionLabel={allStatesLabel}
               onSelectAll={() => setStates([...ALL_STATES])}
               compact={compact}
+              menuSide={menuSide}
             />
             {compact ? (
               <div
@@ -421,26 +444,23 @@ export function HomeStyleFilterBar({
             ) : null}
           </>
         )}
-        <MultiSelectSegment
+        <OptInMultiSelectSegment
           menuKey="service"
           openMenu={openMenu}
           onOpenChange={handleOpenChange}
           title={tFilters("serviceLabel")}
-          value={selectionLabel(
+          value={optInSelectionLabel(
             allServicesLabel,
-            serviceOptions
-              .filter((option) => categories.includes(option.value))
-              .map((option) => option.label),
-            categories.length,
-            serviceOptions.length,
+            categories,
             selectedCountLabel(categories.length),
           )}
           options={serviceOptions}
           selected={categories}
+          allLabel={allServicesLabel}
           onToggle={toggleCategory}
-          allOptionLabel={allServicesLabel}
-          onSelectAll={() => setCategories([...availableServiceTypes])}
+          onSelectAll={clearCategories}
           compact={compact}
+          menuSide={menuSide}
         />
         {compact ? (
           <div
@@ -468,6 +488,7 @@ export function HomeStyleFilterBar({
           allOptionLabel={allPricesLabel}
           onSelectAll={() => setPricingTiers([...ALL_PRICING])}
           compact={compact}
+          menuSide={menuSide}
         />
         {compact ? (
           <div
@@ -475,11 +496,12 @@ export function HomeStyleFilterBar({
             aria-hidden
           />
         ) : null}
-        <LanguageSegment
+        <OptInMultiSelectSegment
+          menuKey="language"
           openMenu={openMenu}
           onOpenChange={handleOpenChange}
           title={tFilters("languageLabel")}
-          value={languageSelectionLabel(
+          value={optInSelectionLabel(
             allLanguagesLabel,
             languages,
             selectedCountLabel(languages.length),
@@ -490,8 +512,9 @@ export function HomeStyleFilterBar({
           onToggle={toggleLanguage}
           onSelectAll={clearLanguages}
           compact={compact}
+          menuSide={menuSide}
         />
-        {showResetAll ? (
+        {showResetAll && !hideReset ? (
           <>
             {compact ? (
               <div
@@ -513,8 +536,8 @@ export function HomeStyleFilterBar({
                 size="sm"
                 className={
                   compact
-                    ? "h-8 shrink-0 rounded-lg px-2.5 py-1 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 hover:text-red-700"
-                    : "h-9 rounded-full px-3 text-sm font-semibold text-red-600 hover:bg-red-50 hover:text-red-700"
+                    ? "h-8 shrink-0 rounded-sm px-2.5 py-1 text-sm font-medium text-ink-navy transition-colors hover:bg-signal-amber/20"
+                    : "h-9 rounded-sm px-3 text-sm font-semibold text-ink-navy hover:bg-signal-amber/20"
                 }
                 onClick={handleResetFilters}
                 aria-label={tFilters("resetAll")}
@@ -523,7 +546,7 @@ export function HomeStyleFilterBar({
               </Button>
             </div>
           </>
-        ) : compact ? null : (
+        ) : compact || hideReset ? null : (
           <div className="flex min-h-16 items-center justify-center px-3 py-2 md:border-l md:border-slate-200/80">
             <span className="px-2 text-xs text-slate-300" aria-hidden>
               —

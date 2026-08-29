@@ -116,9 +116,28 @@ function isFullSelection<T>(selected: readonly T[], all: readonly T[]): boolean 
   );
 }
 
+/**
+ * Opt-in multi-select: empty means "all" (no restriction).
+ * First specific click replaces All; later clicks add or remove.
+ * Unchecking the last specific item returns to All.
+ */
+export function toggleOptInSelection<T>(current: readonly T[], item: T): T[] {
+  if (current.length === 0) {
+    return [item];
+  }
+  if (current.includes(item)) {
+    return current.filter((entry) => entry !== item);
+  }
+  return [...current, item];
+}
+
 export type MapFiltersState = {
   states: USState[];
-  /** Selected service tags. Empty or equal to `availableServiceTypes` means all. */
+  /**
+   * Smart multi-select service-type filter — same machine as `languages`.
+   * Empty array = "All service types" (no tag restriction).
+   * Non-empty = match providers that offer at least one selected tag.
+   */
   categories: ServiceCategory[];
   /** Distinct tags currently present on loaded organizations. */
   availableServiceTypes: ServiceCategory[];
@@ -143,6 +162,7 @@ export type MapFiltersState = {
   setLanguages: (languages: FilterLanguage[]) => void;
   clearLanguages: () => void;
   toggleLanguage: (language: FilterLanguage) => void;
+  clearCategories: () => void;
   toggleState: (state: USState) => void;
   toggleCategory: (category: ServiceCategory) => void;
   togglePricingTier: (tier: PricingTier) => void;
@@ -159,10 +179,10 @@ export type MapFiltersState = {
   setHoveredProviderId: (id: string | null) => void;
 };
 
-function defaultFilterFields(availableServiceTypes: readonly ServiceCategory[] = []) {
+function defaultFilterFields() {
   return {
     states: [...ALL_STATES] as USState[],
-    categories: [...availableServiceTypes] as ServiceCategory[],
+    categories: [] as ServiceCategory[],
     pricingTiers: [...ALL_PRICING] as PricingTier[],
     languages: [] as FilterLanguage[],
   };
@@ -184,12 +204,10 @@ function sameServiceTypes(
   return a.length === b.length && a.every((item, index) => item === b[index]);
 }
 
-function areCategoriesAtDefault(
+export function areCategoriesAtDefault(
   selected: readonly ServiceCategory[],
-  available: readonly ServiceCategory[],
 ): boolean {
-  if (available.length === 0) return selected.length === 0;
-  return selected.length === 0 || isFullSelection(selected, available);
+  return selected.length === 0;
 }
 
 export const useMapFiltersStore = create<MapFiltersState>((set) => ({
@@ -200,28 +218,23 @@ export const useMapFiltersStore = create<MapFiltersState>((set) => ({
 
   setStates: (states) =>
     set({ states: normalizeMultiSelect(states, ALL_STATES) }),
-  setCategories: (categories) =>
-    set((s) => ({
-      categories: normalizeMultiSelect(categories, s.availableServiceTypes),
-    })),
+  setCategories: (categories) => set({ categories }),
   setAvailableServiceTypes: (types) =>
     set((s) => {
       if (sameServiceTypes(s.availableServiceTypes, types)) return s;
-      const keepSelection = !areCategoriesAtDefault(
-        s.categories,
-        s.availableServiceTypes,
-      );
+      const keepSelection = !areCategoriesAtDefault(s.categories);
       return {
         availableServiceTypes: types,
         categories: keepSelection
           ? s.categories.filter((category) => types.includes(category))
-          : [...types],
+          : [],
       };
     }),
   setPricingTiers: (pricingTiers) =>
     set({ pricingTiers: normalizeMultiSelect(pricingTiers, ALL_PRICING) }),
   setLanguages: (languages) => set({ languages }),
   clearLanguages: () => set({ languages: [] }),
+  clearCategories: () => set({ categories: [] }),
 
   toggleState: (state) =>
     set((s) => {
@@ -232,18 +245,7 @@ export const useMapFiltersStore = create<MapFiltersState>((set) => ({
     }),
 
   toggleCategory: (category) =>
-    set((s) => {
-      const current = areCategoriesAtDefault(
-        s.categories,
-        s.availableServiceTypes,
-      )
-        ? s.availableServiceTypes
-        : s.categories;
-      const next = current.includes(category)
-        ? current.filter((item) => item !== category)
-        : [...current, category];
-      return { categories: normalizeMultiSelect(next, s.availableServiceTypes) };
-    }),
+    set((s) => ({ categories: toggleOptInSelection(s.categories, category) })),
 
   togglePricingTier: (tier) =>
     set((s) => {
@@ -254,29 +256,16 @@ export const useMapFiltersStore = create<MapFiltersState>((set) => ({
     }),
 
   toggleLanguage: (language) =>
-    set((s) => {
-      // Default "All languages" (empty) → first specific click replaces All.
-      if (s.languages.length === 0) {
-        return { languages: [language] };
-      }
-
-      if (s.languages.includes(language)) {
-        const next = s.languages.filter((item) => item !== language);
-        // Last specific language unchecked → fall back to All languages.
-        return { languages: next };
-      }
-
-      return { languages: [...s.languages, language] };
-    }),
+    set((s) => ({ languages: toggleOptInSelection(s.languages, language) })),
 
   /** Resets dropdown filters only; keeps provider selection and hover state. */
   resetFilters: () =>
-    set((s) => defaultFilterFields(s.availableServiceTypes)),
+    set(() => defaultFilterFields()),
 
   /** Full marketplace reset: filters + selection + national map frame. */
   resetAll: () =>
     set((s) => ({
-      ...defaultFilterFields(s.availableServiceTypes),
+      ...defaultFilterFields(),
       selectedServiceId: null,
       hoveredProviderId: null,
       focusBounds: null,
@@ -317,7 +306,7 @@ export function areFiltersAtDefaults(
 ): boolean {
   return (
     isFullSelection(filters.states, ALL_STATES) &&
-    areCategoriesAtDefault(filters.categories, filters.availableServiceTypes) &&
+    areCategoriesAtDefault(filters.categories) &&
     isFullSelection(filters.pricingTiers, ALL_PRICING) &&
     areLanguagesAtDefault(filters.languages)
   );
@@ -343,11 +332,7 @@ export function filterServices(
     "states" | "categories" | "availableServiceTypes" | "pricingTiers" | "languages"
   >,
 ): ImmigrationService[] {
-  const allTypes =
-    filters.availableServiceTypes.length > 0
-      ? filters.availableServiceTypes
-      : collectServiceTypes(services);
-  const categoriesActive = !areCategoriesAtDefault(filters.categories, allTypes);
+  const categoriesActive = !areCategoriesAtDefault(filters.categories);
   const pricingActive = !isFullSelection(filters.pricingTiers, ALL_PRICING);
   const statesActive = !isFullSelection(filters.states, ALL_STATES);
 

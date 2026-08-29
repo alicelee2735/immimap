@@ -27,3 +27,8 @@ export function isNavItemActive(pathname: string, href: string): boolean {
 
   return current === target || current.startsWith(`${target}/`);
 }
+
+/** Map route — used for chrome that must follow client navigations. */
+export function isMapPathname(pathname: string): boolean {
+  return isNavItemActive(pathname, "/map");
+}

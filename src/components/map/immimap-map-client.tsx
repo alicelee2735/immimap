@@ -3,10 +3,12 @@
 import {
   createContext,
   memo,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
   useRef,
+  useState,
   type MutableRefObject,
 } from "react";
 import L from "leaflet";
@@ -22,9 +24,20 @@ import "react-leaflet-cluster/dist/assets/MarkerCluster.css";
 import "react-leaflet-cluster/dist/assets/MarkerCluster.Default.css";
 
 import type { MapCommands } from "@/components/map/map-zoom-controls";
+import { MapOffscreenResultsBanner } from "@/components/map/map-offscreen-results-banner";
 import type { ImmigrationService } from "@/types/immimap";
 import { useMapFiltersStore, ALL_STATES } from "@/stores/map-filters";
-import { STATE_BOUNDING_BOXES } from "@/lib/us-states";
+import {
+  CLUSTER_DECLUTTER_PASSES,
+  CLUSTER_ICON_SIZE_PX,
+  relaxOverlappingClusters,
+  type ClusterNode,
+} from "@/lib/cluster-declutter";
+import {
+  FILTER_FIT_METRO_MIN_ZOOM,
+  servicesForFilterFit,
+  zoomAfterClosingDetail,
+} from "@/lib/map-filter-fit";
 
 const OSM_TILE =
   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -41,11 +54,23 @@ const DRAWER_TRANSITION_MS = 300;
 const FOCUS_SETTLE_MS = 60;
 const FRAME_PADDING: [number, number] = [50, 50];
 const FRAME_MAX_ZOOM = 12;
-/** Cluster bubble diameter (see .immimap-cluster-icon) plus a small gap. */
-const CLUSTER_MIN_GAP_PX = 48;
-/** A couple of relaxation passes settle simple overlap chains (A–B–C). */
-const CLUSTER_DECLUTTER_PASSES = 3;
 const CLUSTER_DECLUTTER_DEBOUNCE_MS = 60;
+/** Markercluster can rebuild icons after zoomend; run once more after that. */
+const CLUSTER_DECLUTTER_LATE_MS = 280;
+
+type LeafletPosIcon = HTMLElement & { _leaflet_pos?: { x: number; y: number } };
+
+function clusterLayerPoint(icon: HTMLElement): { x: number; y: number } | null {
+  const pos = (icon as LeafletPosIcon)._leaflet_pos;
+  if (!pos || !Number.isFinite(pos.x) || !Number.isFinite(pos.y)) return null;
+  return { x: pos.x, y: pos.y };
+}
+
+function clusterBubble(icon: HTMLElement): HTMLElement {
+  return (
+    icon.querySelector<HTMLElement>(".immimap-cluster-bubble") ?? icon
+  );
+}
 
 type MarkerRegistry = Map<string, L.Marker>;
 
@@ -65,13 +90,77 @@ function useMarkerRegistry() {
   return api;
 }
 
+function isLeafletPosError(error: unknown): boolean {
+  return (
+    error instanceof TypeError &&
+    String(error.message).includes("_leaflet_pos")
+  );
+}
+
+/**
+ * Leaflet reads `el._leaflet_pos` while panning/resizing. That throws when the
+ * map pane or a marker icon was already removed (unmount, cluster recycle,
+ * Strict Mode double-mount, or a ResizeObserver tick after teardown).
+ */
+function isMapAlive(map: L.Map): boolean {
+  try {
+    return Boolean(map.getContainer()?.isConnected && map.getPane("mapPane"));
+  } catch {
+    return false;
+  }
+}
+
+function runOnAliveMap(map: L.Map, fn: (map: L.Map) => void) {
+  if (!isMapAlive(map)) return;
+  try {
+    fn(map);
+  } catch (error) {
+    if (!isLeafletPosError(error)) throw error;
+  }
+}
+
+function invalidateMapSize(map: L.Map) {
+  runOnAliveMap(map, (alive) => {
+    const size = alive.getSize();
+    if (size.x < 1 || size.y < 1) return;
+    alive.invalidateSize({ animate: false });
+  });
+}
+
+const markerProto = L.Marker.prototype as typeof L.Marker.prototype & {
+  __immimapSetIconPatched?: boolean;
+};
+
+if (!markerProto.__immimapSetIconPatched) {
+  markerProto.__immimapSetIconPatched = true;
+  const originalSetIcon = markerProto.setIcon;
+  markerProto.setIcon = function (icon) {
+    // Clustered markers are not on the map; updating options is enough so the
+    // next time they appear they use the new icon. Calling Leaflet's setIcon
+    // while `_icon` is gone is what throws `_leaflet_pos`.
+    if (!this._map) {
+      this.options.icon = icon;
+      return this;
+    }
+    try {
+      return originalSetIcon.call(this, icon);
+    } catch (error) {
+      if (!isLeafletPosError(error)) throw error;
+      this.options.icon = icon;
+      return this;
+    }
+  };
+}
+
 /** Hard-coded national overview — never derive from service bounds (Arctic bug). */
 function setContinentalUsView(map: L.Map, duration = 0.8) {
-  // Cancel any in-flight flyTo/fitBounds so a concurrent frame cannot win.
-  map.stop();
-  map.setView(US_CENTER, US_ZOOM, {
-    animate: true,
-    duration,
+  runOnAliveMap(map, (alive) => {
+    // Cancel any in-flight flyTo/fitBounds so a concurrent frame cannot win.
+    alive.stop();
+    alive.setView(US_CENTER, US_ZOOM, {
+      animate: true,
+      duration,
+    });
   });
 }
 
@@ -89,62 +178,82 @@ function flyToCorners(
     return;
   }
 
-  map.flyToBounds(bounds, {
-    duration,
-    padding: FRAME_PADDING,
-    maxZoom: 10,
+  runOnAliveMap(map, (alive) => {
+    alive.flyToBounds(bounds, {
+      duration,
+      padding: FRAME_PADDING,
+      maxZoom: 10,
+    });
   });
 }
 
-function fitServicesBounds(map: L.Map, services: ImmigrationService[]) {
-  // Exclude AK/HI from multi-state frames — including them expands the box into
-  // northern Canada / the Arctic and is the Reset-all teleport bug.
-  const lower48 = services.filter(
-    (service) =>
-      service.state !== "AK" &&
-      service.state !== "HI" &&
-      hasValidCoordinates(service) &&
-      Number(service.latitude) >= 24 &&
-      Number(service.latitude) <= 50 &&
-      Number(service.longitude) >= -125 &&
-      Number(service.longitude) <= -66,
-  );
+/**
+ * Filter-toggle refit: frame `services` without zooming out past metro.
+ * Nationwide jumps are reserved for `setContinentalUsView` (Reset all).
+ */
+function isMobileMapViewport() {
+  return window.matchMedia("(max-width: 767px)").matches;
+}
 
-  if (lower48.length === 0) {
-    setContinentalUsView(map, 1.0);
-    return;
-  }
+/**
+ * Leaving a street-level org detail on mobile: pull back to city/metro
+ * (same zoom cap as filter-change refits) so nearby pins are visible.
+ */
+function fitClosingDetailToMetro(map: L.Map, origin: ImmigrationService) {
+  runOnAliveMap(map, (alive) => {
+    const nextZoom = zoomAfterClosingDetail(alive.getZoom());
+    if (nextZoom == null) return;
+    const lat = Number(origin.latitude);
+    const lng = Number(origin.longitude);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+    alive.flyTo([lat, lng], nextZoom, { animate: true, duration: 0.8 });
+  });
+}
 
-  const states = new Set(lower48.map((service) => service.state));
-  // Wide multi-state result sets → hardcoded US center, not a stretched box.
-  if (states.size >= 8) {
-    setContinentalUsView(map, 1.0);
-    return;
-  }
+function fitFilterChangeBounds(map: L.Map, services: ImmigrationService[]) {
+  runOnAliveMap(map, (alive) => {
+    const view = alive.getBounds().pad(0.4);
+    const toFit = servicesForFilterFit(
+      services,
+      alive.getZoom(),
+      (lat, lng) => view.contains(L.latLng(lat, lng)),
+    );
+    if (!toFit) return;
 
-  const bounds = L.latLngBounds(
-    lower48.map((service) => [
-      Number(service.latitude),
-      Number(service.longitude),
-    ]),
-  );
+    const bounds = L.latLngBounds(
+      toFit.map((service) => [
+        Number(service.latitude),
+        Number(service.longitude),
+      ]),
+    );
+    if (!bounds.isValid()) return;
 
-  if (!bounds.isValid()) {
-    setContinentalUsView(map, 1.0);
-    return;
-  }
+    const padded = bounds.pad(0.08);
+    const fitZoom = alive.getBoundsZoom(padded, false, FRAME_PADDING);
+    // Safety: a padded metro viewport must not still expand to a state/US frame.
+    if (
+      alive.getZoom() >= FILTER_FIT_METRO_MIN_ZOOM &&
+      fitZoom < FILTER_FIT_METRO_MIN_ZOOM
+    ) {
+      return;
+    }
 
-  map.fitBounds(bounds.pad(0.08), {
-    maxZoom: FRAME_MAX_ZOOM,
-    padding: FRAME_PADDING,
-    animate: true,
+    alive.fitBounds(padded, {
+      maxZoom: FRAME_MAX_ZOOM,
+      padding: FRAME_PADDING,
+      animate: true,
+    });
   });
 }
 
 /**
  * Frames the current result set whenever nothing is selected.
- * Runs on search clear, filter reset, city selection, and drawer close.
- * When `nationalFrameToken` bumps (Reset all), hard-centers the continental US.
+ *
+ * Reset all (`nationalFrameToken`) is the only path that recenters the
+ * continental US. Individual filter toggles refit the new pins with a
+ * city/metro zoom-out cap so a Sacramento view does not jump nationwide.
+ * Closing the detail panel on desktop leaves the camera. On mobile it
+ * pulls back to city/metro zoom so nearby results are tappable again.
  */
 function FitVisibleServices({ services }: { services: ImmigrationService[] }) {
   const map = useMap();
@@ -155,10 +264,23 @@ function FitVisibleServices({ services }: { services: ImmigrationService[] }) {
   const states = useMapFiltersStore((s) => s.states);
   const lastNationalToken = useRef(0);
   const lastFocusToken = useRef(0);
+  const prevSelectedId = useRef(selectedServiceId);
+  const prevServices = useRef(services);
   /** After a national reset, ignore follow-up service-list fits until focus changes. */
   const nationalLockToken = useRef(0);
 
   useEffect(() => {
+    const previousSelectedId = prevSelectedId.current;
+    const closingDrawer =
+      Boolean(previousSelectedId) && !selectedServiceId;
+    const servicesChanged = prevServices.current !== services;
+    const originService = previousSelectedId
+      ? prevServices.current.find((service) => service.id === previousSelectedId) ??
+        services.find((service) => service.id === previousSelectedId)
+      : undefined;
+    prevSelectedId.current = selectedServiceId;
+    prevServices.current = services;
+
     // National reset always wins — even if a provider is still selected for a tick.
     if (nationalFrameToken > lastNationalToken.current) {
       lastNationalToken.current = nationalFrameToken;
@@ -177,6 +299,15 @@ function FitVisibleServices({ services }: { services: ImmigrationService[] }) {
       return;
     }
 
+    // Desktop: leave pan/zoom. Mobile: pull street-level detail back to metro.
+    // If a filter change also cleared selection, still refit the new result set.
+    if (closingDrawer && !servicesChanged) {
+      if (isMobileMapViewport() && originService) {
+        fitClosingDetailToMetro(map, originService);
+      }
+      return;
+    }
+
     // Keep an explicit state/region frame until cleared.
     if (focusBounds) {
       return;
@@ -192,7 +323,7 @@ function FitVisibleServices({ services }: { services: ImmigrationService[] }) {
       return;
     }
 
-    fitServicesBounds(map, services);
+    fitFilterChangeBounds(map, services);
   }, [
     map,
     services,
@@ -212,33 +343,10 @@ function MapSelectionController({
   selected: ImmigrationService | null;
 }) {
   const map = useMap();
-  const previousSelectedId = useRef<string | null>(null);
 
   useEffect(() => {
-    const prevId = previousSelectedId.current;
-    const nextId = selected?.id ?? null;
-    previousSelectedId.current = nextId;
-
-    // Drawer closed → restore state / continental context (not street-level zoom).
+    // Closing the panel only clears selection — do not reset pan/zoom.
     if (!selected) {
-      if (!prevId) return;
-
-      const { states, focusBounds } = useMapFiltersStore.getState();
-
-      if (focusBounds) {
-        flyToCorners(map, focusBounds, 0.8);
-        return;
-      }
-
-      if (states.length === 1) {
-        const bounds = STATE_BOUNDING_BOXES[states[0]];
-        if (bounds) {
-          flyToCorners(map, bounds, 0.8);
-          return;
-        }
-      }
-
-      setContinentalUsView(map, 0.8);
       return;
     }
 
@@ -250,14 +358,16 @@ function MapSelectionController({
       // Fly past DISABLE_CLUSTERING_AT_ZOOM so the pin is never stuck in a
       // cluster bubble. Do NOT call zoomToShowLayer — it fires moveend
       // synchronously and re-entered our previous listener (stack overflow).
-      map.flyTo(
-        [Number(selected.latitude), Number(selected.longitude)],
-        SELECT_ZOOM,
-        {
-          animate: true,
-          duration: 1.2,
-        },
-      );
+      runOnAliveMap(map, (alive) => {
+        alive.flyTo(
+          [Number(selected.latitude), Number(selected.longitude)],
+          SELECT_ZOOM,
+          {
+            animate: true,
+            duration: 1.2,
+          },
+        );
+      });
     };
 
     const timer = window.setTimeout(revealSelected, FOCUS_SETTLE_MS);
@@ -278,17 +388,19 @@ function MapInvalidateOnDrawer() {
 
   useEffect(() => {
     // Double-RAF: wait for layout paint after sidebar overlay mounts/unmounts.
+    let cancelled = false;
     let raf2 = 0;
     const raf1 = window.requestAnimationFrame(() => {
       raf2 = window.requestAnimationFrame(() => {
-        map.invalidateSize({ animate: false });
+        if (!cancelled) invalidateMapSize(map);
       });
     });
     const timer = window.setTimeout(() => {
-      map.invalidateSize({ animate: true });
+      if (!cancelled) invalidateMapSize(map);
     }, DRAWER_TRANSITION_MS);
 
     return () => {
+      cancelled = true;
       window.cancelAnimationFrame(raf1);
       window.cancelAnimationFrame(raf2);
       window.clearTimeout(timer);
@@ -310,10 +422,14 @@ function MapCommandsBridge({
     if (!onCommandsReady) return;
     onCommandsReady({
       zoomIn: () => {
-        map.zoomIn();
+        runOnAliveMap(map, (alive) => {
+          alive.zoomIn();
+        });
       },
       zoomOut: () => {
-        map.zoomOut();
+        runOnAliveMap(map, (alive) => {
+          alive.zoomOut();
+        });
       },
     });
     return () => onCommandsReady(null);
@@ -328,17 +444,21 @@ function MapContainerResizeSync() {
 
   useEffect(() => {
     const container = map.getContainer();
+    let cancelled = false;
     let frame = 0;
 
     const observer = new ResizeObserver(() => {
+      if (cancelled) return;
       window.cancelAnimationFrame(frame);
       frame = window.requestAnimationFrame(() => {
-        map.invalidateSize({ animate: false });
+        if (cancelled) return;
+        invalidateMapSize(map);
       });
     });
     observer.observe(container);
 
     return () => {
+      cancelled = true;
       observer.disconnect();
       window.cancelAnimationFrame(frame);
     };
@@ -348,21 +468,15 @@ function MapContainerResizeSync() {
 }
 
 /**
- * Nudges cluster bubbles apart in screen space when their centers land
- * closer than the bubble diameter. leaflet.markercluster builds clusters
- * bottom-up per zoom level and recenters each one on the weighted centroid
- * of its children as they're added — two clusters that were far enough
- * apart when first formed can still end up with centroids this close after
- * later children shift them, so overlap has to be resolved after the fact,
- * on the rendered bubbles, not by tuning maxClusterRadius.
- *
- * This only offsets the bubble's on-screen position via the CSS `translate`
- * property (which composes independently of Leaflet's own positioning
- * `transform`, so it survives Leaflet repositioning the icon on every pan
- * frame). It never touches the underlying cluster's real lat/lng — clicking
- * a nudged bubble still zooms/spiderfies around its true geographic center.
+ * Nudges cluster bubbles apart in screen space. Offset is applied to an
+ * *inner* bubble element via `transform`, not the Leaflet-positioned root —
+ * Leaflet writes `style.transform` on the root every pan frame, which can
+ * clobber a CSS `translate` on the same node in some engines (Safari).
+ * Clicking a nudged bubble still zooms around the true geographic center.
  */
 function declutterOverlappingClusters(map: L.Map) {
+  if (!isMapAlive(map)) return;
+
   const container = map.getContainer();
   const icons = Array.from(
     container.querySelectorAll<HTMLElement>(".immimap-cluster-icon"),
@@ -370,68 +484,47 @@ function declutterOverlappingClusters(map: L.Map) {
 
   if (icons.length === 0) return;
 
-  // Measure geographic (Leaflet) positions, not any prior collision offset —
-  // otherwise a second pass would treat the nudge as real and keep pushing.
   for (const icon of icons) {
-    icon.style.translate = "";
+    clusterBubble(icon).style.transform = "";
   }
 
   if (icons.length === 1) return;
 
   const containerRect = container.getBoundingClientRect();
-  const nodes = icons.map((icon) => {
-    const rect = icon.getBoundingClientRect();
-    return {
-      icon,
-      count: Number.parseInt(icon.textContent ?? "0", 10) || 0,
-      x: rect.left + rect.width / 2 - containerRect.left,
-      y: rect.top + rect.height / 2 - containerRect.top,
-      dx: 0,
-      dy: 0,
-    };
-  });
+  const nodes: Array<ClusterNode & { icon: HTMLElement }> = icons.map(
+    (icon) => {
+      const layer = clusterLayerPoint(icon);
+      const rect = icon.getBoundingClientRect();
+      const radius = Math.max(
+        rect.width,
+        rect.height,
+        icon.offsetWidth,
+        icon.offsetHeight,
+        CLUSTER_ICON_SIZE_PX,
+      ) / 2;
+      return {
+        icon,
+        count: Number.parseInt(icon.textContent ?? "0", 10) || 0,
+        x:
+          layer?.x ??
+          rect.left + rect.width / 2 - containerRect.left,
+        y:
+          layer?.y ??
+          rect.top + rect.height / 2 - containerRect.top,
+        radius,
+        dx: 0,
+        dy: 0,
+      };
+    },
+  );
 
-  for (let pass = 0; pass < CLUSTER_DECLUTTER_PASSES; pass += 1) {
-    let moved = false;
-
-    for (let i = 0; i < nodes.length; i += 1) {
-      for (let j = i + 1; j < nodes.length; j += 1) {
-        const a = nodes[i];
-        const b = nodes[j];
-        let vx = b.x + b.dx - (a.x + a.dx);
-        let vy = b.y + b.dy - (a.y + a.dy);
-        let distance = Math.hypot(vx, vy);
-        if (distance >= CLUSTER_MIN_GAP_PX) continue;
-
-        if (distance < 0.5) {
-          // Identical centers: push along a fixed diagonal so bubbles don't
-          // stack invisibly on top of one another.
-          vx = 1;
-          vy = 1;
-          distance = Math.SQRT2;
-        }
-
-        const overlap = CLUSTER_MIN_GAP_PX - distance;
-        const ux = vx / distance;
-        const uy = vy / distance;
-        // The smaller cluster yields; a tie yields `a` so the result is
-        // deterministic instead of jittering between passes.
-        const mover = a.count <= b.count ? a : b;
-        const sign = mover === a ? -1 : 1;
-
-        mover.dx += ux * overlap * sign;
-        mover.dy += uy * overlap * sign;
-        moved = true;
-      }
-    }
-
-    if (!moved) break;
-  }
+  relaxOverlappingClusters(nodes, CLUSTER_DECLUTTER_PASSES);
 
   for (const node of nodes) {
-    node.icon.style.translate =
+    const bubble = clusterBubble(node.icon);
+    bubble.style.transform =
       Math.abs(node.dx) > 0.1 || Math.abs(node.dy) > 0.1
-        ? `${node.dx.toFixed(1)}px ${node.dy.toFixed(1)}px`
+        ? `translate(${node.dx.toFixed(1)}px, ${node.dy.toFixed(1)}px)`
         : "";
   }
 }
@@ -440,22 +533,33 @@ function ClusterDeclutter() {
   const map = useMap();
 
   useEffect(() => {
+    let cancelled = false;
     let frame = 0;
     let timer = 0;
 
     const runNow = () => {
+      if (cancelled) return;
       window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(() =>
-        declutterOverlappingClusters(map),
-      );
+      frame = window.requestAnimationFrame(() => {
+        if (cancelled || !isMapAlive(map)) return;
+        declutterOverlappingClusters(map);
+      });
     };
 
     const schedule = () => {
+      if (cancelled) return;
       window.clearTimeout(timer);
       timer = window.setTimeout(runNow, CLUSTER_DECLUTTER_DEBOUNCE_MS);
     };
 
-    map.on("moveend zoomend resize", schedule);
+    const onZoomEnd = () => {
+      runNow();
+      window.clearTimeout(timer);
+      timer = window.setTimeout(runNow, CLUSTER_DECLUTTER_LATE_MS);
+    };
+
+    map.on("moveend resize", schedule);
+    map.on("zoomend", onZoomEnd);
 
     // Cluster icons are (re)created on pan/zoom and as chunkedLoading adds
     // markers — observe the pane directly rather than relying on any one
@@ -470,7 +574,9 @@ function ClusterDeclutter() {
     schedule();
 
     return () => {
-      map.off("moveend zoomend resize", schedule);
+      cancelled = true;
+      map.off("moveend resize", schedule);
+      map.off("zoomend", onZoomEnd);
       observer?.disconnect();
       window.cancelAnimationFrame(frame);
       window.clearTimeout(timer);
@@ -534,9 +640,9 @@ function createClusterIcon(cluster: L.MarkerCluster) {
 
   return L.divIcon({
     className: "immimap-cluster-icon",
-    html: `<span>${count}</span>`,
-    iconSize: [44, 44],
-    iconAnchor: [22, 22],
+    html: `<span class="immimap-cluster-bubble">${count}</span>`,
+    iconSize: [CLUSTER_ICON_SIZE_PX, CLUSTER_ICON_SIZE_PX],
+    iconAnchor: [CLUSTER_ICON_SIZE_PX / 2, CLUSTER_ICON_SIZE_PX / 2],
   });
 }
 
@@ -580,13 +686,6 @@ const MapMarker = memo(function MapMarker({ service }: MapMarkerProps) {
     };
   }, [registry, service.id]);
 
-  useEffect(() => {
-    const marker = markerRef.current;
-    if (!marker) return;
-    marker.setIcon(pinIcon);
-    marker.setZIndexOffset(isActive ? 9999 : 0);
-  }, [isActive, pinIcon]);
-
   if (!position) {
     return null;
   }
@@ -602,6 +701,75 @@ const MapMarker = memo(function MapMarker({ service }: MapMarkerProps) {
   );
 });
 
+type ViewportOffscreenReport = {
+  inView: number;
+  nearest: ImmigrationService | null;
+};
+
+/**
+ * Reports how many filtered pins sit in the current viewport, plus the
+ * nearest pin to the camera center. Used only for the off-screen results
+ * banner — does not move the map.
+ */
+function ViewportOffscreenProbe({
+  services,
+  onReport,
+}: {
+  services: ImmigrationService[];
+  onReport: (report: ViewportOffscreenReport) => void;
+}) {
+  const map = useMap();
+  const onReportRef = useRef(onReport);
+  onReportRef.current = onReport;
+
+  useEffect(() => {
+    let timer = 0;
+
+    const measure = () => {
+      if (!isMapAlive(map)) return;
+      try {
+        const bounds = map.getBounds();
+        if (!bounds.isValid()) {
+          onReportRef.current({ inView: 0, nearest: null });
+          return;
+        }
+        const center = map.getCenter();
+        let inView = 0;
+        let nearest: ImmigrationService | null = null;
+        let nearestDist = Infinity;
+        for (const service of services) {
+          const pos = servicePosition(service);
+          if (!pos) continue;
+          const latlng = L.latLng(pos[0], pos[1]);
+          if (bounds.contains(latlng)) inView += 1;
+          const dist = center.distanceTo(latlng);
+          if (dist < nearestDist) {
+            nearestDist = dist;
+            nearest = service;
+          }
+        }
+        onReportRef.current({ inView, nearest });
+      } catch (error) {
+        if (!isLeafletPosError(error)) throw error;
+      }
+    };
+
+    const schedule = () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(measure, 80);
+    };
+
+    map.on("moveend zoomend", schedule);
+    measure();
+    return () => {
+      map.off("moveend zoomend", schedule);
+      window.clearTimeout(timer);
+    };
+  }, [map, services]);
+
+  return null;
+}
+
 type Props = {
   services: ImmigrationService[];
   ariaLabel: string;
@@ -614,13 +782,32 @@ export function ImmimapMapClient({
   onCommandsReady,
 }: Props) {
   const selectedServiceId = useMapFiltersStore((s) => s.selectedServiceId);
+  const selectService = useMapFiltersStore((s) => s.selectService);
+  const filterCategories = useMapFiltersStore((s) => s.categories);
   const clusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
   const markerRegistryRef = useRef<MarkerRegistry>(new Map());
+  const [viewportInView, setViewportInView] = useState<number | null>(null);
+  const [nearestOffscreen, setNearestOffscreen] =
+    useState<ImmigrationService | null>(null);
 
   const mappableServices = useMemo(
     () => services.filter(hasValidCoordinates),
     [services],
   );
+
+  const onViewportReport = useCallback((report: ViewportOffscreenReport) => {
+    setViewportInView(report.inView);
+    setNearestOffscreen(report.nearest);
+  }, []);
+
+  const showOffscreenBanner =
+    !selectedServiceId &&
+    mappableServices.length > 0 &&
+    viewportInView === 0 &&
+    nearestOffscreen !== null;
+
+  const filterLabel =
+    filterCategories.length === 1 ? filterCategories[0] : null;
 
   const registryApi = useMemo<MarkerRegistryApi>(() => {
     const registry = markerRegistryRef.current;
@@ -648,8 +835,8 @@ export function ImmimapMapClient({
         <MapContainer
           center={US_CENTER}
           zoom={US_ZOOM}
-          className="immimap-leaflet z-0 h-full w-full overflow-hidden bg-muted/40"
-          scrollWheelZoom
+          className="immimap-leaflet z-0 h-full w-full overflow-hidden bg-transparent"
+          scrollWheelZoom={false}
           touchZoom
           doubleClickZoom
           boxZoom
@@ -670,11 +857,18 @@ export function ImmimapMapClient({
           <MapInvalidateOnDrawer />
           <MapContainerResizeSync />
           <ClusterDeclutter />
+          <ViewportOffscreenProbe
+            services={mappableServices}
+            onReport={onViewportReport}
+          />
           <MarkerClusterGroup
             ref={
               clusterGroupRef as MutableRefObject<L.MarkerClusterGroup | null>
             }
             chunkedLoading
+            // Zoom-in/out cluster CSS animations race with icon recycle and
+            // throw `_leaflet_pos` when a pane is already gone.
+            animate={false}
             showCoverageOnHover={false}
             spiderfyOnMaxZoom
             spiderfyDistanceMultiplier={1.4}
@@ -688,6 +882,15 @@ export function ImmimapMapClient({
             ))}
           </MarkerClusterGroup>
         </MapContainer>
+        {showOffscreenBanner ? (
+          <MapOffscreenResultsBanner
+            filterLabel={filterLabel}
+            elsewhereCount={services.length}
+            onShowNearest={() => {
+              if (nearestOffscreen) selectService(nearestOffscreen.id);
+            }}
+          />
+        ) : null}
       </MarkerRegistryContext.Provider>
     </div>
   );

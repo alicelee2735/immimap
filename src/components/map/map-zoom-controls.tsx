@@ -38,16 +38,17 @@ export function MapZoomControls({
   return (
     <div
       className={cn(
-        "flex overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm",
+        "flex overflow-hidden rounded-sm border border-ink-navy/15 bg-paper/90 shadow-sm backdrop-blur-md",
         className,
       )}
       onDoubleClick={(event) => event.stopPropagation()}
+      onPointerDown={(event) => event.stopPropagation()}
       onMouseDown={(event) => event.stopPropagation()}
       onWheel={(event) => event.stopPropagation()}
     >
       <button
         type="button"
-        className="flex h-9 w-9 items-center justify-center border-r border-slate-200 text-lg font-semibold leading-none text-slate-700 transition-colors hover:bg-slate-50 hover:text-[#2563eb]"
+        className="flex h-10 w-10 items-center justify-center border-r border-ink-navy/15 text-lg font-semibold leading-none text-ink-navy transition-colors hover:bg-signal-amber/20 hover:text-ink-navy md:h-9 md:w-9"
         aria-label="Zoom in"
         onClick={(event) => handleZoomClick(event, "in")}
       >
@@ -55,7 +56,7 @@ export function MapZoomControls({
       </button>
       <button
         type="button"
-        className="flex h-9 w-9 items-center justify-center text-xl font-semibold leading-none text-slate-700 transition-colors hover:bg-slate-50 hover:text-[#2563eb]"
+        className="flex h-10 w-10 items-center justify-center text-xl font-semibold leading-none text-ink-navy transition-colors hover:bg-signal-amber/20 hover:text-ink-navy md:h-9 md:w-9"
         aria-label="Zoom out"
         onClick={(event) => handleZoomClick(event, "out")}
       >

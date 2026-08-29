@@ -8,6 +8,7 @@ import { Analytics } from "@vercel/analytics/next";
 
 import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { SiteFooterGate } from "@/components/layout/site-footer-gate";
 import { SiteHeader } from "@/components/layout/site-header";
 import { routing } from "@/i18n/routing";
 
@@ -17,7 +18,7 @@ const inter = Inter({
 });
 
 // Display serif for the ImmiMap visual identity — formal, document-like
-// register for headlines on Home, About, and Know Your Rights.
+// register for headlines on Home, About, Know Your Rights, and How We Verify.
 const sourceSerif4 = Source_Serif_4({
   subsets: ["latin"],
   weight: ["600", "700"],
@@ -63,16 +64,11 @@ export default async function LocaleLayout({
   // Path for SSR nav active state and map-only chrome decisions.
   const headerStore = await headers();
   const pathname = headerStore.get("x-pathname") ?? "/";
-  const isMapRoute =
-    pathname === "/map" ||
-    pathname.startsWith("/map/") ||
-    pathname.endsWith("/map");
 
   return (
     <html
       className={clsx(
         "min-h-full",
-        isMapRoute && "overflow-hidden overscroll-none",
         inter.variable,
         sourceSerif4.variable,
       )}
@@ -82,16 +78,17 @@ export default async function LocaleLayout({
       <body
         className={clsx(
           "flex min-h-dvh flex-col bg-background text-foreground antialiased",
-          isMapRoute && "h-dvh overflow-hidden overscroll-none",
           inter.className,
         )}
         suppressHydrationWarning
       >
         <NextIntlClientProvider>
           <GoogleAnalytics />
-          <SiteHeader pathname={pathname} pinned={isMapRoute} />
+          <SiteHeader pathname={pathname} />
           <div className="flex min-h-0 flex-1 flex-col">{children}</div>
-          {isMapRoute ? null : <SiteFooter />}
+          <SiteFooterGate>
+            <SiteFooter />
+          </SiteFooterGate>
         </NextIntlClientProvider>
         <Analytics />
       </body>

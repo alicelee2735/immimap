@@ -45,6 +45,8 @@ type Props = {
   onClear?: () => void;
   /** Floating glass overlay inside the map canvas (default: full-width bar). */
   variant?: "bar" | "floating" | "plain";
+  menuSide?: "top" | "bottom";
+  hideReset?: boolean;
   /**
    * Attached to the floating panel's outer box so callers can measure its
    * rendered height (e.g. to keep map content from rendering underneath it).
@@ -108,6 +110,8 @@ export function OrganizationSearch({
   onClear,
   variant = "bar",
   panelRef,
+  menuSide = "bottom",
+  hideReset = false,
 }: Props) {
   const t = useTranslations("Search");
   const tFilters = useTranslations("Filters");
@@ -175,6 +179,8 @@ export function OrganizationSearch({
       labelNamespace="filters"
       hideStateFilter
       compact={isFloating}
+      menuSide={menuSide}
+      hideReset={hideReset}
       searchActive={Boolean(
         values.query.trim() || values.city || values.selectedState,
       )}
@@ -248,7 +254,7 @@ export function OrganizationSearch({
 
           {suggestionsOpen ? (
             <div
-              className="absolute left-0 right-0 top-full z-[1050] mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg"
+              className="absolute left-0 right-0 top-full z-[1050] mt-2 overflow-hidden rounded-sm border border-ink-navy/15 bg-paper shadow-lg"
               role="listbox"
               id={listboxId}
             >

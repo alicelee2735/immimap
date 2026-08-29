@@ -8,19 +8,18 @@ import { TrackedNavLink } from "@/components/analytics/tracked-nav-link";
 import { PageContainer } from "@/components/layout/page-container";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Link, usePathname } from "@/i18n/navigation";
-import { isNavItemActive } from "@/lib/nav-pathname";
+import { isMapPathname, isNavItemActive } from "@/lib/nav-pathname";
 import { cn } from "@/lib/utils";
 
 type Props = {
   pathname: string;
-  /** Keep the header in the viewport on the map route (map shell is `position: fixed`). */
-  pinned?: boolean;
 };
 
-export function SiteHeader({ pathname: serverPathname, pinned = false }: Props) {
+export function SiteHeader({ pathname: serverPathname }: Props) {
   const t = useTranslations("Nav");
   const clientPathname = usePathname();
   const pathname = clientPathname ?? serverPathname;
+  const pinned = isMapPathname(pathname);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navItems = [
     { href: "/", label: t("home") },

@@ -16,15 +16,14 @@ function isFullSelection(selected, all) {
   );
 }
 
-function areCategoriesAtDefault(selected, available) {
-  if (available.length === 0) return selected.length === 0;
-  return selected.length === 0 || isFullSelection(selected, available);
+function areCategoriesAtDefault(selected) {
+  return selected.length === 0;
 }
 
 function areFiltersAtDefaults(filters) {
   return (
     isFullSelection(filters.states, ALL_STATES) &&
-    areCategoriesAtDefault(filters.categories, filters.availableServiceTypes) &&
+    areCategoriesAtDefault(filters.categories) &&
     isFullSelection(filters.pricingTiers, ALL_PRICING) &&
     filters.languages.length === 0
   );
@@ -39,16 +38,7 @@ function shouldShowResetAll({ searchActive, filters, selectedServiceId }) {
 
 const defaultFilters = {
   states: [...ALL_STATES],
-  categories: [
-    "Asylum",
-    "Citizenship",
-    "DACA",
-    "Employment",
-    "Family",
-    "Humanitarian Relief",
-    "Removal Defense",
-    "TPS",
-  ],
+  categories: [],
   availableServiceTypes: [
     "Asylum",
     "Citizenship",

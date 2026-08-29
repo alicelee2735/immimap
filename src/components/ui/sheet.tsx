@@ -10,6 +10,33 @@ function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />
 }
 
+function isInsideNestedPopup(target: EventTarget | null) {
+  if (!(target instanceof Element)) return false;
+  return Boolean(
+    target.closest(
+      '[data-slot="dropdown-menu-content"], [data-slot="dropdown-menu-trigger"]',
+    ),
+  );
+}
+
+/** Drop leftover Radix/remove-scroll locks when no modal dialog is open. */
+export function releaseOrphanedBodyLocks() {
+  const body = document.body;
+  const openModal = document.querySelector(
+    '[role="dialog"][data-state="open"][aria-modal="true"]',
+  );
+  if (openModal) return;
+  if (body.style.pointerEvents === "none") {
+    body.style.removeProperty("pointer-events");
+  }
+  if (body.getAttribute("style") === "") {
+    body.removeAttribute("style");
+  }
+  if (body.hasAttribute("data-scroll-locked")) {
+    body.removeAttribute("data-scroll-locked");
+  }
+}
+
 function SheetTrigger({
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Trigger>) {
@@ -50,15 +77,41 @@ function SheetContent({
   side = "right",
   showCloseButton = true,
   overlayClassName,
+  lockScroll = true,
+  onInteractOutside,
+  onPointerDownOutside,
+  onFocusOutside,
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
   side?: "top" | "right" | "bottom" | "left"
   showCloseButton?: boolean
   overlayClassName?: string
+  /**
+   * When false, skip Radix RemoveScroll / body pointer-events lock.
+   * Nested popups (dropdowns) portaled to document.body cannot live inside
+   * that lock without leaking `pointer-events: none` on close.
+   */
+  lockScroll?: boolean
 }) {
+  const preventNestedDismiss = (
+    event: { preventDefault: () => void; target: EventTarget | null },
+  ) => {
+    if (isInsideNestedPopup(event.target)) event.preventDefault();
+  };
+
   return (
     <SheetPortal>
-      <SheetOverlay className={overlayClassName} />
+      {lockScroll ? (
+        <SheetOverlay className={overlayClassName} />
+      ) : (
+        <div
+          data-slot="sheet-overlay"
+          className={cn(
+            "fixed inset-0 z-[1100] bg-black/20 transition-opacity duration-200",
+            overlayClassName,
+          )}
+        />
+      )}
       <SheetPrimitive.Content
         data-slot="sheet-content"
         data-side={side}
@@ -66,6 +119,18 @@ function SheetContent({
           "fixed z-[1100] flex flex-col gap-4 border-slate-200 bg-popover bg-clip-padding text-sm text-popover-foreground shadow-lg transition ease-in-out data-[state=closed]:duration-200 data-[state=open]:duration-300 data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=bottom]:h-auto data-[side=bottom]:border-t data-[side=bottom]:data-[state=closed]:slide-out-to-bottom data-[side=bottom]:data-[state=open]:slide-in-from-bottom data-[side=left]:inset-y-0 data-[side=left]:left-0 data-[side=left]:h-full data-[side=left]:w-3/4 data-[side=left]:border-r data-[side=left]:data-[state=closed]:slide-out-to-left data-[side=left]:data-[state=open]:slide-in-from-left data-[side=right]:inset-y-0 data-[side=right]:right-0 data-[side=right]:h-full data-[side=right]:w-3/4 data-[side=right]:border-l data-[side=right]:data-[state=closed]:slide-out-to-right data-[side=right]:data-[state=open]:slide-in-from-right data-[side=top]:inset-x-0 data-[side=top]:top-0 data-[side=top]:h-auto data-[side=top]:border-b data-[side=top]:data-[state=closed]:slide-out-to-top data-[side=top]:data-[state=open]:slide-in-from-top data-[side=left]:sm:max-w-sm data-[side=right]:sm:max-w-sm",
           className
         )}
+        onInteractOutside={(event) => {
+          preventNestedDismiss(event);
+          onInteractOutside?.(event);
+        }}
+        onPointerDownOutside={(event) => {
+          preventNestedDismiss(event);
+          onPointerDownOutside?.(event);
+        }}
+        onFocusOutside={(event) => {
+          preventNestedDismiss(event);
+          onFocusOutside?.(event);
+        }}
         {...props}
       >
         {children}

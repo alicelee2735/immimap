@@ -127,6 +127,9 @@
     "mapAriaLabel": "Interactive map of immigration service providers in the United States",
     "emptyStateTitle": "No verified providers found for these filters.",
     "emptyStateHint": "Try adjusting your search criteria. We are continually expanding our directory.",
+    "offscreenFiltered": "No {filter} providers near this view — {count, plural, one {# found elsewhere} other {# found elsewhere}}",
+    "offscreenGeneric": "No providers near this view — {count, plural, one {# found elsewhere} other {# found elsewhere}}",
+    "offscreenShowNearest": "Show nearest",
     "loadingResults": "Loading providers…",
     "serviceUnavailable": "Service temporarily unavailable.",
     "serviceUnavailableHint": "We couldn't load provider data. Please try again in a few minutes.",
@@ -139,6 +142,8 @@
     "filtersPill": "Filters",
     "filtersSheetTitle": "Search & filters",
     "filtersSheetHint": "Search by name, city, or state, then narrow by service type, price, and language.",
+    "filtersClearAll": "Clear all",
+    "filtersShowResults": "Show results",
     "sheetDragHint": "Drag to expand or collapse the provider list",
     "provenanceTimestamp": "Registry synchronized:",
     "provenanceCadence": "Auto-sync: Daily at 04:00 UTC"
@@ -443,7 +448,9 @@
     },
     "transparency": {
       "title": "Data Transparency",
-      "description": "Provider listings are modeled so each record can be traced, refreshed, and reviewed. Current demo data is clearly labeled, and the system is ready for verified source pipelines."
+      "description": "Provider listings are modeled so each record can be traced, refreshed, and reviewed. Current demo data is clearly labeled, and the system is ready for verified source pipelines.",
+      "verifyPrompt": "See how listings are labeled and reviewed:",
+      "verifyLink": "How we verify"
     },
     "dataCorrection": {
       "title": "Data correction & organization contact",

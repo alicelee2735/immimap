@@ -34,12 +34,8 @@ import type {
   PricingLabel,
 } from "@/types/immimap";
 
-function pricingVariant(
-  pricing: PricingLabel,
-): "default" | "secondary" | "outline" {
-  if (pricing === "Pro bono") return "default";
-  if (pricing === "Low-cost") return "secondary";
-  return "outline";
+function pricingBadgeClassName() {
+  return "rounded-sm border border-route-blue/30 bg-paper font-medium uppercase tracking-wide text-ink-navy";
 }
 
 const PRICING_LABEL_TO_KEY: Record<PricingLabel, "pro_bono" | "low_cost" | "paid"> = {
@@ -71,11 +67,10 @@ function overlayBottomInSection(
 }
 
 /**
- * Measures opaque overlay chrome (search panel, zoom control, filters pill)
- * so the map layer underneath can be inset below it. Overlays hide pins
- * whose geographic position lands under them. Shrinking Leaflet's own
- * container (rather than just visually offsetting markers) means it never
- * paints a tile, pin, or cluster in that region, for any pan/zoom state.
+ * On desktop, inset Leaflet below the floating search card so pins aren't
+ * painted under opaque chrome. On mobile the Filters pill and zoom control
+ * float over the tiles (same as desktop zoom) — insetting there left a solid
+ * paper strip above the map.
  */
 function useMapChromeInset() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -88,26 +83,27 @@ function useMapChromeInset() {
     const section = sectionRef.current;
     if (!section) return;
 
+    const media = window.matchMedia("(min-width: 768px)");
+
     const update = () => {
-      const bottom = Math.max(
-        overlayBottomInSection(section, panelRef.current),
-        overlayBottomInSection(section, zoomRef.current),
-        overlayBottomInSection(section, filtersRef.current),
-      );
+      if (!media.matches) {
+        setTopInsetPx((prev) => (prev === 0 ? prev : 0));
+        return;
+      }
+      const bottom = overlayBottomInSection(section, panelRef.current);
       const next = bottom > 0 ? Math.ceil(bottom + FLOATING_PANEL_GAP_PX) : 0;
       setTopInsetPx((prev) => (prev === next ? prev : next));
     };
 
     const observer = new ResizeObserver(update);
     observer.observe(section);
-    const overlayEls = [panelRef.current, zoomRef.current, filtersRef.current];
-    for (const el of overlayEls) {
-      if (el) observer.observe(el);
-    }
+    if (panelRef.current) observer.observe(panelRef.current);
     update();
+    media.addEventListener("change", update);
     window.addEventListener("resize", update);
     return () => {
       observer.disconnect();
+      media.removeEventListener("change", update);
       window.removeEventListener("resize", update);
     };
   }, []);
@@ -166,12 +162,12 @@ function ServiceResultCard({
         }
       }}
       className={cn(
-        "cursor-pointer transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+        "cursor-pointer border-l-4 border-l-transparent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-signal-amber",
         selected
-          ? "bg-blue-50/40"
+          ? "border-l-route-blue bg-signal-amber/10"
           : hovered
-            ? "bg-blue-50/50 ring-1 ring-inset ring-blue-200/80"
-            : "hover:bg-slate-50/70",
+            ? "border-l-signal-amber bg-paper"
+            : "hover:border-l-route-blue/40 hover:bg-paper",
       )}
     >
       <div className="space-y-2.5 px-4 py-3.5 sm:px-5">
@@ -179,30 +175,30 @@ function ServiceResultCard({
           {service.services_offered[0] ? (
           <Badge
             variant="outline"
-            className="border border-blue-200 bg-blue-50 font-medium text-blue-700"
+            className="rounded-sm border border-route-blue/30 bg-paper font-medium text-ink-navy"
           >
             {service.services_offered[0]}
           </Badge>
           ) : null}
           <Badge
-            variant={pricingVariant(service.pricing)}
-            className="uppercase tracking-wide"
+            variant="outline"
+            className={pricingBadgeClassName()}
           >
             {tPrice(PRICING_LABEL_TO_KEY[service.pricing])}
           </Badge>
         </div>
 
-        <h3 className="text-base font-semibold tracking-tight text-slate-950 sm:text-lg">
+        <h3 className="font-serif text-base font-semibold tracking-tight text-ink-navy sm:text-lg">
           {service.name}
         </h3>
 
-        <div className="flex items-start gap-1.5 text-sm text-slate-500">
-          <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#2563eb]" aria-hidden />
+        <div className="flex items-start gap-1.5 text-sm text-charcoal">
+          <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-route-blue" aria-hidden />
           <span className="leading-snug">
             {street ? (
               <>
-                <span className="block text-slate-500">{street}</span>
-                <span className="block text-xs text-slate-400">{locationLabel}</span>
+                <span className="block text-charcoal">{street}</span>
+                <span className="block text-xs text-charcoal/60">{locationLabel}</span>
               </>
             ) : (
               locationLabel
@@ -211,8 +207,8 @@ function ServiceResultCard({
         </div>
 
         {languagePreview ? (
-          <p className="flex items-start gap-1.5 text-xs text-slate-500">
-            <Languages className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden />
+          <p className="flex items-start gap-1.5 text-xs text-charcoal/80">
+            <Languages className="mt-0.5 h-3.5 w-3.5 shrink-0 text-route-blue" aria-hidden />
             <span className="leading-relaxed">{languagePreview}</span>
           </p>
         ) : null}
@@ -221,7 +217,7 @@ function ServiceResultCard({
           type="button"
           variant="link"
           size="sm"
-          className="h-auto px-0 text-sm font-semibold text-[#2563eb]"
+          className="h-auto px-0 text-sm font-semibold text-route-blue"
           onClick={(event) => {
             event.stopPropagation();
             onSelect();
@@ -377,11 +373,11 @@ export function MapDashboard() {
       <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden md:flex-row md:gap-4">
         <section
           ref={sectionRef}
-          className="relative z-0 min-h-0 min-w-0 flex-1 overflow-hidden bg-background max-md:absolute max-md:inset-0 md:rounded-2xl md:border md:border-slate-200/70 md:shadow-md"
+          className="relative z-0 min-h-0 min-w-0 flex-1 overflow-hidden bg-paper max-md:absolute max-md:inset-0 md:rounded-sm md:border md:border-ink-navy/15 md:shadow-md"
         >
           <div
             ref={filtersRef}
-            className="pointer-events-none absolute inset-x-0 top-0 z-[1000] flex justify-start p-3 md:hidden"
+            className="pointer-events-none absolute top-3 left-3 z-[1000] w-fit md:hidden"
           >
             <div className="pointer-events-auto">
               <MobileFiltersControl
@@ -400,7 +396,7 @@ export function MapDashboard() {
           </div>
           <div
             ref={zoomRef}
-            className="pointer-events-none absolute top-3 right-3 z-[1001] sm:top-4 sm:right-4"
+            className="pointer-events-none absolute top-3 right-3 z-[1001] md:top-4 md:right-4"
           >
             <div className="pointer-events-auto">
               <MapZoomControls
@@ -421,10 +417,8 @@ export function MapDashboard() {
             onClear={onClearSearch}
           />
           {/*
-            Inset below overlay chrome (search panel, zoom control, filters
-            pill) so Leaflet's own container excludes that region — no
-            pin/cluster can ever be painted underneath an opaque overlay it
-            can't be clicked through.
+            Desktop: inset below the search card. Mobile: full-bleed tiles so
+            Filters / zoom float over the map instead of sitting in a paper bar.
           */}
           <div
             className="absolute inset-x-0 bottom-0 z-0 overflow-hidden"
@@ -475,29 +469,47 @@ export function MapDashboard() {
 
         <aside
           className={cn(
-            "relative z-10 flex min-h-0 w-full shrink-0 flex-col overflow-hidden border border-slate-200/70 bg-white shadow-sm",
-            "max-md:absolute max-md:inset-x-0 max-md:bottom-0 max-md:z-20 max-md:h-[var(--mobile-sheet-h)] max-md:rounded-t-2xl",
-            "md:h-full md:w-[400px] md:rounded-2xl",
+            "relative z-10 flex min-h-0 w-full shrink-0 flex-col overflow-hidden border border-ink-navy/15 bg-paper shadow-sm",
+            "max-md:absolute max-md:inset-x-0 max-md:bottom-0 max-md:z-20 max-md:h-[var(--mobile-sheet-h)] max-md:rounded-t-sm",
+            "md:h-full md:w-[400px] md:rounded-sm",
             !sheetDragging && "max-md:transition-[height] max-md:duration-200 max-md:ease-out",
           )}
         >
           <div
-            className="relative z-30 flex cursor-grab touch-none flex-col items-center pt-2 active:cursor-grabbing md:hidden"
+            className="relative z-30 cursor-grab touch-none select-none border-b border-ink-navy/10 active:cursor-grabbing md:hidden"
+            style={{ touchAction: "none" }}
+            role="button"
+            aria-label={t("sheetDragHint")}
+            tabIndex={0}
             {...sheetHandleProps}
           >
-            <div className="h-1.5 w-10 rounded-full bg-slate-300" aria-hidden />
-            <span className="sr-only">{t("sheetDragHint")}</span>
+            <div className="flex min-h-11 flex-col items-center justify-end pt-2.5">
+              <div className="h-1.5 w-10 rounded-full bg-slate-300" aria-hidden />
+              <span className="sr-only">{t("sheetDragHint")}</span>
+            </div>
+            {selectedServiceId ? null : (
+            <div className="px-4 pt-2 pb-3">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-route-blue">
+                {t("resultsEyebrow")}
+              </p>
+              <p className="mt-1 font-serif text-lg font-semibold tracking-[-0.01em] text-ink-navy">
+                {loading
+                  ? t("loadingResults")
+                  : t("resultsCount", { count: visible.length })}
+              </p>
+            </div>
+            )}
           </div>
-          <div className="shrink-0 border-b border-slate-200 px-4 py-3 md:px-5 md:py-4">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-route-blue md:text-sm md:font-medium md:tracking-widest md:text-gray-500">
+          <div className={cn("hidden shrink-0 border-b border-ink-navy/10 px-5 py-4 md:block", selectedServiceId && "md:hidden")}>
+            <p className="text-sm font-medium tracking-widest text-route-blue">
               {t("resultsEyebrow")}
             </p>
             <div className="mt-1 flex items-end justify-between gap-3">
               <div>
-                <h2 className="hidden font-semibold tracking-tight text-gray-900 md:block md:text-xl">
+                <h2 className="font-serif text-xl font-semibold tracking-tight text-ink-navy">
                   {t("resultsTitle")}
                 </h2>
-                <p className="font-serif text-lg font-semibold tracking-[-0.01em] text-ink-navy md:mt-1 md:font-sans md:text-sm md:font-normal md:tracking-normal md:text-muted-foreground">
+                <p className="mt-1 text-sm text-charcoal">
                   {loading
                     ? t("loadingResults")
                     : t("resultsCount", { count: visible.length })}
@@ -505,14 +517,15 @@ export function MapDashboard() {
               </div>
               <Badge
                 variant="outline"
-                className="hidden shrink-0 border-slate-200 sm:inline-flex max-md:hidden"
+                className="shrink-0 rounded-sm border-ink-navy/15"
               >
                 {t("liveResults")}
               </Badge>
             </div>
           </div>
 
-          <div className="immimap-results-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain scroll-smooth">
+          <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-paper">
+          <div className="immimap-results-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain scroll-smooth bg-paper">
             {loading ? (
               <SidebarSkeleton />
             ) : fatalError ? (
@@ -570,8 +583,9 @@ export function MapDashboard() {
             </p>
           </div>
 
-          {/* Absolute overlay: never contributes to parent height. */}
+          {/* Overlay fills this well so the list header is never left on screen. */}
           <ServiceDetailSheet services={services} />
+          </div>
         </aside>
       </div>
     </div>

@@ -20,12 +20,8 @@ const DATA_CORRECTION_FORM_URL = "https://forms.gle/SZryGqpSC6N3RV6F6";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function pricingVariant(
-  pricing: PricingLabel,
-): "default" | "secondary" | "outline" {
-  if (pricing === "Pro bono") return "default";
-  if (pricing === "Low-cost") return "secondary";
-  return "outline";
+function pricingBadgeClassName() {
+  return "shrink-0 rounded-sm border border-route-blue/30 bg-paper font-medium uppercase tracking-wide text-ink-navy";
 }
 
 const PRICING_LABEL_TO_KEY: Record<PricingLabel, "pro_bono" | "low_cost" | "paid"> = {
@@ -112,12 +108,11 @@ export function ServiceDetailSheet({ services }: Props) {
       aria-modal="false"
       aria-label={service.name}
       className={cn(
-        // Absolute fill of the sidebar only — must never expand parent height.
-        "absolute inset-0 z-20 flex h-full max-h-full min-h-0 flex-col overflow-hidden bg-white",
+        "absolute inset-0 z-20 flex h-full max-h-full min-h-0 flex-col overflow-hidden bg-paper",
         "animate-in slide-in-from-right duration-300",
       )}
     >
-      <div className="sticky top-0 z-10 shrink-0 border-b border-slate-200 bg-white p-4">
+      <div className="sticky top-0 z-10 shrink-0 border-b border-slate-200 bg-paper p-4">
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -172,8 +167,8 @@ export function ServiceDetailSheet({ services }: Props) {
               {service.name}
             </h2>
             <Badge
-              variant={pricingVariant(service.pricing)}
-              className="shrink-0 uppercase tracking-wide"
+              variant="outline"
+              className={pricingBadgeClassName()}
             >
               {tPrice(PRICING_LABEL_TO_KEY[service.pricing])}
             </Badge>
@@ -273,7 +268,10 @@ export function ServiceDetailSheet({ services }: Props) {
               <ul className="flex flex-wrap gap-2">
                 {service.services_offered.map((offering) => (
                   <li key={offering}>
-                    <Badge variant="outline" className="font-normal">
+                    <Badge
+                      variant="outline"
+                      className="rounded-sm border border-route-blue/30 bg-paper font-medium text-ink-navy"
+                    >
                       {offering}
                     </Badge>
                   </li>

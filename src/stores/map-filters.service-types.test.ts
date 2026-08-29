@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   collectServiceTypes,
   filterServices,
+  toggleOptInSelection,
 } from "./map-filters";
 import type { ImmigrationService } from "../types/immimap";
 
@@ -69,4 +70,19 @@ test("filterServices matches the live tag name, including Removal Defense", () =
     filtered.map((row) => row.id),
     ["defense"],
   );
+});
+
+test("toggleOptInSelection starts at All (empty) and first click replaces All", () => {
+  assert.deepEqual(toggleOptInSelection([], "Asylum"), ["Asylum"]);
+});
+
+test("toggleOptInSelection adds further specific items", () => {
+  assert.deepEqual(toggleOptInSelection(["Asylum"], "Family"), [
+    "Asylum",
+    "Family",
+  ]);
+});
+
+test("toggleOptInSelection removing the last item returns to All", () => {
+  assert.deepEqual(toggleOptInSelection(["Asylum"], "Asylum"), []);
 });

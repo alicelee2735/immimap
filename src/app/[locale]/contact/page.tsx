@@ -26,31 +26,31 @@ export default async function ContactPage({ params }: Props) {
   const t = await getTranslations("Contact");
 
   return (
-    <main className="flex-1 bg-slate-50 py-12">
+    <main className="flex-1 bg-paper pb-16 pt-12 sm:pt-16">
       <PageContainer>
-        <p className="text-sm font-medium uppercase tracking-widest text-gray-500">
+        <p className="text-sm font-medium uppercase tracking-widest text-route-blue">
           {t("eyebrow")}
         </p>
-        <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-[-0.04em] text-foreground sm:text-5xl">
+        <h1 className="mt-5 max-w-3xl font-serif text-4xl font-semibold tracking-[-0.01em] text-ink-navy sm:text-5xl lg:text-[3.25rem] lg:leading-[1.1]">
           {t("title")}
         </h1>
-        <p className="mt-5 max-w-3xl text-base leading-8 text-muted-foreground sm:text-lg">
+        <p className="mt-5 max-w-3xl text-base leading-8 text-charcoal sm:text-lg">
           {t("lead")}
         </p>
 
         <a
           href={`mailto:${SUPPORT_EMAIL}`}
-          className="mt-5 inline-flex h-11 items-center justify-center gap-1.5 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="mt-5 inline-flex h-9 items-center justify-center gap-1.5 rounded-sm border border-ink-navy bg-signal-amber px-7 text-base font-semibold text-ink-navy hover:bg-signal-amber/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal-amber focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
         >
           <Mail className="h-4 w-4" aria-hidden />
           {t("emailCta")}
         </a>
 
-        <p className="mt-8 max-w-3xl text-sm leading-7 text-slate-500">
+        <p className="mt-8 max-w-3xl text-sm leading-7 text-charcoal/75">
           {t("listingCorrection.prompt")}{" "}
           <Link
             href="/about"
-            className="font-medium text-slate-700 underline-offset-4 transition-colors hover:text-[#2563eb] hover:underline"
+            className="font-medium text-ink-navy underline-offset-4 transition-colors hover:text-route-blue hover:underline"
           >
             {t("listingCorrection.link")}
           </Link>
