@@ -129,12 +129,13 @@ function invalidateMapSize(map: L.Map) {
 
 const markerProto = L.Marker.prototype as typeof L.Marker.prototype & {
   __immimapSetIconPatched?: boolean;
+  _map?: L.Map | null;
 };
 
 if (!markerProto.__immimapSetIconPatched) {
   markerProto.__immimapSetIconPatched = true;
   const originalSetIcon = markerProto.setIcon;
-  markerProto.setIcon = function (icon) {
+  markerProto.setIcon = function (this: typeof markerProto, icon) {
     // Clustered markers are not on the map; updating options is enough so the
     // next time they appear they use the new icon. Calling Leaflet's setIcon
     // while `_icon` is gone is what throws `_leaflet_pos`.
@@ -229,7 +230,11 @@ function fitFilterChangeBounds(map: L.Map, services: ImmigrationService[]) {
     if (!bounds.isValid()) return;
 
     const padded = bounds.pad(0.08);
-    const fitZoom = alive.getBoundsZoom(padded, false, FRAME_PADDING);
+    const fitZoom = alive.getBoundsZoom(
+      padded,
+      false,
+      L.point(FRAME_PADDING[0], FRAME_PADDING[1]),
+    );
     // Safety: a padded metro viewport must not still expand to a state/US frame.
     if (
       alive.getZoom() >= FILTER_FIT_METRO_MIN_ZOOM &&

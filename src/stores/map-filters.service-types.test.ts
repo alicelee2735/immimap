@@ -49,7 +49,7 @@ test("collectServiceTypes picks up a new tag without a hardcoded list", () => {
   const types = collectServiceTypes([
     org("a", ["Asylum", "Naturalization"]),
   ]);
-  assert.ok(types.includes("Naturalization"));
+  assert.ok((types as readonly string[]).includes("Naturalization"));
   assert.ok(types.includes("Asylum"));
 });
 
