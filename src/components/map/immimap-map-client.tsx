@@ -189,15 +189,7 @@ function flyToCorners(
 }
 
 /**
- * Filter-toggle refit: frame `services` without zooming out past metro.
- * Nationwide jumps are reserved for `setContinentalUsView` (Reset all).
- */
-function isMobileMapViewport() {
-  return window.matchMedia("(max-width: 767px)").matches;
-}
-
-/**
- * Leaving a street-level org detail on mobile: pull back to city/metro
+ * Leaving a street-level org detail: pull back to city/metro
  * (same zoom cap as filter-change refits) so nearby pins are visible.
  */
 function fitClosingDetailToMetro(map: L.Map, origin: ImmigrationService) {
@@ -211,6 +203,10 @@ function fitClosingDetailToMetro(map: L.Map, origin: ImmigrationService) {
   });
 }
 
+/**
+ * Filter-toggle refit: frame `services` without zooming out past metro.
+ * Nationwide jumps are reserved for `setContinentalUsView` (Reset all).
+ */
 function fitFilterChangeBounds(map: L.Map, services: ImmigrationService[]) {
   runOnAliveMap(map, (alive) => {
     const view = alive.getBounds().pad(0.4);
@@ -257,8 +253,8 @@ function fitFilterChangeBounds(map: L.Map, services: ImmigrationService[]) {
  * Reset all (`nationalFrameToken`) is the only path that recenters the
  * continental US. Individual filter toggles refit the new pins with a
  * city/metro zoom-out cap so a Sacramento view does not jump nationwide.
- * Closing the detail panel on desktop leaves the camera. On mobile it
- * pulls back to city/metro zoom so nearby results are tappable again.
+ * Closing the detail panel pulls street-level zoom back to city/metro
+ * so nearby results are visible again. Reset all still owns the US view.
  */
 function FitVisibleServices({ services }: { services: ImmigrationService[] }) {
   const map = useMap();
@@ -304,10 +300,11 @@ function FitVisibleServices({ services }: { services: ImmigrationService[] }) {
       return;
     }
 
-    // Desktop: leave pan/zoom. Mobile: pull street-level detail back to metro.
+    // Leaving a street-level detail: pull back to metro (same cap as
+    // filter-change refits). Do not jump to state/national.
     // If a filter change also cleared selection, still refit the new result set.
     if (closingDrawer && !servicesChanged) {
-      if (isMobileMapViewport() && originService) {
+      if (originService) {
         fitClosingDetailToMetro(map, originService);
       }
       return;
